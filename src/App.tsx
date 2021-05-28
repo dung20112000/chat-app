@@ -1,5 +1,5 @@
 import React,{useEffect} from 'react';
-import {callApi} from "./apis-services/ApiServices";
+import {callApi} from "./server-interaction/api.services";
 
 function App() {
   return (
