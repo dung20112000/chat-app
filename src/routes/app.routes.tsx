@@ -3,7 +3,7 @@ interface IRoute {
     path:string;
     exact?:boolean;
     strict?:boolean;
-    main: ({...props}:any) => React.ReactNode;
+    main: ({...props}?:any) => React.ReactNode;
 }
 
 const appRoutes: IRoute[] = [
@@ -12,3 +12,5 @@ const appRoutes: IRoute[] = [
         main : ()=> <LoginPage/>
     }
 ]
+
+export default appRoutes;
