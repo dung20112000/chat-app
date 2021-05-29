@@ -1,0 +1,21 @@
+$container-max-widths: (
+        sm: 540px,
+        md: 720px,
+        lg: 960px,
+        xl: 1140px,
+        xxl:1360px,
+) !default;
+$btn-border-radius: 0.5rem;
+$theme-colors: (
+        "primary":#76c00d,
+        "dark-primary":#759a40,
+        "light-primary":#e2eddb,
+        "secondary":#afbbc6,
+        "dark-secondary": #4b5155,
+        "medium-secondary": #7b8793,
+        "light-secondary":#dbe5ed,
+        "dark-yellow": #ffbd08,
+        "light-blue-grey":#f9fafc
+);
+
+@import "~bootstrap/scss/bootstrap";
