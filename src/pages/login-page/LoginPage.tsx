@@ -9,9 +9,9 @@ import "./login-page-child/scss/form.scss"
 const LoginPage = ()=>{
     const bgPage = useRef("media/login-page/login-page-bg.svg");
     return (
-        <Container fluid className="vh-100 parent-form-login-page pt-5 pl-5" style={{backgroundImage:`url(${bgPage.current})`}}>
+        <Container fluid className="vh-100 parent-form-login-page" style={{backgroundImage:`url(${bgPage.current})`}}>
             <Row>
-                <Col xs lg="3">
+                <Col xs lg="6" xl="4" className="">
                    <div className="border bg-white component-form-login-page py-5">
                        <Switch>
                            <Route exact path="/authenticate/login" component={LoginForm}  />

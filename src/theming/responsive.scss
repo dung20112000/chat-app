@@ -1,0 +1,34 @@
+@mixin xs {
+  @media (min-width: 0) {
+    @content
+  }
+}
+@mixin sm {
+  @media (min-width: 540px) {
+    @content
+  }
+}
+
+@mixin md{
+  @media (min-width: 720px) {
+    @content
+  }
+}
+
+@mixin lg {
+  @media (min-width: 960px) {
+    @content
+  }
+}
+@mixin xl {
+  @media (min-width: 1140px) {
+    @content
+  }
+}
+
+@mixin xxl {
+  @media (min-width: 1360px) {
+    @content
+  }
+}
+

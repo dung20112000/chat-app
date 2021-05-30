@@ -4,13 +4,15 @@ import {
   FETCH_USER_INFOS_FAILED,
 } from "../types/users.types.redux";
 import { Action, ActionCreator } from "redux";
+import {IUserInfosActions,IUserInfosReducer} from "../../@types/redux";
+
 
 export const fetchUserInfos: ActionCreator<Action> = () => ({
   type: FETCH_USER_INFOS,
 });
 
-export const fetchUserInfosSuccess: ActionCreator<Action> = (
-  userInfos: any
+export const fetchUserInfosSuccess: ActionCreator<IUserInfosActions> = (
+  userInfos: IUserInfosReducer
 ) => {
   return {
     type: FETCH_USER_INFOS_SUCCESS,

@@ -1,7 +1,13 @@
+@import "../../../../theming/responsive";
 .parent-form-login-page {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+    padding-top: 10rem;
+    padding-left: 5rem!important;
+    @include xxl{
+        padding: 10rem 0 0 10rem!important;
+    }
     .component-form-login-page {
         border-radius: 1.875rem;
     }

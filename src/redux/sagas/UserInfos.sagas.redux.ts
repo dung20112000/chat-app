@@ -15,6 +15,7 @@ function* workerUserInfos() {
       return callApi(USER, "GET");
     });
     if (response && response.status === 200) {
+      console.log(response.data);
       yield put(fetchUserInfosSuccess(response.data?.user));
     }
   } catch (error) {

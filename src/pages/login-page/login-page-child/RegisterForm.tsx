@@ -1,10 +1,11 @@
 import React from "react";
 import {Formik, Form, Field, ErrorMessage, FormikHelpers, FormikProps} from "formik"
 import * as Yup from "yup";
-import axios from "axios";
-import {useHistory} from "react-router-dom";
+import {useHistory, NavLink} from "react-router-dom";
 import {Row, Col, Button} from "react-bootstrap"
 import {callApi} from "../../../server-interaction/api.services";
+import {checkFormErrorsHelper} from "../../../helpers/functions/check-form-errors.helper";
+import {notifySuccess} from "../../../helpers/notify.helper";
 
 
 interface FormValues {
@@ -39,17 +40,27 @@ const RegisterForm = () => {
             .required("Required!")
     })
 
-    const onsubmit = (values: FormValues, action: FormikHelpers<FormValues>) => {
+    const onsubmit = async (values: FormValues, action: FormikHelpers<FormValues>) => {
         // POST
         const {firstName, lastName, email, password, confirmPassword} = values;
         if (firstName && lastName && email && password && confirmPassword) {
-            callApi(`/register`, "post", {firstName, lastName, email, password, confirmPassword})
-                .then(res => console.log(res))
-                .catch(err => {
-                    if (err) {
-                        console.log(err.response)
-                    }
+            try {
+                const response = await callApi(`/register`, "post", {
+                    firstName,
+                    lastName,
+                    email,
+                    password,
+                    confirmPassword
+                });
+                if (response && response.status === 200) {
+                    notifySuccess(`Welcome ${firstName} ${lastName}! You are ready now to login....`)
+                    history.push("/authenticate/login");
+                }
+            } catch (errors) {
+                checkFormErrorsHelper(errors, (field: string, error: string) => {
+                    action.setFieldError(field, error)
                 })
+            }
         }
     }
     return (
@@ -58,20 +69,13 @@ const RegisterForm = () => {
             {
                 (formikProps: FormikProps<FormValues>) => {
                     const {values, errors, touched, handleSubmit} = formikProps;
-                    const {
-                        firstName: errorFirstName,
-                        lastName: errorLastName,
-                        email: errorEmail,
-                        password: errorPassword,
-                        confirmPassword: errorConfirmPassword
-                    } = errors;
                     return (
                         <Form onSubmit={handleSubmit} className="form px-5">
                             <Row className="form-top mb-2">
-                                <Col className="text-center mb-3 mt-5" xs lg="12">
-                                    <h6>Join us to have more fun NOW!</h6>
+                                <Col className="text-center mb-5" xs lg="12">
+                                    <h5>Join us to have more fun NOW!</h5>
                                 </Col>
-                                <Col xs lg="12" className="name mt-2 mb-2">
+                                <Col xs lg="12" className="name mb-3">
                                     <Row>
                                         <Col xs lg="6">
                                             <Field
@@ -95,7 +99,7 @@ const RegisterForm = () => {
                                         </Col>
                                     </Row>
                                 </Col>
-                                <Col xs lg="12" className="email mt-2 mb-2">
+                                <Col xs lg="12" className="email mb-3">
                                     <Field
                                         className={touched.email && errors.email ? "is-invalid form-control" : "form-control"}
                                         name="email"
@@ -107,7 +111,7 @@ const RegisterForm = () => {
                                         }}
                                     </ErrorMessage>
                                 </Col>
-                                <Col xs lg="12" className="password mt-2 mb-2">
+                                <Col xs lg="12" className="password  mb-3">
                                     <Field name="password"
                                            type="password"
                                            className={touched.password && errors.password ? "is-invalid form-control" : "form-control"}
@@ -118,7 +122,7 @@ const RegisterForm = () => {
                                         }}
                                     </ErrorMessage>
                                 </Col>
-                                <Col xs lg="12" className="confirm_password mt-2 mb-2">
+                                <Col xs lg="12" className="confirm_password mb-3">
                                     <Field name="confirmPassword"
                                            type="password"
                                            className={touched.confirmPassword && errors.confirmPassword ? "is-invalid form-control" : "form-control"}
@@ -132,13 +136,16 @@ const RegisterForm = () => {
                             </Row>
                             <Row className="form-bottom mb-3">
                                 <Col xs lg="12" className="mb-2">
-                                    <Button type="submit" variant="primary" className="w-100 mb-2">
+                                    <Button type="submit" variant="primary" className="w-100 mb-2"
+                                            disabled={Object.values(errors).some((error) => error) || Object.values(values).some((value) => !value)}>
                                         Register
                                     </Button>
                                 </Col>
-                                <Col xs lg="12">
-                                    <Button type="button" variant="light-secondary" className="w-100 mb-3"
-                                            onClick={() => history.push(`/authenticate/login`)}>Login Now!</Button>
+                                <Col xs lg="12" className="text-center">
+                                    <label htmlFor="" className="mr-2">You have already account?</label>
+                                    <NavLink to="/authenticate/login" type="button" className="mb-3 font-weight-bold">
+                                        Login Now!
+                                    </NavLink>
                                 </Col>
                             </Row>
                         </Form>

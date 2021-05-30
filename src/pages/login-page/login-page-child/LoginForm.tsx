@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import {useHistory, NavLink} from "react-router-dom";
 import {Row, Col, Button} from "react-bootstrap"
 import {callApi} from "../../../server-interaction/api.services";
+import {checkFormErrorsHelper} from "../../../helpers/functions/check-form-errors.helper";
 
 interface FormValues {
     email: string,
@@ -23,25 +24,26 @@ const FormLogin = () => {
         password: Yup.string()
             .required("Required!"),
     })
-    const onsubmit = (values: FormValues, action: FormikHelpers<FormValues>) => {
+    const onsubmit = async (values: FormValues, action: FormikHelpers<FormValues>) => {
         // POST
         const {email, password} = values
         if (email && password) {
-            callApi(`/login`, "post", {email, password})
-                .then(res => {
-                    if (res) {
-                        if (res.data && res.data.authToken) {
-                            localStorage.setItem("authToken", JSON.stringify(res.data.authToken));
-                            history.push("/chat-page")
-                        }
-                    }
-                })
-                .catch(err => {
-                    if (err) {
-                        console.log(err.response);
-                        action.setErrors({password: err.response?.data?.errors[0]?.errors[0]})
-                    }
-                })
+           try{
+               const response = await callApi(`/login`, "post", {email, password})
+               if (response) {
+                   if (response.data && response.data.authToken) {
+                       localStorage.setItem("authToken", JSON.stringify(response.data.authToken));
+                       if (localStorage.getItem("authToken")){
+                           history.push("/chat-page")
+                       }
+                   }
+               }
+
+           }catch(errors){
+               checkFormErrorsHelper(errors, (field:string,error:string)=>{
+                   action.setFieldError(field,error)
+               })
+           }
         }
     }
 

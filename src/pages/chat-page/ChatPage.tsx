@@ -1,57 +1,39 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Container, Row, Col, Button } from "react-bootstrap";
-import { callApi } from "../../server-interaction/api.services";
-
+import { Container, Row, Col } from "react-bootstrap";
 import withAuthentication from "../../helpers/HOCs/withAuthentication";
 import { fetchUserInfos } from './../../redux/actions/users.actions.redux';
 import { RootState } from "../../redux/reducers/RootReducer.reducer.redux";
 import { createSocket } from "../../server-interaction/socket.services";
 import { addSocket } from "../../redux/actions/socket.actions.redux";
-import { emitFriendRequest } from "../../server-interaction/socket-handle/socket-emit";
-import { onServerAcceptedRequest } from "../../server-interaction/socket-handle/socket-on";
+import {notifySuccess} from "../../helpers/notify.helper";
+import {IUserInfosReducer} from "../../@types/redux";
 
-const EMAIL = 'huy12@gmail.com';
-const LOGIN = '/login';
 const ChatPage = () => {
     const dispatch = useDispatch();
-    const userInfosStateRedux = useSelector((state: RootState) => {
+    const userInfosStateRedux:IUserInfosReducer = useSelector((state: RootState) => {
         return state.userInfos;
     });
     const socketStateRedux = useSelector((state: RootState) => state.socket);
 
     useEffect(() => {
         const socketInstance = createSocket();
-        if (socketInstance) dispatch(addSocket(socketInstance));
+        if (socketInstance) {
+            dispatch(addSocket(socketInstance))
+        };
         dispatch(fetchUserInfos());
     }, [dispatch]);
 
-    useEffect(() => {
-        if (socketStateRedux) {
-            onServerAcceptedRequest(socketStateRedux, (data: any) => {
-                console.log(data);
-            });
-        }
-    }, [socketStateRedux])
-
-
-    const authToken = () => {
-        callApi(LOGIN, "POST", { email: EMAIL, password: "123" }).then((res: any) => {
-            localStorage.setItem("authToken", JSON.stringify(res.data.authToken));
-        });
-    }
-
-    const emitTest = () => {
-        if (socketStateRedux) emitFriendRequest(socketStateRedux, "123", "321");
-    }
-
+   useEffect(() =>{
+       if(userInfosStateRedux){
+           notifySuccess(`Welcome back , ${userInfosStateRedux.personalInfos.firstName}  ${userInfosStateRedux.personalInfos.lastName}`)
+       }
+   },[userInfosStateRedux])
 
     return (
         <Container fluid>
             <Row>
                 <Col xs={3}>
-                    <Button variant="primary" onClick={authToken}>Auth Token</Button>
-                    <Button variant="primary" onClick={emitTest}>Test Socket</Button>
                     {/*LeftSide*/}
                 </Col>
                 <Col>
@@ -65,4 +47,4 @@ const ChatPage = () => {
     )
 };
 
-export default ChatPage;
+export default withAuthentication(ChatPage);
