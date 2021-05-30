@@ -8,21 +8,32 @@ import { fetchUserInfos } from './../../redux/actions/users.actions.redux';
 import { RootState } from "../../redux/reducers/RootReducer.reducer.redux";
 import { createSocket } from "../../server-interaction/socket.services";
 import { addSocket } from "../../redux/actions/socket.actions.redux";
+import { emitFriendRequest } from "../../server-interaction/socket-handle/socket-emit";
+import { onServerAcceptedRequest } from "../../server-interaction/socket-handle/socket-on";
 
 const EMAIL = 'huy12@gmail.com';
 const LOGIN = '/login';
-const USER = "/users";
 const ChatPage = () => {
     const dispatch = useDispatch();
     const userInfosStateRedux = useSelector((state: RootState) => {
         return state.userInfos;
     });
+    const socketStateRedux = useSelector((state: RootState) => state.socket);
 
     useEffect(() => {
         const socketInstance = createSocket();
         if (socketInstance) dispatch(addSocket(socketInstance));
         dispatch(fetchUserInfos());
-    }, [dispatch])
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (socketStateRedux) {
+            onServerAcceptedRequest(socketStateRedux, (data: any) => {
+                console.log(data);
+            });
+        }
+    }, [socketStateRedux])
+
 
     const authToken = () => {
         callApi(LOGIN, "POST", { email: EMAIL, password: "123" }).then((res: any) => {
@@ -30,11 +41,8 @@ const ChatPage = () => {
         });
     }
 
-    const getUserInfo = () => {
-        dispatch(fetchUserInfos());
-        // callApi(USER, "GET").then((res: any) => {
-        //     console.log(res.data);
-        // })
+    const emitTest = () => {
+        if (socketStateRedux) emitFriendRequest(socketStateRedux, "123", "321");
     }
 
 
@@ -43,6 +51,7 @@ const ChatPage = () => {
             <Row>
                 <Col xs={3}>
                     <Button variant="primary" onClick={authToken}>Auth Token</Button>
+                    <Button variant="primary" onClick={emitTest}>Test Socket</Button>
                     {/*LeftSide*/}
                 </Col>
                 <Col>
