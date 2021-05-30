@@ -12,9 +12,9 @@ import {Switch,Route,Redirect} from "react-router-dom"
 function App() {
   return (
     <div className="App" >
-        <div style={{backgroundColor:"black"}}>
+        <div>
             <Switch>
-                <Redirect exact from="/" to="/login" />
+                <Redirect exact from="/" to="/authenticate/login" />
 
                 {
                     appRoutes && appRoutes.length > 0 ? (

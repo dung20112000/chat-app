@@ -8,7 +8,7 @@ interface IRoute {
 
 const appRoutes: IRoute[] = [
     {
-        path: "/login",
+        path: "/authenticate",
         main : ()=> <LoginPage/>
     }
 ]
