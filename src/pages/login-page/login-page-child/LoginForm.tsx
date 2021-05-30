@@ -43,7 +43,7 @@ const FormLogin = (props: any) => {
                             <Container fluid>
                                <Row>
                                    <Col xs lg="4" className="p-0">
-                                       <Form className="form">
+                                       <Form className="form" style={{backgroundColor:"white"}}>
                                            <Row>
                                                <Col xs lg="12">
                                                    <Row>

@@ -10,21 +10,23 @@ import {Switch,Route,Redirect} from "react-router-dom"
 
 function App() {
   return (
-    <div className="App">
-      <Switch>
-          <Redirect exact from="/" to="/login" />
+    <div className="App" >
+        <div style={{backgroundColor:"black"}}>
+            <Switch>
+                <Redirect exact from="/" to="/login" />
 
-          {
-           appRoutes && appRoutes.length > 0 ? (
-             appRoutes.map((route,index)=>
                 {
-                  const {main,...rest} = route;
-                  return <Route key={index} {...rest} render={()=> main()}/>
+                    appRoutes && appRoutes.length > 0 ? (
+                        appRoutes.map((route,index)=>
+                            {
+                                const {main,...rest} = route;
+                                return <Route key={index} {...rest} render={()=> main()}/>
+                            }
+                        )
+                    ): null
                 }
-             )
-           ): null
-        }
-      </Switch>
+            </Switch>
+        </div>
     </div>
   );
 }
