@@ -18,5 +18,10 @@ $theme-colors: (
         "light-blue-grey":#f9fafc,
         "link-blue":#2c8aee
 );
+@mixin xs {
+  @media (min-width: 0) {
+    @content
+  }
+}
 
 @import "~bootstrap/scss/bootstrap";

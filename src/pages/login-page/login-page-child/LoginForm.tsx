@@ -25,23 +25,23 @@ const FormLogin = () => {
     })
     const onsubmit = (values: FormValues, action: FormikHelpers<FormValues>) => {
         // POST
-        const {email,password} = values
+        const {email, password} = values
         if (email && password) {
-            callApi(`/login`, "post", {email,password})
+            callApi(`/login`, "post", {email, password})
                 .then(res => {
-                    if(res){
-                        if(res.data && res.data.authToken){
-                            localStorage.setItem("authToken",JSON.stringify(res.data.authToken));
+                    if (res) {
+                        if (res.data && res.data.authToken) {
+                            localStorage.setItem("authToken", JSON.stringify(res.data.authToken));
                             history.push("/chat-page")
                         }
                     }
                 })
                 .catch(err => {
-                if(err) {
-                    console.log(err.response);
-                        action.setErrors({password:err.response?.data?.errors[0]?.errors[0]})
-                }
-            })
+                    if (err) {
+                        console.log(err.response);
+                        action.setErrors({password: err.response?.data?.errors[0]?.errors[0]})
+                    }
+                })
         }
     }
 
@@ -51,19 +51,15 @@ const FormLogin = () => {
             {
                 (formikProps: FormikProps<FormValues>) => {
                     const {values, errors, touched, handleSubmit} = formikProps;
-                    const {
-                        email: errorEmail,
-                        password: errorPassword,
-                    } = errors;
                     return (
                         <Form onSubmit={handleSubmit} className="form px-5">
                             <Row>
                                 <Col xs lg="12">
-                                    <Row className="form-top">
-                                        <Col className="text-center mb-3 mt-5" xs lg="12">
-                                            <h6>Login now to chat with the world !</h6>
+                                    <Row className="form-top mb-2">
+                                        <Col className="text-center mb-5" xs lg="12">
+                                            <h5>Login now to chat with the world !</h5>
                                         </Col>
-                                        <Col xs lg="12" className="email mt-2 mb-2">
+                                        <Col xs lg="12" className="email mb-3">
                                             <Field
                                                 className={touched.email && errors.email ? "is-invalid form-control" : "form-control"}
                                                 name="email"
@@ -75,7 +71,7 @@ const FormLogin = () => {
                                                 }}
                                             </ErrorMessage>
                                         </Col>
-                                        <Col xs lg="12" className="password mt-2 mb-2">
+                                        <Col xs lg="12" className="password mb-3">
                                             <Field name="password"
                                                    type="password"
                                                    className={touched.password && errors.password ? "is-invalid form-control" : "form-control"}
@@ -87,27 +83,29 @@ const FormLogin = () => {
                                             </ErrorMessage>
                                         </Col>
                                     </Row>
-                                    <Row className=" mt-2 mb-3">
-                                        <Col xs lg="12">
+                                    <Row>
+                                        <Col xs lg="12" className="mb-2">
                                             <Button type="submit" variant="primary" className="w-100 mb-2"
-                                                    disabled={!!(errorEmail || errorPassword || !values.email || !values.password)}>Login
+                                                    disabled={Object.values(errors).some((error) => error) || Object.values(values).some((value) => !value)}>
+                                                Login
                                             </Button>
                                         </Col>
-                                        <Col xs lg="12" className="forget-password mt-1">
+                                        <Col xs lg="12" className="forget-password mb-2">
                                             <NavLink className="d-block w-100 text-center text-link-blue"
-                                                     to="/authenticate/forget-password">Forget password?</NavLink>
+                                                     to="/authenticate/forget-password">
+                                                Forget password?
+                                            </NavLink>
                                         </Col>
-                                        <Col xs lg="12" className="to-create-account mt-3">
-                                            <label className="d-block w-100 text-center">You don't have account
-                                                ?</label>
-                                        </Col>
-                                        <Col xs lg="12">
-                                            <Button variant="dark-yellow" className="w-100 mb-3"
-                                                    onClick={() => history.push(`/authenticate/register`)}> Register
-                                                Now! </Button>
+                                        <Col xs lg="12" className="to-create-account text-center">
+                                            <label className="text-center mr-2">
+                                                You don't have account?
+                                            </label>
+                                            <NavLink to="/authenticate/register"
+                                                     className="w-100 font-weight-bold">
+                                                Register Now!
+                                            </NavLink>
                                         </Col>
                                     </Row>
-
                                 </Col>
                             </Row>
                         </Form>
