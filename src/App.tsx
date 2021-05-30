@@ -1,8 +1,11 @@
-import React, { useEffect } from 'react';
-import { callApi } from "./server-interaction/api.services";
-import { Button, Container } from "react-bootstrap";
+
+
+import React,{useEffect} from 'react';
+
+import {Switch,Route,Redirect} from "react-router-dom"
+
 import appRoutes from "./routes/app.routes";
-import { Route, Switch } from "react-router-dom";
+
 
 function App() {
 
@@ -14,6 +17,7 @@ function App() {
   return (
     <div className="App">
       <Switch>
+          <Redirect exact from="/" to="/authenticate/login" />
         {
           appRouters
         }
