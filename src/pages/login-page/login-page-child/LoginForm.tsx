@@ -40,44 +40,42 @@ const FormLogin = (props: any) => {
                             password: errorPassword,
                         } = errors;
                         return (
-                            <Container fluid id="container">
+                            <Container fluid>
                                <Row>
-                                   <Col xs lg="4">
-                                       <Form id="form">
+                                   <Col xs lg="4" className="p-0">
+                                       <Form className="form">
                                            <Row>
                                                <Col xs lg="12">
                                                    <Row>
-                                                       <Col id="header" xs lg="12">
+                                                       <Col className="header-text" xs lg="12">
                                                            <h6>Login now to chat with the world !</h6>
                                                        </Col>
                                                        <Col xs lg="8">
-                                                           <Field className="form-control"
+                                                           <Field className="email form-control"
                                                                   name="email"
-                                                                  id="email"
                                                                   type="email"
                                                                   placeholder="Email"/>
                                                            <ErrorMessage name="email">
                                                                {msg => {
-                                                                   return <div id="error" className="d-block invalid-feedback">{msg}</div>
+                                                                   return <div className="d-block invalid-feedback error">{msg}</div>
                                                                }}
                                                            </ErrorMessage>
                                                        </Col>
                                                        <Col xs lg="8">
                                                            <Field name="password"
-                                                                  id="password"
                                                                   type="password"
-                                                                  className="form-control"
+                                                                  className="password form-control"
                                                                   placeholder="Password"/>
                                                            <ErrorMessage name="password">
                                                                {msg => {
-                                                                   return <div id="error" className="d-block invalid-feedback">{msg}</div>
+                                                                   return <div className="d-block invalid-feedback error">{msg}</div>
                                                                }}
                                                            </ErrorMessage>
                                                        </Col>
                                                    </Row>
-                                                   <Row id="login">
+                                                   <Row className="login">
                                                        <Col xs lg="6">
-                                                           <button id="btn" type="submit" className="btn btn-success mr-2"
+                                                           <button type="submit" className="btn btn-success mr-2"
                                                                    disabled={!!(errorEmail || errorPassword || !values.email || !values.password)}>Login
                                                            </button>
                                                        </Col>
@@ -85,7 +83,7 @@ const FormLogin = (props: any) => {
                                                            <label>Forget password?</label>
                                                        </Col>
                                                    </Row>
-                                                   <Col xs lg="12" id="to-register">
+                                                   <Col xs lg="12" className="to-register">
                                                        <Col xs lg="12">
                                                            <label>You don't have account ?</label>
                                                        </Col>

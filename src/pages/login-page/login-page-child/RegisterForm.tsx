@@ -57,15 +57,15 @@ const RegisterForm = (props: any) => {
                             confirm_password: errorConfirmPassword
                         } = errors;
                         return (
-                            <Container fluid id="container">
+                            <Container fluid>
                                <Row>
-                                   <Col xs lg="4" >
-                                       <Form id="form">
+                                   <Col xs lg="4" className="p-0">
+                                       <Form className="form">
                                            <Row>
-                                               <Col id="header" xs lg="12">
+                                               <Col className="header-text" xs lg="12">
                                                    <h6>Join us to have more fun NOW!</h6>
                                                </Col>
-                                               <Col xs lg="8" id="name">
+                                               <Col xs lg="8" className="name">
                                                    <Row>
                                                        <Col xs lg="6">
                                                            <Field className="form-control" name="first_name" type="text" placeholder="First Name"/>
@@ -86,72 +86,69 @@ const RegisterForm = (props: any) => {
                                                    </Row>
                                                </Col>
                                                <Col xs lg="8">
-                                                   <Field className="form-control"
+                                                   <Field className="email form-control"
                                                           name="email"
                                                           type="email"
-                                                          id="email"
                                                           placeholder="Email"/>
                                                    <ErrorMessage name="email">
                                                        {msg => {
-                                                           return <div id="error" className="d-block invalid-feedback">{msg}</div>
+                                                           return <div className="d-block invalid-feedback error">{msg}</div>
                                                        }}
                                                    </ErrorMessage>
                                                </Col>
                                                <Col xs lg="8">
                                                    <Field name="password"
-                                                          id="password"
                                                           type="password"
-                                                          className="form-control"
+                                                          className="password form-control"
                                                           placeholder="Password"/>
                                                    <ErrorMessage name="password">
                                                        {msg => {
-                                                           return <div id="error" className="d-block invalid-feedback">{msg}</div>
+                                                           return <div className="d-block invalid-feedback error">{msg}</div>
                                                        }}
                                                    </ErrorMessage>
                                                </Col>
                                                <Col xs lg="8">
                                                    <Field name="confirm_password"
-                                                          id="confirm_password"
                                                           type="password"
-                                                          className="form-control"
+                                                          className="form-control confirm_password"
                                                           placeholder="Confirm Password"/>
                                                    <ErrorMessage name="confirm_password">
                                                        {msg => {
-                                                           return <div id="error" className="d-block invalid-feedback">{msg}</div>
+                                                           return <div className="d-block invalid-feedback error">{msg}</div>
                                                        }}
                                                    </ErrorMessage>
                                                </Col>
                                            </Row>
-                                           <Row id="radio-group">
+                                           <Row className="gender">
                                                <Col xs lg="12">Gender: </Col>
                                                <Col xs lg="12" role="group" aria-labelledby="my-radio-group">
                                                    <Row>
                                                        <Col xs lg="4">
                                                            <Field type="radio" name="picked" value="One" />
-                                                           <label id="text">Male</label>
+                                                           <label className="text">Male</label>
                                                        </Col>
                                                        <Col xs lg="4">
                                                            <Field type="radio" name="picked" value="Two" />
-                                                           <label id="text">Female</label>
+                                                           <label className="text">Female</label>
                                                        </Col>
                                                        <Col xs lg="4">
                                                            <Field type="radio" name="picked" value="Two" />
-                                                           <label id="text">Other</label>
+                                                           <label className="text">Other</label>
                                                        </Col>
                                                    </Row>
                                                </Col>
                                            </Row>
-                                           <Row id="register">
+                                           <Row className="register">
                                                <Col xs lg="6">
-                                                   <button id="btn-register" type="submit" className="btn btn-primary mr-2"
+                                                   <button type="submit" className="btn-register btn btn-primary mr-2"
                                                            disabled={!!(errorEmail || errorPassword || errorConfirmPassword || errorFirstName || errorLastName ||
                                                                !values.email || !values.password || !values.confirm_password || !values.first_name || values.last_name)}>
                                                        Register
                                                    </button>
                                                </Col>
                                                <Col xs lg="6">
-                                                   <button id="to-login" type="submit"
-                                                           className="btn btn-success mr-2"
+                                                   <button type="submit"
+                                                           className="to-login btn btn-success mr-2"
                                                            onClick={() => history.push(`/login`)}>Login Now!</button>
                                                </Col>
                                            </Row>
