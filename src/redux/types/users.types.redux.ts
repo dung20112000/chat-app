@@ -1,1 +1,3 @@
-export const FETCH_USER = "users/fetch";
+export const FETCH_USER_INFOS = "users/fetch";
+export const FETCH_USER_INFOS_SUCCESS = "users/fetch-success";
+export const FETCH_USER_INFOS_FAILED = "users/fetch-failed";
