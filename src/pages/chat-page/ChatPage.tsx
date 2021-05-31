@@ -8,7 +8,7 @@ import { createSocket } from "../../server-interaction/socket.services";
 import { addSocket } from "../../redux/actions/socket.actions.redux";
 import {notifySuccess} from "../../helpers/functions/notify.helper";
 import {IUserInfosReducer} from "../../@types/redux";
-
+import LeftSideChatPage from "./chat-page-children/left-side/LeftSideChatPage";
 const ChatPage = () => {
     const dispatch = useDispatch();
     const userInfosStateRedux:IUserInfosReducer = useSelector((state: RootState) => {
@@ -29,12 +29,17 @@ const ChatPage = () => {
            notifySuccess(`Welcome back , ${userInfosStateRedux.personalInfos.firstName}  ${userInfosStateRedux.personalInfos.lastName}`)
        }
    },[userInfosStateRedux])
-
+    if (!userInfosStateRedux){
+        return null;
+    }
     return (
         <Container fluid>
             <Row>
+                <Col xs={1}>
+                {/*    sidebar*/}
+                </Col>
                 <Col xs={3}>
-                    {/*LeftSide*/}
+                    <LeftSideChatPage/>
                 </Col>
                 <Col>
                     {/*Chat Area*/}
