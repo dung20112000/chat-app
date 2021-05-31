@@ -1,5 +1,6 @@
 import {Row, Col, Container} from "react-bootstrap";
 import LeftSideUserInfos from "./LeftSideUserInfos";
+import LeftSideConversationList from "./LeftSideConversationList";
 const LeftSideChatPage = () => {
     return (
         <Container fluid={true}>
@@ -20,7 +21,7 @@ const LeftSideChatPage = () => {
             </Row>
             <Row>
                 <Col xs={12}>
-                    {/*conversations list*/}
+                    <LeftSideConversationList />
                 </Col>
             </Row>
         </Container>
