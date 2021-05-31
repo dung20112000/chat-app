@@ -4,17 +4,17 @@ import LeftSideConversationList from "./LeftSideConversationList";
 const LeftSideChatPage = () => {
     return (
         <Container fluid={true}>
-            <Row>
+            <Row className="mb-3">
                 <Col xs={12}>
                     {/*logo*/}
                 </Col>
             </Row>
-            <Row>
+            <Row className="mb-3">
                 <Col xs={12}>
                     <LeftSideUserInfos/>
                 </Col>
             </Row>
-            <Row>
+            <Row className="mb-3">
                 <Col xs={12}>
                     {/*search conversation*/}
                 </Col>

@@ -1,21 +1,22 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Container, Row, Col } from "react-bootstrap";
-import withAuthentication from "../../helpers/HOCs/withAuthentication";
-import { fetchUserInfos } from './../../redux/actions/users.actions.redux';
-import { RootState } from "../../redux/reducers/RootReducer.reducer.redux";
-import { createSocket } from "../../server-interaction/socket.services";
-import { addSocket } from "../../redux/actions/socket.actions.redux";
+import AppSideBarCommon from "../../common-components/app-side-bar.common";
+import chatPageRoutes from "../../routes/chat-page.routes";
+import {Switch, Route, useLocation, Redirect} from "react-router-dom";
+import {useSelector,useDispatch} from "react-redux";
+import {RootState} from "../../redux/reducers/RootReducer.reducer.redux";
+import {useEffect} from "react";
+import {createSocket} from "../../server-interaction/socket.services";
+import {addSocket} from "../../redux/actions/socket.actions.redux";
+import {fetchUserInfos} from "../../redux/actions/users.actions.redux";
 import {notifySuccess} from "../../helpers/functions/notify.helper";
 import {IUserInfosReducer} from "../../@types/redux";
-import LeftSideChatPage from "./chat-page-children/left-side/LeftSideChatPage";
+
 const ChatPage = () => {
-    const dispatch = useDispatch();
+    const {pathname} = useLocation();
     const userInfosStateRedux:IUserInfosReducer = useSelector((state: RootState) => {
         return state.userInfos;
     });
     const socketStateRedux = useSelector((state: RootState) => state.socket);
-
+    const dispatch = useDispatch();
     useEffect(() => {
         const socketInstance = createSocket();
         if (socketInstance) {
@@ -24,32 +25,27 @@ const ChatPage = () => {
         dispatch(fetchUserInfos());
     }, [dispatch]);
 
-   useEffect(() =>{
-       if(userInfosStateRedux){
-           notifySuccess(`Welcome back , ${userInfosStateRedux.personalInfos.firstName}  ${userInfosStateRedux.personalInfos.lastName}`)
-       }
-   },[userInfosStateRedux])
-    if (!userInfosStateRedux){
-        return null;
+    useEffect(() =>{
+        if(userInfosStateRedux){
+            notifySuccess(`Welcome back , ${userInfosStateRedux.personalInfos.firstName}  ${userInfosStateRedux.personalInfos.lastName}`)
+        }
+    },[userInfosStateRedux])
+    const chatPageRoutesJSX = chatPageRoutes && chatPageRoutes.length > 0 ? (
+        chatPageRoutes.map((route,index)=>{
+            const {main,...rest} = route;
+            return <Route {...rest} render={()=> main()}/>
+        })
+    ): null;
+    if(pathname === "/chat-page"){
+        return <Redirect to={"/chat-page/conversations"}/>
     }
     return (
-        <Container fluid>
-            <Row>
-                <Col xs={1}>
-                {/*    sidebar*/}
-                </Col>
-                <Col xs={3}>
-                    <LeftSideChatPage/>
-                </Col>
-                <Col>
-                    {/*Chat Area*/}
-                </Col>
-                <Col xs={3}>
-                    {/*RightSide*/}
-                </Col>
-            </Row>
-        </Container>
+        <div>
+            <AppSideBarCommon/>
+            <Switch>
+                {chatPageRoutesJSX}
+            </Switch>
+        </div>
     )
-};
-
-export default withAuthentication(ChatPage);
+}
+export default ChatPage;

@@ -1,14 +1,7 @@
 import React from "react";
-import ChatPage from "../pages/chat-page/ChatPage";
 import LoginPage from "../pages/login-page/LoginPage";
-interface IRoute {
-
-    path: string;
-    exact?: boolean;
-    strict?: boolean;
-    main: ({ ...props }?: any) => React.ReactNode;
-
-}
+import ChatPage from "../pages/chat-page/ChatPage";
+import {IRoute} from "../@types/routes.d";
 
 const appRoutes: IRoute[] = [
     {
@@ -19,6 +12,7 @@ const appRoutes: IRoute[] = [
     },
     {
         path: "/chat-page",
+        strict: true,
         main: () => <ChatPage />
     }
 ]

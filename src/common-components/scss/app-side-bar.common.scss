@@ -1,0 +1,27 @@
+.app-side-bar {
+  top: 0;
+  left: 0;
+  width: 4rem;
+  z-index: 1000;
+
+  .wrapper-link {
+    &:hover{
+      a{
+        opacity: 1;
+      }
+    }
+    &.active-link {
+      a {
+      background-color: rgba(255,255,255,0.2);
+        opacity: 1;
+      }
+    }
+
+    a {
+      opacity: 0.4;
+      font: {
+        size: 1.75rem;
+      }
+    }
+  }
+}

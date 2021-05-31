@@ -1,8 +1,8 @@
 import {Col, Row} from "react-bootstrap";
-import {AvatarWithStatus} from "../../../../common-components/avatar.common";
-import {EOnlineStatus} from "../../../../@types/enums.d";
+import {AvatarWithStatus} from "../../../../../common-components/avatar.common";
+import {EOnlineStatus} from "../../../../../@types/enums";
 import {useSelector} from "react-redux";
-import {RootState} from "../../../../redux/reducers/RootReducer.reducer.redux";
+import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
 
 const LeftSideUserInfos = () => {
     const userInfos = useSelector((state:RootState)=> state.userInfos);
@@ -20,7 +20,7 @@ const LeftSideUserInfos = () => {
             <Col xs>
                 {/*infos*/}
             </Col>
-            <Col xs lg="1">
+            <Col xs lg="3">
                 setting
             </Col>
         </Row>
