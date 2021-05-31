@@ -5,7 +5,7 @@ import {useHistory, NavLink} from "react-router-dom";
 import {Row, Col, Button} from "react-bootstrap"
 import {callApi} from "../../../server-interaction/api.services";
 import {checkFormErrorsHelper} from "../../../helpers/functions/check-form-errors.helper";
-import {notifySuccess} from "../../../helpers/notify.helper";
+import {notifySuccess} from "../../../helpers/functions/notify.helper";
 
 
 interface FormValues {
