@@ -6,10 +6,10 @@
   padding-top: 100%;
 
   span {
-    position: absolute;
+    position:absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%,-50%);
     font: {
       size: 150%;
     }
@@ -18,19 +18,24 @@
   .status-badge {
     width: 27.5%;
     height: 27.5%;
-    bottom: 0;
-    right: 0;
+    bottom: 0rem;
+    right: 0rem;
     border: white 2px solid;
   }
 
+  .avatar-key {
+    width: 2.75rem;
+    height: 2.75rem;
+    top: 0.05rem;
+    right: 0;
+    border: 0.75px solid #ccc;
+  }
+
   .avatar-member {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    width: 60%;
-    height: 60%;
-    right: -20%;
-    bottom: 0;
-    border: 1px solid white;
+    width: 2.75rem;
+    height: 2.75rem;
+    left: 0;
+    bottom: 0.05rem;
+    border: 0.75px solid #ccc;
   }
 }

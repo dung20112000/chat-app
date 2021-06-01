@@ -5,7 +5,7 @@ const LeftSideConversationList = () => {
     return (
         <Container fluid>
             <ConversationBlockCommon active={true} friendName="Hoang" lastMessage="dep zai" />
-            <ConversationBlockCommon active={false} friendName="Hoang" lastMessage="dep zai" members={2}/>
+            <ConversationBlockCommon active={false} friendName="Hoang" lastMessage="dep zai" />
         </Container>
     )
 }

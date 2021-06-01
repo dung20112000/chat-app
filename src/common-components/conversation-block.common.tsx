@@ -1,5 +1,5 @@
 import {Row,Col} from "react-bootstrap";
-import {AvatarGroup, AvatarWithStatus} from "./avatar.common";
+import {AvatarWithStatus} from "./avatar.common";
 import React, {useState} from "react";
 import "./scss/conversation-block.common.scss"
 
@@ -9,16 +9,13 @@ interface IConversationBlockCommon {
     lastMessage: string,
     lastTimeChat?: string,
     active?:boolean;
-    members?:number
 }
 
-const ConversationBlockCommon:React.FC<IConversationBlockCommon> = ({avatarUrl,friendName,lastMessage,lastTimeChat,active,members}) => {
+const ConversationBlockCommon:React.FC<IConversationBlockCommon> = ({avatarUrl,friendName,lastMessage,lastTimeChat,active}) => {
     return (
         <Row className={active ? "py-3 rounded-1rem align-items-stretch active conversation-block-common mb-2" : "py-3 mb-2 rounded-1rem align-items-stretch conversation-block-common"}>
             <Col xs={3}>
-                {
-                    members && members > 1 ? <AvatarGroup avatarUrl={"https://photographer.vn/wp-content/uploads/2016/10/goi-y-nhung-dia-diem-chup-anh-dep-vao-thang-10.jpg"} alt={"Huy"} altMember={"Huy"}/> : <AvatarWithStatus avatarUrl={""} alt={friendName} />
-                }
+                <AvatarWithStatus avatarUrl={""} alt={friendName} />
             </Col>
             <Col xs={6} className="pt-2 pl-0">
                 <div>

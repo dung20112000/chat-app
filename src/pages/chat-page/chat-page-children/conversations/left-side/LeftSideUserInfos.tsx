@@ -1,6 +1,6 @@
 import {Col, Row, DropdownButton, Dropdown} from "react-bootstrap";
 import {AvatarWithStatus, AvatarGroup, Avatar} from "../../../../../common-components/avatar.common";
-import {EOnlineStatus} from "../../../../../@types/enums.d";
+import {EOnlineStatus} from "../../../../../@types/enums";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
 import {useState} from 'react';
@@ -9,11 +9,11 @@ import "./scss/leftsidechatpage.scss";
 const LeftSideUserInfos = () => {
     const listTestStatus = [EOnlineStatus.online, EOnlineStatus.busy, EOnlineStatus.offline]
     const userInfos = useSelector((state: RootState) => state.userInfos);
-    const {onlineStatus, personalInfos: {firstName, lastName, job, avatarUrl}} = userInfos;
-    const [changeStatus, setChangeStatus] = useState(onlineStatus);
     if (!userInfos) {
         return null;
     }
+    const {onlineStatus, personalInfos: {firstName, lastName, job, avatarUrl}} = userInfos;
+    const [changeStatus, setChangeStatus] = useState(onlineStatus);
 
     const changedStatus = (status: any) => {
         setChangeStatus(status);
@@ -21,13 +21,13 @@ const LeftSideUserInfos = () => {
 
     return (
         <Row>
-            <Col xs lg="3" className="">
-                <AvatarWithStatus
+            <Col xs lg="3" className="p-0">
+                <AvatarGroup
                     avatarUrl={avatarUrl}
                     avatarUrlMember="https://photographer.vn/wp-content/uploads/2016/10/goi-y-nhung-dia-diem-chup-anh-dep-vao-thang-10.jpg"
-                    alt={`${firstName} ${lastName}`}/>
+                    status={changeStatus} alt={`${firstName} ${lastName}`}/>
             </Col>
-            <Col xs className="pl-0">
+            <Col xs>
                 <div className="user-info">
                     <p className="user-name">{`${firstName} ${lastName}`}</p>
                     <p className="job-name">Frontend Deverloper</p>
@@ -42,9 +42,9 @@ const LeftSideUserInfos = () => {
                 </div>
             </Col>
             <Col xs lg="3">
-                <div className="text-right">
+                <span>
                     <i className="fas fa-cog"/>
-                </div>
+                </span>
             </Col>
         </Row>
     )
