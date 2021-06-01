@@ -1,0 +1,52 @@
+.user-info {
+    p {
+        margin: 0;
+    }
+    .user-name {
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font: {
+            size: 1rem;
+            weight: 500;
+        }
+    }
+    .job-name {
+        font-size: 0.85rem;
+        color: #aaa;
+    }
+
+    button {
+        padding: 0;
+        background: white;
+        color: #609c0b;
+        border: none;
+    }
+}
+
+span {
+    i {
+        color: #aaa;
+        cursor: pointer;
+    }
+}
+
+// custom dropdown
+.show > .btn-primary.dropdown-toggle,
+.btn-primary:focus,
+.btn-primary:hover,
+.show > .btn-primary.dropdown-toggle {
+    color: #609c0b !important;
+    background-color: white !important;
+    border-color: white !important;
+    box-shadow: none !important;
+}
+.show > .btn-primary.dropdown-toggle:focus {
+    box-shadow: none !important;
+}
+.dropdown-menu {
+    min-width: 6rem !important;
+    padding: 0 !important;
+}
