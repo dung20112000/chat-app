@@ -1,10 +1,11 @@
-import {Col, Container, Row} from "react-bootstrap";
-import {EOnlineStatus} from "../../../../../@types/enums.d";
+import { Col, Container, Row } from "react-bootstrap";
+import { EOnlineStatus } from "../../../../../@types/enums.d";
 import React from "react";
-import {AvatarWithStatus} from "../../../../../common-components/avatar.common";
-import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
-import {useSelector} from "react-redux";
-import {IUserInfosReducer} from "../../../../../@types/redux";
+import { AvatarWithStatus } from "../../../../../common-components/avatar.common";
+import { RootState } from "../../../../../redux/reducers/RootReducer.reducer.redux";
+import { useSelector } from "react-redux";
+import { IUserInfosReducer } from "../../../../../@types/redux";
+
 
 interface IPropsRowFriend {
     _id: string;
@@ -14,18 +15,16 @@ interface IPropsRowFriend {
     lastName: string;
 }
 
-const RowFriend: React.FC<IPropsRowFriend> = ({_id, avatarUrl, firstName, lastName, status}) => {
+const RowFriend: React.FC<IPropsRowFriend> = ({ _id, avatarUrl, firstName, lastName, status }) => {
     return (
-        <Row>
-            <Col xs="12">
-                <Row>
-                    <Col xs="3">
-                        <AvatarWithStatus avatarUrl={avatarUrl} alt={`${firstName} ${lastName}`}/>
-                    </Col>
-                    <Col>
-                        <div>{`${firstName} ${lastName}`}</div>
-                    </Col>
-                </Row>
+        <Row className="my-2 item-friends">
+            <Col xs="3">
+                <AvatarWithStatus avatarUrl={avatarUrl} alt={`${firstName} ${lastName}`} />
+            </Col>
+            <Col>
+                <div className="d-flex align-items-center h-100 name-friend">
+                    <span>{`${firstName} ${lastName}`}</span>
+                </div>
             </Col>
         </Row>
     )
@@ -33,14 +32,14 @@ const RowFriend: React.FC<IPropsRowFriend> = ({_id, avatarUrl, firstName, lastNa
 const RowFriendsMemo = React.memo(RowFriend);
 
 const RightSideOnlineFriendsList = () => {
-    const userInfosRedux:IUserInfosReducer =  useSelector((state:RootState) => state.userInfos);
-    const {friendsList} = userInfosRedux;
+    const userInfosRedux: IUserInfosReducer = useSelector((state: RootState) => state.userInfos);
+    const { friendsList } = userInfosRedux;
 
     return (
-        <Container>
+        <Container className="list-friend">
             {
-                [...Array(5)].map((friend,index)=>{
-                    return <RowFriendsMemo key={index} _id={`${index+1}`} avatarUrl={""} status={EOnlineStatus.online} firstName={"Huy"} lastName={"Dung"}/>
+                [...Array(10)].map((friend, index) => {
+                    return <RowFriendsMemo key={index} _id={`${index + 1}`} avatarUrl={""} status={EOnlineStatus.online} firstName={"Huy"} lastName={"Dung"} />
                 })
             }
         </Container>

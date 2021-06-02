@@ -1,13 +1,15 @@
-import {Col, Row} from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import RightSideOnlineFriendsList from "./RightSideOnlineFriendsList";
-const RightSideChatPage = ()=>{
+import "./scss/rightsidecahtpage.scss";
+
+const RightSideChatPage = () => {
     return (
         <Row className="vh-100">
             <Col xs="12" className="h-25">
                 media
             </Col>
             <Col xs="12">
-                <RightSideOnlineFriendsList/>
+                <RightSideOnlineFriendsList />
             </Col>
         </Row>
     )
