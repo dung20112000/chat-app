@@ -40,7 +40,7 @@ const LeftSideUserInfos = () => {
                     </DropdownButton>
                 </div>
             </Col>
-            <Col xs lg="3">
+            <Col xs lg="3" className="text-right">
                 <span>
                     <i className="fas fa-cog"/>
                 </span>
