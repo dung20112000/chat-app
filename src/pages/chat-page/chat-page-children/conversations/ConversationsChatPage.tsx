@@ -9,6 +9,8 @@ import { addSocket } from "../../../../redux/actions/socket.actions.redux";
 import {notifySuccess} from "../../../../helpers/functions/notify.helper";
 import {IUserInfosReducer} from "../../../../@types/redux";
 import LeftSideChatPage from "./left-side/LeftSideChatPage";
+import RightSideChatPage from "./right-side/RightSideChatPage";
+import ChatAreaChatPage from "./chat-area/ChatAreaChatPage";
 const ConversationsChatPage = () => {
     const userInfosStateRedux:IUserInfosReducer = useSelector((state: RootState) => {
         return state.userInfos;
@@ -24,10 +26,10 @@ const ConversationsChatPage = () => {
                     <LeftSideChatPage/>
                 </Col>
                 <Col>
-                    {/*Chat Area*/}
+                    <ChatAreaChatPage/>
                 </Col>
                 <Col xs={3}>
-                    {/*RightSide*/}
+                   <RightSideChatPage/>
                 </Col>
             </Row>
         </Container>
