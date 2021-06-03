@@ -22,9 +22,11 @@ $theme-colors: (
         "dark-secondary": #4b5155,
         "medium-secondary": #7b8793,
         "light-secondary":#dbe5ed,
+        "very-light-secondary": #f4f5f8,
         "dark-yellow": #ffbd08,
         "light-blue-grey":#f9fafc,
-        "link-blue":#2c8aee
+        "link-blue":#2c8aee,
+
 );
 
 @import "~bootstrap/scss/bootstrap";

@@ -1,23 +1,16 @@
-import {Col, Row} from "react-bootstrap";
-const ChatAreaChatPage = ()=>{
+import {Col, Container, Row} from "react-bootstrap";
+import ChatAreaRoomName from "./ChatAreaRoomName";
+import "./scss/chatarea.scss"
+import ChatAreaInput from "./ChatAreaInput";
+import ChatAreaDialog from "./ChatAreaDialog";
+
+const ChatAreaChatPage = () => {
     return (
-        <div className="bg-light-secondary vh-100">
-            <Row>
-                <Col>
-                    {/*Room name*/}
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    {/*Dialog area*/}
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    {/*Input*/}
-                </Col>
-            </Row>
-        </div>
+        <Container fluid className="bg-very-light-secondary rounded-1rem chat-area-chat-page">
+            <ChatAreaRoomName/>
+            <ChatAreaDialog />
+            <ChatAreaInput />
+        </Container>
     )
 }
 export default ChatAreaChatPage;
