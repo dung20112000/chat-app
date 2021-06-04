@@ -2,9 +2,6 @@ import { Col, Container, Row } from "react-bootstrap";
 import { EOnlineStatus } from "../../../../../@types/enums.d";
 import React, { useState } from "react";
 import { AvatarWithStatus } from "../../../../../common-components/avatar.common";
-import { RootState } from "../../../../../redux/reducers/RootReducer.reducer.redux";
-import { useSelector } from "react-redux";
-import { IUserInfosReducer } from "../../../../../@types/redux";
 import RightSideModal from './RightSideModal';
 
 interface IPropsRowFriend {
@@ -35,8 +32,6 @@ const RowFriend: React.FC<IPropsRowFriend> = ({ _id, avatarUrl, firstName, lastN
 const RowFriendsMemo = React.memo(RowFriend);
 
 const RightSideOnlineFriendsList = () => {
-    const userInfosRedux: IUserInfosReducer = useSelector((state: RootState) => state.userInfos);
-    const { friendsList } = userInfosRedux;
 
     const [modalShow, setModalShow] = useState(false);
 
@@ -45,10 +40,10 @@ const RightSideOnlineFriendsList = () => {
             <Row className="mb-3 vh-10">
                 <Col xs="4">
                     <div className="friend-request">
-                        <p>Friends</p>
+                        <p className="mr-3">Friends</p>
                         <p>
                             <i className="fas fa-user"></i>
-                            <span>1</span>
+                            <span>10</span>
                         </p>
                     </div>
                 </Col>
@@ -64,13 +59,16 @@ const RightSideOnlineFriendsList = () => {
             </Row>
             <Row className="mb-3 vh-10">
                 <Col>
-                    <input type="text" className="form-control search-name"
-                        placeholder="Search Name"
-                    />
+                    <div className="form__div">
+                        <input type="text" className="form__input"
+                            placeholder=" "
+                        />
+                        <label htmlFor="" className="form__label">Search Name</label>
+                    </div>
                 </Col>
             </Row>
             <Row>
-                <Col>
+                <Col id="custom-scroll">
                     <div className="list-friend">
                         {
                             [...Array(10)].map((friend, index) => {
