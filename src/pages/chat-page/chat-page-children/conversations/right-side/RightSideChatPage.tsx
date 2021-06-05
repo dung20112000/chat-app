@@ -13,7 +13,7 @@ const RightSideChatPage = () => {
             <Col xs="12" className="h-25">
                 <RightSideChatFiles />
             </Col>
-            <Col xs="12">
+            <Col xs="12" className="h-45 vh-45">
                 <RightSideOnlineFriendsList />
             </Col>
         </Row>
