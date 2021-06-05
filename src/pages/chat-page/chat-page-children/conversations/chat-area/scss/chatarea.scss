@@ -13,12 +13,12 @@
   }
   .chat-area-input {
     .message-input {
-      width: 90%;
+      width: 100%;
       background-color: white;
       textarea {
         height: 1.5rem;
         resize: none;
-        min-width: 100%;
+        min-width: 80%;
         border: none;
         outline: none;
         background: none;

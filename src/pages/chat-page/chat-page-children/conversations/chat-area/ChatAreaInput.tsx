@@ -39,7 +39,7 @@ const ChatAreaInput = () => {
         <Row className="chat-area-input">
             <Col xs={12}>
                 <form onSubmit={handleSubmit} className="d-flex align-items-center justify-content-between">
-                    <div className="message-input py-3 pl-3 rounded-1rem" ref={messageInputRef}>
+                    <div className="message-input py-3 pl-3 rounded-1rem d-flex justify-content-between" ref={messageInputRef}>
                         <textarea ref={textAreaRef}
                                   name="message"
                                   value={values.message}
@@ -48,11 +48,12 @@ const ChatAreaInput = () => {
                                   onInput={onInput}
                                   onFocus={onFocus}
                                   placeholder="Enter your message here"/>
+                        <div className="message-button pr-3">
+                            <button className="btn btn-primary btn-lg rounded-circle"><i className="fas fa-paper-plane"/>
+                            </button>
+                        </div>
                     </div>
-                    <div>
-                        <button className="btn btn-primary btn-lg rounded-circle"><i className="fas fa-paper-plane"/>
-                        </button>
-                    </div>
+
                 </form>
             </Col>
         </Row>
