@@ -1,0 +1,20 @@
+.list-friend {
+    height: 75vh;
+    overflow-y: scroll;
+    .item-friends {
+        padding: 0.5rem 0;
+        border-radius: 10px;
+        cursor: pointer;
+        &:hover {
+            background-color: rgb(231, 231, 231);
+        }
+        .name-friend {
+            span {
+                font: {
+                    size: 1.25rem;
+                    weight: bold;
+                }
+            }
+        }
+    }
+}
