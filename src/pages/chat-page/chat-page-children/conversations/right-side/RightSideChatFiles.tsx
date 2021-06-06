@@ -1,4 +1,6 @@
 import {Row, Col, Container} from "react-bootstrap";
+import React from "react";
+import ComponentTitleCommon from "../../../../../common-components/component-title.common";
 
 interface IFilesFolder {
     icon: () => React.ReactNode,
@@ -24,7 +26,7 @@ const FilesFolder:React.FC<IFilesFolder> = ({icon, label, filesQuantity}) => {
                 </div>
             </Col>
             <Col xs={1}>
-                <button className="btn"><i className="fas fa-chevron-right"/></button>
+                <i className="fas fa-chevron-right"/>
             </Col>
         </Row>
     )
@@ -33,10 +35,10 @@ const RightSideChatFiles = () => {
     return  (
         <Container fluid>
             <Row>
-                <Col xs={12} className="pr-0">
+                <Col xs={12} className="">
                     <div className="d-flex justify-content-between align-items-center">
-                        <h5>Chat files</h5>
-                        <button className="btn p-0" type="button"><i className="fas fa-caret-down"/></button>
+                        <ComponentTitleCommon title="Files"/>
+                        <i className="fas fa-chevron-down"></i>
                     </div>
                 </Col>
                 <Col xs={12}>

@@ -1,6 +1,6 @@
 import { Col, Row } from "react-bootstrap";
 import RightSideOnlineFriendsList from "./RightSideOnlineFriendsList";
-import "./scss/rightsidecahtpage.scss";
+import "./scss/rightsidechatpage.scss";
 import RightSideChatFiles from "./RightSideChatFiles";
 import RightSideChatDetail from "./RightSideChatDetail";
 

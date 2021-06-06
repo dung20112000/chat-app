@@ -1,8 +1,5 @@
 .friend-request {
-    display: flex;
-    align-items: center;
-    p {
-        margin-bottom: 0;
+    div {
         position: relative;
         span {
             position: absolute;
@@ -25,16 +22,12 @@
 }
 
 .add-friend {
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
     color: var(--primary);
     cursor: pointer;
     span {
         i {
             color: var(--primary);
         }
-        margin-right: 0.5rem;
         font-size: 1.5rem;
     }
     p {

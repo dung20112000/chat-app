@@ -1,12 +1,8 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import {useSelector } from "react-redux";
 import { Container, Row, Col } from "react-bootstrap";
 import withAuthentication from "../../../../helpers/HOCs/withAuthentication";
-import { fetchUserInfos } from '../../../../redux/actions/users.actions.redux';
 import { RootState } from "../../../../redux/reducers/RootReducer.reducer.redux";
-import { createSocket } from "../../../../server-interaction/socket.services";
-import { addSocket } from "../../../../redux/actions/socket.actions.redux";
-import {notifySuccess} from "../../../../helpers/functions/notify.helper";
+
 import {IUserInfosReducer} from "../../../../@types/redux";
 import LeftSideChatPage from "./left-side/LeftSideChatPage";
 import RightSideChatPage from "./right-side/RightSideChatPage";
