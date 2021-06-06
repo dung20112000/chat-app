@@ -24,7 +24,7 @@ const LeftSideUserInfos = () => {
             <Col xs lg="3">
                 <AvatarWithStatus
                     avatarUrl={avatarUrl}
-                    status={changeStatus} alt={`${firstName} ${lastName}`}/>
+                    status={onlineStatus} alt={`${firstName} ${lastName}`}/>
             </Col>
             <Col xs className="pl-0">
                 <div className="user-info">
