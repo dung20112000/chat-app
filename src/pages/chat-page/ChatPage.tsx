@@ -7,9 +7,10 @@ import {useEffect} from "react";
 import {createSocket} from "../../server-interaction/socket.services";
 import {addSocket} from "../../redux/actions/socket.actions.redux";
 import {fetchUserInfos} from "../../redux/actions/users.actions.redux";
-import {notifySuccess} from "../../helpers/functions/notify.helper";
+import {notifyNewFriendRequest, notifySuccess} from "../../helpers/functions/notify.helper";
 import {IUserInfosReducer} from "../../@types/redux";
 import {emitClientConnect} from "../../server-interaction/socket.services";
+import {onComingFriendsRequests} from "../../server-interaction/socket-handle/socket-friends-requests";
 
 const ChatPage = () => {
     const {pathname} = useLocation();
@@ -33,6 +34,15 @@ const ChatPage = () => {
     useEffect(() => {
         if (socketStateRedux && userInfosStateRedux && userInfosStateRedux._id) {
             emitClientConnect(socketStateRedux, userInfosStateRedux._id);
+            onComingFriendsRequests(socketStateRedux, ({
+                                                           senderFullName,
+                                                           senderId,
+                                                           avatarUrl
+                                                       }: { senderFullName: string, senderId: string, avatarUrl: string }) => {
+                notifyNewFriendRequest({senderFullName,senderId,avatarUrl},()=>{
+
+                })
+            })
         }
     }, [socketStateRedux, userInfosStateRedux?._id])
     const chatPageRoutesJSX = chatPageRoutes && chatPageRoutes.length > 0 ? (
