@@ -1,5 +1,6 @@
 import {toast,ToastOptions,ToastProps} from "react-toastify";
 import {Button, Col, Row} from "react-bootstrap";
+import {Avatar} from "../../common-components/avatar.common";
 
 const options:ToastOptions = {
     position: "bottom-right",
@@ -28,15 +29,15 @@ export const notifyFailed = (message: string)=>{
 
 // friends Request notify
 interface IRequestData {
-    name: string;
-    _id: string;
+    senderFullName: string;
+    senderId: string;
     avatarUrl: string;
 }
 export const notifyNewFriendRequest = (data:IRequestData, action:any) => {
-    const {name,_id,avatarUrl} = data;
+    const {senderFullName,senderId,avatarUrl} = data;
     const body = ({closeToast}:ToastProps) => {
         const onAcceptFriend = ()=>{
-            action(_id);
+            action(senderId);
             closeToast()
         }
         return (
@@ -45,11 +46,11 @@ export const notifyNewFriendRequest = (data:IRequestData, action:any) => {
                     <Col xs={12}>
                         <Row>
                             <Col xs={3}>
-                                {/*<AvatarPure alt={name} src={avatarUrl}/>*/}
+                                <Avatar alt={senderFullName} avatarUrl={avatarUrl} _id={senderId}/>
                             </Col>
                             <Col xs={9}>
                                 <p className="m-0">
-                                    <strong>{`${name}`}</strong> has send you a friend request?
+                                    <strong>{`${senderFullName}`}</strong> has send you a friend request?
                                 </p>
                             </Col>
                         </Row>
