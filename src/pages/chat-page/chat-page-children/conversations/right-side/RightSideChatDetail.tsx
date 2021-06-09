@@ -1,6 +1,7 @@
 import {Container, Row, Col} from "react-bootstrap";
 import {Avatar} from "../../../../../common-components/avatar.common";
 import React from "react";
+import ComponentTitleCommon from "../../../../../common-components/component-title.common";
 
 interface IChatDetailFriend {
     avatarUrl?: string,
@@ -33,17 +34,19 @@ const RightSideChatDetail = () => {
     return (
         <Container>
             <Row className="align-items-center">
-                <Col xs={2}>
+                <Col xs={9}>
+                    {
+                        <ComponentTitleCommon title="Chat Detail" />
+                    }
+                </Col>
+                <Col xs={3}>
                     <div className="rounded-circle w-100 position-relative bg-light-secondary" style={{paddingTop: "100%"}}>
                         <div className="position-absolute"
                              style={{top: "50%", left: "50%", transform: "translate(-50%,-50%)"}}>
                             <button style={{fontSize: "1.4rem"}} className="btn p-0" type="button"><i
-                                className="fas fa-arrow-left"/></button>
+                                className="fas fa-arrow-right"/></button>
                         </div>
                     </div>
-                </Col>
-                <Col xs={10} className="pl-0">
-                    <h4>Chat Details</h4>
                 </Col>
             </Row>
             <ChatDetailFriend friendName="Hoangabc" friendQuantity={1} />
