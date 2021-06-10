@@ -1,29 +1,30 @@
 import { takeLatest, put, call } from "redux-saga/effects";
-import * as types from "../types/users.types.redux";
+import * as types from "../types/FriendList.types.redux";
 import { callApi } from "../../server-interaction/api.services";
-import { IResponseGenerator } from "../../@types/redux-saga";
+
 import {
-  fetchUserInfosSuccess,
-  fetchUserInfosFailed,
-} from "./../actions/users.actions.redux";
+  fetchUserFriendListSuccess,
+  fetchUserFriendListFailed,
+} from "./../actions/FriendList.actions.redux";
+import { IResponseGenerator } from "../../@types/redux-saga";
 
-const USER = "/users";
+const USER_FRIENDS_LIST = "/users/friends-list";
 
-function* workerUserInfos() {
+function* workerUserFriendsList(): any {
   try {
     const response: IResponseGenerator = yield call((): any => {
-      return callApi(USER, "GET");
+      return callApi(USER_FRIENDS_LIST, "GET");
     });
     if (response && response.status === 200) {
-      yield put(fetchUserInfosSuccess(response.data?.user));
+      yield put(fetchUserFriendListSuccess(response.data.user.friends));
     }
   } catch (error) {
-    yield put(fetchUserInfosFailed());
+    yield put(fetchUserFriendListFailed());
   }
 }
 
-function* watcherUserInfos() {
-  yield takeLatest(types.FETCH_USER_INFOS, workerUserInfos);
+function* watcherUserFriendsList() {
+  yield takeLatest(types.FETCH_USER_FRIEND_LIST, workerUserFriendsList);
 }
 
-export default watcherUserInfos;
+export default watcherUserFriendsList;

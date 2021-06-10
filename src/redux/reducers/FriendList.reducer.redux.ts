@@ -1,19 +1,22 @@
 import {
-  FETCH_USER_INFOS_SUCCESS,
-  FETCH_USER_INFOS_FAILED,
-} from "../types/users.types.redux";
-import { IUserInfosReducer, IUserInfosActions } from "../../@types/redux";
+  FETCH_USER_FRIEND_LIST_SUCCESS,
+  FETCH_USER_FRIEND_LIST_FAILED,
+  ACCEPT_FRIEND_REQUEST,
+} from "../types/FriendList.types.redux";
 
-const initialState: IUserInfosReducer | null = null;
-const UsersInfosReducer = (state = initialState, action: IUserInfosActions) => {
-  const { type, userInfos } = action;
+const initialState: any | null = [];
+const UsersFriendsListReducer = (state = initialState, action: any) => {
+  const { type, payload } = action;
   switch (type) {
-    case FETCH_USER_INFOS_SUCCESS:
-      return userInfos;
-    case FETCH_USER_INFOS_FAILED:
+    case FETCH_USER_FRIEND_LIST_SUCCESS:
+      return payload;
+    case FETCH_USER_FRIEND_LIST_FAILED:
       return null;
+    case ACCEPT_FRIEND_REQUEST: {
+      return [...state, payload.newFriend];
+    }
     default:
       return state;
   }
 };
-export default UsersInfosReducer;
+export default UsersFriendsListReducer;

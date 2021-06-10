@@ -1,8 +1,9 @@
-import {toast,ToastOptions,ToastProps} from "react-toastify";
-import {Button, Col, Row} from "react-bootstrap";
-import {Avatar} from "../../common-components/avatar.common";
+import { toast, ToastOptions, ToastProps } from "react-toastify";
+import { Button, Col, Row } from "react-bootstrap";
+import { Avatar } from "../../common-components/avatar.common";
 
-const options:ToastOptions = {
+
+const options: ToastOptions = {
     position: "bottom-right",
     autoClose: 5000,
     hideProgressBar: false,
@@ -13,16 +14,16 @@ const options:ToastOptions = {
 }
 // success notify
 export const notifySuccess = (message: string) => {
-    return toast.success(message,{
+    return toast.success(message, {
         toastId: "success",
         ...options
     })
 }
 
 // failed notify
-export const notifyFailed = (message: string)=>{
-    return toast.error(message,{
-        toastId:"failed",
+export const notifyFailed = (message: string) => {
+    return toast.error(message, {
+        toastId: "failed",
         ...options
     })
 }
@@ -33,10 +34,10 @@ interface IRequestData {
     senderId: string;
     avatarUrl: string;
 }
-export const notifyNewFriendRequest = (data:IRequestData, action:any) => {
-    const {senderFullName,senderId,avatarUrl} = data;
-    const body = ({closeToast}:ToastProps) => {
-        const onAcceptFriend = ()=>{
+export const notifyNewFriendRequest = (data: IRequestData, action: any) => {
+    const { senderFullName, senderId, avatarUrl } = data;
+    const body = ({ closeToast }: ToastProps) => {
+        const onAcceptFriend = () => {
             action(senderId);
             closeToast()
         }
@@ -46,7 +47,7 @@ export const notifyNewFriendRequest = (data:IRequestData, action:any) => {
                     <Col xs={12}>
                         <Row>
                             <Col xs={3}>
-                                <Avatar alt={senderFullName} avatarUrl={avatarUrl} _id={senderId}/>
+                                <Avatar alt={senderFullName} avatarUrl={avatarUrl} _id={senderId} />
                             </Col>
                             <Col xs={9}>
                                 <p className="m-0">
@@ -55,7 +56,7 @@ export const notifyNewFriendRequest = (data:IRequestData, action:any) => {
                             </Col>
                         </Row>
                     </Col>
-                    <Col  xs={12}>
+                    <Col xs={12}>
                         <div className="mt-3 d-flex justify-content-around">
                             <Button variant="primary" onClick={onAcceptFriend}>Accept</Button>
                             <Button variant="outline-secondary" onClick={closeToast}>Later</Button>
@@ -65,8 +66,8 @@ export const notifyNewFriendRequest = (data:IRequestData, action:any) => {
             </div>
         )
     }
-    return toast(body,{
-        toastId:"friendsRequest",
+    return toast(body, {
+        toastId: "friendsRequest",
         ...options
     })
 }
