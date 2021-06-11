@@ -9,15 +9,15 @@ interface IFilesFolder {
 }
 const FilesFolder:React.FC<IFilesFolder> = ({icon, label, filesQuantity}) => {
     return (
-        <Row className="align-items-center">
-            <Col xs={3}>
+        <Row className="align-items-center py-2">
+            <Col xs={2}>
                 <div className="rounded-circle w-100 position-relative bg-secondary" style={{paddingTop:"100%"}}>
-                    <div className="position-absolute" style={{fontSize:"1.7rem",top:"50%",left:"50%",transform:"translate(-50%,-50%)"}}>
+                    <div className="position-absolute" style={{fontSize:"1.2rem",top:"50%",left:"50%",transform:"translate(-50%,-50%)"}}>
                         {icon()}
                     </div>
                 </div>
             </Col>
-            <Col xs={8} className="pl-0">
+            <Col xs={9} className="pl-0">
                 <div>
                     <h6 className="text-muted mb-0">{label}</h6>
                     <h5>

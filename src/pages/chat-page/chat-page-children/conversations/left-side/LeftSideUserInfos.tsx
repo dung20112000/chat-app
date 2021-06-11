@@ -26,7 +26,7 @@ const LeftSideUserInfos = () => {
         return null;
     }
 
-    const changedStatus = (status: any) => {
+    const onChangeStatus = (status: EOnlineStatus) => {
         setChangeStatus(status);
     }
 
@@ -35,20 +35,28 @@ const LeftSideUserInfos = () => {
             <Col xs lg="3">
                 <AvatarWithStatus
                     avatarUrl={avatarUrl}
-                    status={onlineStatus} alt={`${firstName} ${lastName}`}/>
+                    status={changeStatus} alt={`${firstName} ${lastName}`}/>
             </Col>
             <Col xs className="pl-0">
                 <div className="user-info">
                     <p className="user-name">{`${firstName} ${lastName}`}</p>
-                    <p className="job-name">Frontend Deverloper</p>
-                    <DropdownButton className="bg-none" title={changeStatus}>
+                    <p className="job-name">
                         {
-                            listTestStatus.map((status, index) => {
-                                return <Dropdown.Item key={index}
-                                                      onClick={() => changedStatus(status)}>{status}</Dropdown.Item>
-                            })
+                            job ? job : "Free"
                         }
-                    </DropdownButton>
+                    </p>
+                    <Dropdown as={ButtonGroup}>
+                        <Dropdown.Toggle className="bg-light border-0 text-dark">
+                           <span className={
+                               changeStatus === EOnlineStatus.online ? "text-primary" : changeStatus === EOnlineStatus.busy ? "text-warning" : "text-muted"
+                           }>{changeStatus}</span>
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu className="super-colors">
+                            <Dropdown.Item className="text-primary" eventKey="1" onClick={() => onChangeStatus(EOnlineStatus.online)}>online</Dropdown.Item>
+                            <Dropdown.Item className="text-warning" eventKey="2" onClick={() => onChangeStatus(EOnlineStatus.busy)}>busy</Dropdown.Item>
+                            <Dropdown.Item className="text-muted" eventKey="3"onClick={() => onChangeStatus(EOnlineStatus.offline)}>offline</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </div>
             </Col>
             <Col xs lg="3" className="text-right">
@@ -62,8 +70,8 @@ const LeftSideUserInfos = () => {
                         <Dropdown.Item eventKey="3">Log out</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
-                <LeftSideUserInfoModal show={showChangeInfos} handleClose={handleCloseChangeInfos} />
-                <LeftSideSecurityModal show={showChangeSecurity} handleClose={handleCloseChangeSecurity} />
+                <LeftSideUserInfoModal show={showChangeInfos} handleClose={handleCloseChangeInfos}/>
+                <LeftSideSecurityModal show={showChangeSecurity} handleClose={handleCloseChangeSecurity}/>
             </Col>
         </Row>
     )

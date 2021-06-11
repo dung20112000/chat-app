@@ -1,11 +1,13 @@
-import React, {useState} from "react";
+import React from "react";
 import {Button, Col, Modal, Row} from "react-bootstrap";
 import {ErrorMessage, Field, Form, Formik, FormikHelpers, FormikProps} from "formik";
 import * as Yup from "yup";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
 import {IUserInfosReducer} from "../../../../../@types/redux";
 import {EGender} from "../../../../../@types/enums.d";
+import {callApi} from "../../../../../server-interaction/api.services";
+import {updateUserPersonalInfos} from "../../../../../redux/actions/users.actions.redux";
 
 interface ILeftSideUserInfoModal {
     show: boolean,
@@ -20,6 +22,7 @@ interface FormValues {
 }
 
 const LeftSideSecurityModal = (props: ILeftSideUserInfoModal) => {
+    const dispatch = useDispatch()
     const {show, handleClose} = props;
     const userInfosRedux:IUserInfosReducer = useSelector((state:RootState) => state.userInfos)
     let initialValues: FormValues = {
@@ -28,21 +31,38 @@ const LeftSideSecurityModal = (props: ILeftSideUserInfoModal) => {
         job: "",
         gender: EGender.female
     }
-    const {personalInfos : {firstName,lastName,job,gender}} = userInfosRedux;
-    if (userInfosRedux) {
-        initialValues = {firstName,lastName,job,gender}
-    }
     const validationSchema = Yup.object({
         firstName: Yup.string()
             .required("Required!"),
         lastName: Yup.string()
             .required("Required!"),
-        job: Yup.string()
-            .required("Required")
+        gender: Yup.string().oneOf([EGender.male,EGender.female,EGender.other],"Invalid gender")
+            .required("Required!")
     })
+    const {personalInfos : {firstName,lastName,job,gender}} = userInfosRedux;
+    if (userInfosRedux) {
+        initialValues = {firstName,lastName,job,gender}
+    }
 
     const onsubmit = async (values: FormValues, action: FormikHelpers<FormValues>) => {
-
+        const {firstName, lastName, job, gender} = values;
+        if (firstName || lastName || job || gender) {
+            try {
+                const response = await callApi(`/users/personal-infos`, "put", {
+                    firstName,
+                    lastName,
+                    job,
+                });
+                if(response && response.data && response.data.success) {
+                    dispatch(updateUserPersonalInfos(response.data.personalInfos))
+                    handleClose()
+                }
+            } catch (errors) {
+                if (errors) {
+                    console.log(errors.response)
+                }
+            }
+        }
     }
     return <div>
         <Modal show={show}
@@ -60,9 +80,9 @@ const LeftSideSecurityModal = (props: ILeftSideUserInfoModal) => {
                         onSubmit={onsubmit}>
                     {
                         (formikProps: FormikProps<FormValues>) => {
-                            const {values, errors, touched, handleSubmit, handleChange} = formikProps;
+                            const { errors, touched, handleSubmit } = formikProps;
                             return (
-                                <Form onSubmit={handleSubmit} className="form px-5">
+                                <Form onSubmit={handleSubmit} className="form px-5" id="form-edit-infos">
                                     <Row className="form-top mb-2">
                                         <Col xs lg="12" className="name mb-3">
                                             <Row>
@@ -91,10 +111,10 @@ const LeftSideSecurityModal = (props: ILeftSideUserInfoModal) => {
                                         <Col xs lg="12" className="job mb-3">
                                             <Field
                                                 className={touched.job && errors.job ? "is-invalid form-control" : "form-control"}
-                                                name="jobs"
+                                                name="job"
                                                 type="text"
                                                 placeholder="Jobs"/>
-                                            <ErrorMessage name="jobs">
+                                            <ErrorMessage name="job">
                                                 {msg => {
                                                     return <div className="d-block invalid-feedback">{msg}</div>
                                                 }}
@@ -127,6 +147,11 @@ const LeftSideSecurityModal = (props: ILeftSideUserInfoModal) => {
                                                            />
                                                     Other
                                                 </label>
+                                                <ErrorMessage name="gender">
+                                                    {msg => {
+                                                        return <div className="d-block invalid-feedback">{msg}</div>
+                                                    }}
+                                                </ErrorMessage>
                                             </div>
                                         </Col>
                                     </Row>
@@ -140,8 +165,8 @@ const LeftSideSecurityModal = (props: ILeftSideUserInfoModal) => {
                 <Button variant="danger" onClick={handleClose}>
                     Close
                 </Button>
-                <Button variant="primary" onClick={handleClose}>
-                    Save Changes
+                <Button variant="primary" form="form-edit-infos" type="submit">
+                    Save
                 </Button>
             </Modal.Footer>
         </Modal>

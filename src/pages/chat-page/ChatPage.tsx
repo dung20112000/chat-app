@@ -69,9 +69,11 @@ const ChatPage = () => {
     return (
         <div>
             <AppSideBarCommon />
-            <Switch>
-                {chatPageRoutesJSX}
-            </Switch>
+           <div className="vh-100 pt-3 overflow-hidden">
+               <Switch>
+                   {chatPageRoutesJSX}
+               </Switch>
+           </div>
         </div>
     )
 }

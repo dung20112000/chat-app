@@ -1,10 +1,10 @@
 import {
   FETCH_USER_INFOS,
   FETCH_USER_INFOS_SUCCESS,
-  FETCH_USER_INFOS_FAILED,
+  FETCH_USER_INFOS_FAILED, UPDATE_USER_PERSONAL_INFOS,
 } from "../types/users.types.redux";
 import { Action, ActionCreator } from "redux";
-import {IUserInfosActions,IUserInfosReducer} from "../../@types/redux";
+import {IUpdatePersonalInfos, IUserInfosActions, IUserInfosReducer} from "../../@types/redux";
 
 
 export const fetchUserInfos: ActionCreator<Action> = () => ({
@@ -22,3 +22,7 @@ export const fetchUserInfosSuccess: ActionCreator<IUserInfosActions> = (
 export const fetchUserInfosFailed: ActionCreator<Action> = () => ({
   type: FETCH_USER_INFOS_FAILED,
 });
+export  const updateUserPersonalInfos: ActionCreator<IUpdatePersonalInfos> = (newPersonalInfos) => ({
+  type : UPDATE_USER_PERSONAL_INFOS,
+  newPersonalInfos
+})
