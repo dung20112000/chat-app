@@ -6,7 +6,14 @@ import { EOnlineStatus, EGender } from "./enums";
 export interface ISocketActions extends Action {
   socketInstance: Socket;
 }
-
+export interface IUpdatePersonalInfos extends Action {
+  newPersonalInfos: {
+    firstName?: string;
+    gender?: EGender;
+    job?: string;
+    lastName?: string;
+  }
+}
 // users-infos
 export interface IUserInfosReducer {
   _id: string;

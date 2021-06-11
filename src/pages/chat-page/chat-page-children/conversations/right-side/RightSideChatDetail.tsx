@@ -12,18 +12,18 @@ interface IChatDetailFriend {
 
 const ChatDetailFriend: React.FC<IChatDetailFriend> = ({avatarUrl, friendName, friendQuantity,lastMessage}) => {
     return (
-        <Row>
-            <Col xs={3} className="pt-5 align-items-center">
+        <Row className="pt-3">
+            <Col xs={3} className="align-items-center">
                 <Avatar avatarUrl={""} alt={friendName} />
             </Col>
-            <Col xs={6} className="pt-5 pl-0 align-items-center" >
+            <Col xs={6} className=" pl-0 align-items-center" >
                 <div>
                     <h5 className="mb-1 pt-2 text-truncate">{friendName}</h5>
                     <p className="m-0 text-truncate text-muted">{friendQuantity} members</p>
                 </div>
             </Col>
-            <Col xs={3} className="text-right pt-5 pl-0">
-                <button className="btn pt-2">
+            <Col xs={3} className="text-right pl-0">
+                <button className="btn mt-2">
                     <i className="fas fa-pencil-alt"/>
                 </button>
             </Col>
@@ -34,12 +34,12 @@ const RightSideChatDetail = () => {
     return (
         <Container>
             <Row className="align-items-center">
-                <Col xs={9}>
+                <Col xs={10}>
                     {
                         <ComponentTitleCommon title="Chat Detail" />
                     }
                 </Col>
-                <Col xs={3}>
+                <Col xs={2}>
                     <div className="rounded-circle w-100 position-relative bg-light-secondary" style={{paddingTop: "100%"}}>
                         <div className="position-absolute"
                              style={{top: "50%", left: "50%", transform: "translate(-50%,-50%)"}}>
