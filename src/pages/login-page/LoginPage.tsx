@@ -12,7 +12,11 @@ const LoginPage = ()=>{
         <Container fluid className="vh-100 parent-form-login-page" style={{backgroundImage:`url(${bgPage.current})`}}>
             <Row>
                 <Col xs lg="6" xl="4" className="">
+
                    <div className="border bg-white component-form-login-page py-5">
+                       <div className="text-center mb-3">
+                           <img src="media/logo.svg" alt="" className="mw-100"/>
+                       </div>
                        <Switch>
                            <Route exact path="/authenticate/login" component={LoginForm}  />
                            <Route exact path="/authenticate/register" component={RegisterForm}  />
