@@ -48,7 +48,10 @@ span {
         color: #aaa;
         cursor: pointer;
     }
-
-
 }
 
+.setting {
+    .dropdown-toggle::after {
+        display: none !important;
+    }
+}

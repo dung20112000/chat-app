@@ -1,12 +1,17 @@
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row, Button } from "react-bootstrap";
 import { EOnlineStatus } from "../../../../../@types/enums.d";
 import React, { useEffect, useState } from "react";
 import { AvatarWithStatus } from "../../../../../common-components/avatar.common";
 import RightSideModal from './RightSideModal';
 import ComponentTitleCommon from "../../../../../common-components/component-title.common";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/reducers/RootReducer.reducer.redux";
-
+import { Dropdown, ButtonGroup } from "react-bootstrap";
+import { IComingRequests, IUserInfosReducer } from "../../../../../@types/redux";
+import { Avatar } from './../../../../../common-components/avatar.common';
+import { emitAcceptFriendsRequests } from "../../../../../server-interaction/socket-handle/socket-friends-requests";
+import { acceptFriendRequest } from "../../../../../redux/actions/FriendList.actions.redux";
+import { removeFriendsRequest } from "../../../../../redux/actions/FriendRequest.action.redux";
 interface IPropsRowFriend {
     _id: string;
     avatarUrl: string;
@@ -14,9 +19,7 @@ interface IPropsRowFriend {
     firstName: string;
     lastName: string;
 }
-interface IPropsFriendsRequests {
-    requestsList: string[]
-}
+
 const RowFriend: React.FC<IPropsRowFriend> = ({ _id, avatarUrl, firstName, lastName, status }) => {
     return (
         <div className="item-friends">
@@ -34,16 +37,84 @@ const RowFriend: React.FC<IPropsRowFriend> = ({ _id, avatarUrl, firstName, lastN
 
     )
 }
+
+const ItemFriendRequest: React.FC<IComingRequests> = (props) => {
+    const { requestFrom: { _id: requestId, personalInfos: { firstName, lastName, avatarUrl } } } = props;
+
+    const socketStateRedux: any = useSelector((state: RootState) => {
+        return state.socket;
+    });
+
+    const userInfosStateRedux: IUserInfosReducer = useSelector((state: RootState) => {
+        return state.userInfos;
+    });
+
+    const dispatch = useDispatch();
+    const body = { acceptorId: userInfosStateRedux._id, isAcceptedId: requestId };
+    const onAcceptRequest = () => {
+        if (socketStateRedux) {
+            emitAcceptFriendsRequests(socketStateRedux, body, (response: any) => {
+                if (response.status) dispatch(acceptFriendRequest(response));
+                dispatch(removeFriendsRequest(requestId));
+            })
+        }
+    }
+
+    return (
+        <Row className="py-2">
+            <Col xs="4">
+                <Avatar avatarUrl={avatarUrl} alt={`${firstName} ${lastName}`} />
+            </Col>
+            <Col xs="6" className="pl-0">
+                <Row>
+                    <Col xs="12">
+                        <h5>{`${firstName} ${lastName}`}</h5>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs="12">
+                        <Button variant="primary" className="mr-2" onClick={onAcceptRequest}>Accept</Button>
+                        <Button variant="danger">Cancel</Button>
+                    </Col>
+                </Row>
+            </Col>
+        </Row>
+    )
+}
+
+
 const RowFriendsMemo = React.memo(RowFriend);
 
-const FriendsRequests: React.FC<IPropsFriendsRequests> = ({ requestsList }) => {
+const FriendsRequests = () => {
+    const friendsRequests = useSelector((state: RootState) => {
+        return state.friendsRequests;
+    })
+
     return (
-        <div>
-            <i className="fas fa-user"></i>
-            <span>{requestsList.length}</span>
+        <div className="friends-requests">
+            <Dropdown as={ButtonGroup}>
+                <Dropdown.Toggle className="bg-light border-0 text-dark p-0">
+                    <i className="fas fa-user"></i>
+                </Dropdown.Toggle>
+                <Dropdown.Menu className="super-colors">
+                    {
+                        friendsRequests && friendsRequests.comingRequests.length > 0 && (
+                            friendsRequests.comingRequests.map((request: any) => {
+                                return <Dropdown.Item eventKey="1">
+                                    <ItemFriendRequest {...request} />
+                                </Dropdown.Item>
+                            })
+                        )
+                    }
+                </Dropdown.Menu>
+            </Dropdown>
+            <span className="requests-quantity">
+                {friendsRequests && friendsRequests.comingRequests && friendsRequests.comingRequests.length}
+            </span>
         </div>
     )
 }
+
 const RightSideOnlineFriendsList = () => {
     const [modalShow, setModalShow] = useState(false);
     const [userFriendsOnline, setUserFriendsOnline] = useState([]);
@@ -83,7 +154,7 @@ const RightSideOnlineFriendsList = () => {
                 <Col xs="6">
                     <div className="friend-request d-flex align-items-center">
                         <ComponentTitleCommon title={"Online people"} />
-                        <FriendsRequests requestsList={[]} />
+                        <FriendsRequests />
                     </div>
                 </Col>
                 <Col xs="5" className="offset-1">

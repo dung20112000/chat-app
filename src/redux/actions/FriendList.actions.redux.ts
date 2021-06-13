@@ -5,20 +5,19 @@ import {
   ACCEPT_FRIEND_REQUEST,
 } from "../types/FriendList.types.redux";
 import { Action, ActionCreator } from "redux";
-import { IUserFriendsList } from "../../@types/redux";
+import { IUserFriendsList, IUserFriendsListAction } from "../../@types/redux";
 
 export const fetchUserFriendList: ActionCreator<Action> = () => ({
   type: FETCH_USER_FRIEND_LIST,
 });
 
-export const fetchUserFriendListSuccess: ActionCreator<any> = (
-  friendsList: IUserFriendsList[]
-) => {
-  return {
-    type: FETCH_USER_FRIEND_LIST_SUCCESS,
-    payload: friendsList,
+export const fetchUserFriendListSuccess: ActionCreator<IUserFriendsListAction> =
+  (friendsList: IUserFriendsList[]) => {
+    return {
+      type: FETCH_USER_FRIEND_LIST_SUCCESS,
+      payload: friendsList,
+    };
   };
-};
 export const fetchUserFriendListFailed: ActionCreator<Action> = () => ({
   type: FETCH_USER_FRIEND_LIST_FAILED,
 });

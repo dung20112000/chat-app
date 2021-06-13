@@ -12,7 +12,7 @@ export interface IUpdatePersonalInfos extends Action {
     gender?: EGender;
     job?: string;
     lastName?: string;
-  }
+  };
 }
 // users-infos
 export interface IUserInfosReducer {
@@ -58,5 +58,32 @@ export interface IUserFriendsList {
 }
 
 export interface IUserFriendsListAction extends Action {
-  friends: IUserFriendsList[];
+  payload: IUserFriendsList[];
 }
+
+export interface IUserFriendsAction extends Action {
+  payload: IUserFriends;
+}
+
+export interface IUserFriends {
+  comingRequests: IComingRequests[];
+  sendingRequests: ISendingRequests[];
+  updatedAt: string;
+  _id: string;
+}
+
+export interface IComingRequests {
+  createdAt: string;
+  updatedAt: string;
+  _id: string;
+  requestFrom: {
+    personalInfos: {
+      firstName: string;
+      lastName: string;
+      avatarUrl: string;
+    };
+    _id: string;
+  };
+}
+
+interface ISendingRequests {}

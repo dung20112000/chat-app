@@ -12,6 +12,7 @@ import { IUserInfosReducer } from "../../@types/redux";
 import { emitClientConnect } from "../../server-interaction/socket.services";
 import { emitAcceptFriendsRequests, onComingFriendsRequests } from "../../server-interaction/socket-handle/socket-friends-requests";
 import { acceptFriendRequest, fetchUserFriendList } from "../../redux/actions/FriendList.actions.redux";
+import { fetchUserFriend, removeFriendsRequest } from "../../redux/actions/FriendRequest.action.redux";
 
 const ChatPage = () => {
     const { pathname } = useLocation();
@@ -25,6 +26,7 @@ const ChatPage = () => {
 
     useEffect(() => {
         dispatch(fetchUserInfos());
+        dispatch(fetchUserFriend());
     }, [dispatch]);
 
     useEffect(() => {
@@ -42,10 +44,12 @@ const ChatPage = () => {
                 senderId,
                 avatarUrl
             }: { senderFullName: string, senderId: string, avatarUrl: string }) => {
+                dispatch(fetchUserFriend());
                 notifyNewFriendRequest({ senderFullName, senderId, avatarUrl }, (isAcceptedId: string) => {
                     const body = { acceptorId: userInfosStateRedux._id, isAcceptedId }
                     emitAcceptFriendsRequests(socketStateRedux, body, (response: any) => {
                         if (response.status) dispatch(acceptFriendRequest(response));
+                        dispatch(removeFriendsRequest(isAcceptedId));
                     })
                 })
             })
@@ -69,11 +73,11 @@ const ChatPage = () => {
     return (
         <div>
             <AppSideBarCommon />
-           <div className="vh-100 pt-3 overflow-hidden">
-               <Switch>
-                   {chatPageRoutesJSX}
-               </Switch>
-           </div>
+            <div className="vh-100 pt-3 overflow-hidden">
+                <Switch>
+                    {chatPageRoutesJSX}
+                </Switch>
+            </div>
         </div>
     )
 }
