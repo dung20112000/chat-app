@@ -5,17 +5,15 @@ import * as Yup from "yup";
 
 
 interface FormValues {
-    defaultPhone: number,
-    currentPhone: number,
-    newPhone: number
+    defaultMobile: number,
+    mobile: number
 }
 
 
 const FormChangeEmail = () => {
     let initialValues: FormValues = {
-        defaultPhone: 999999999,
-        currentPhone: 123456789,
-        newPhone: 0
+        defaultMobile: 999999999,
+        mobile: 0
     }
 
 
@@ -33,23 +31,16 @@ const FormChangeEmail = () => {
                             <Row className=" mb-2">
                                 <Col xs lg="12" className="defaultPhone mb-3">
                                     <Field
-                                        className={touched.currentPhone && errors.currentPhone ? "is-invalid form-control" : "form-control"}
-                                        name="defaultPhone"
+                                        className={touched.defaultMobile&& errors.defaultMobile ? "is-invalid form-control" : "form-control"}
+                                        name="defaultMobile"
                                         type="number"
-                                        placeholder="Default Phone"
+                                        placeholder="Default Mobile"
                                         disabled/>
                                 </Col>
-                                <Col xs lg="12" className="currentPhone  mb-3">
+                                <Col xs lg="12" className="mobile  mb-3">
                                     <Field
-                                        className={touched.newPhone && errors.newPhone ? "is-invalid form-control" : "form-control"}
-                                        name="currentPhone"
-                                        type="number"
-                                        placeholder="Current Phone"/>
-                                </Col>
-                                <Col xs lg="12" className="newPhone  mb-3">
-                                    <Field
-                                        className={touched.newPhone && errors.newPhone ? "is-invalid form-control" : "form-control"}
-                                        name="newPhone"
+                                        className={touched.mobile && errors.mobile ? "is-invalid form-control" : "form-control"}
+                                        name="mobile"
                                         type="number"
                                         placeholder="New Phone"/>
                                 </Col>

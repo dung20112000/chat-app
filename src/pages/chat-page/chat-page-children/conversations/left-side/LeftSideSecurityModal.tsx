@@ -1,8 +1,8 @@
-import React, {ReactNode, useCallback, useRef, useState} from "react";
+import React, { useCallback, useRef, useState} from "react";
 import {Button, Col, Container, Modal, Row} from "react-bootstrap";
 import FormChangePassword from "./left-side-security-child/FormChangePassword";
 import FormChangeEmail from "./left-side-security-child/FormChangeEmail";
-import FormChangePhone from "./left-side-security-child/FormChangePhone";
+import FormChangePhone from "./left-side-security-child/FormChangeMobile";
 
 interface ILeftSideSecurityModal {
     show: boolean,
@@ -70,10 +70,7 @@ const LeftSideSecurityModal = (props: ILeftSideSecurityModal) => {
     },[])
     const closeForm = useCallback((form:string)=>{
         if(formList.current.indexOf(form) !== -1 ){
-            const otherForms = formList.current.filter(item => item !== form )
-            const newState:any = {};
-            newState[form] = false;
-            setOpenFormChange(newState);
+            setOpenFormChange({...openFormChange,[form]:false});
         }
     },[])
     return <div>

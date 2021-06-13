@@ -3,35 +3,54 @@ import {Button, Col, Row} from "react-bootstrap";
 import React from "react";
 import * as Yup from "yup";
 import {IUserInfosReducer} from "../../../../../../@types/redux";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../../../../../redux/reducers/RootReducer.reducer.redux";
+import {callApi} from "../../../../../../server-interaction/api.services";
+import {updateUserSecurityInfos} from "../../../../../../redux/actions/users.actions.redux";
+import {notifySuccess} from "../../../../../../helpers/functions/notify.helper";
+import {checkFormErrorsHelper} from "../../../../../../helpers/functions/check-form-errors.helper";
 
 interface FormValues {
     defaultEmail: string,
-    currentEmail: string,
-    newEmail: string,
+    email: string,
 }
 
 
 const FormChangeEmail = () => {
+    const dispatch = useDispatch()
     const userInfosRedux:IUserInfosReducer = useSelector((state:RootState) => state.userInfos)
     let initialValues: FormValues = {
         defaultEmail: "",
-        currentEmail: "",
-        newEmail: "",
+        email: "",
     }
     const validationSchema = Yup.object({
-        currentEmail: Yup.string()
-            .email("Invalid email format"),
-        newEmail: Yup.string()
+        email: Yup.string()
             .email("Invalid email format")
     })
     const {email} = userInfosRedux;
     if (userInfosRedux) {
-        initialValues = {defaultEmail: email,currentEmail:"", newEmail: ""}
+        initialValues = {defaultEmail: email, email: ""}
     }
     const onsubmit = async (values: FormValues, action: FormikHelpers<FormValues>) => {
-        // POST
+        // PUT
+        const {email} = values;
+        if (email) {
+            try {
+                const response = await callApi(`/users/security`, "put", {
+                    email,
+                });
+                if(response && response.data && response.data.success) {
+                    notifySuccess("change email successfully")
+                    dispatch(updateUserSecurityInfos(response.data.newInfos))
+                }
+            } catch (errors) {
+                if (errors) {
+                    checkFormErrorsHelper(errors, (field: string, error: string) => {
+                        action.setFieldError(field, error)
+                    })
+                }
+            }
+        }
     }
     return (
         <Formik initialValues={initialValues} enableReinitialize validationSchema={validationSchema}
@@ -50,25 +69,13 @@ const FormChangeEmail = () => {
                                         placeholder="Default Email"
                                         disabled/>
                                 </Col>
-                                <Col xs lg="12" className="currentEmail  mb-3">
-                                    <Field
-                                        className={touched.currentEmail && errors.currentEmail ? "is-invalid form-control" : "form-control"}
-                                        name="currentEmail"
-                                        type="email"
-                                        placeholder="Current Email"/>
-                                    <ErrorMessage name="newEmail">
-                                        {msg => {
-                                            return <div className="d-block invalid-feedback">{msg}</div>
-                                        }}
-                                    </ErrorMessage>
-                                </Col>
                                 <Col xs lg="12" className="newEmail  mb-3">
                                     <Field
-                                        className={touched.newEmail && errors.newEmail ? "is-invalid form-control" : "form-control"}
-                                        name="newEmail"
+                                        className={touched.email && errors.email ? "is-invalid form-control" : "form-control"}
+                                        name="email"
                                         type="email"
                                         placeholder="New Email"/>
-                                    <ErrorMessage name="newEmail">
+                                    <ErrorMessage name="email">
                                         {msg => {
                                             return <div className="d-block invalid-feedback">{msg}</div>
                                         }}
