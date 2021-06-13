@@ -9,7 +9,7 @@ import { RootState } from "../../../../../redux/reducers/RootReducer.reducer.red
 import { Dropdown, ButtonGroup } from "react-bootstrap";
 import { IComingRequests, IUserInfosReducer } from "../../../../../@types/redux";
 import { Avatar } from './../../../../../common-components/avatar.common';
-import { emitAcceptFriendsRequests } from "../../../../../server-interaction/socket-handle/socket-friends-requests";
+import { emitAcceptFriendsRequests, emitCancelFriendsRequests } from "../../../../../server-interaction/socket-handle/socket-friends-requests";
 import { acceptFriendRequest } from "../../../../../redux/actions/FriendList.actions.redux";
 import { removeFriendsRequest } from "../../../../../redux/actions/FriendRequest.action.redux";
 interface IPropsRowFriend {
@@ -50,12 +50,21 @@ const ItemFriendRequest: React.FC<IComingRequests> = (props) => {
     });
 
     const dispatch = useDispatch();
-    const body = { acceptorId: userInfosStateRedux._id, isAcceptedId: requestId };
+    const bodyAccept = { acceptorId: userInfosStateRedux._id, isAcceptedId: requestId };
+    const bodyCancel = { acceptorId: userInfosStateRedux._id, isRejectedId: requestId };
     const onAcceptRequest = () => {
         if (socketStateRedux) {
-            emitAcceptFriendsRequests(socketStateRedux, body, (response: any) => {
+            emitAcceptFriendsRequests(socketStateRedux, bodyAccept, (response: any) => {
                 if (response.status) dispatch(acceptFriendRequest(response));
                 dispatch(removeFriendsRequest(requestId));
+            })
+        }
+    }
+
+    const onCancelRequest = () => {
+        if (socketStateRedux) {
+            emitCancelFriendsRequests(socketStateRedux, bodyCancel, (response: any) => {
+                if (response.status) dispatch(removeFriendsRequest(requestId));
             })
         }
     }
@@ -74,7 +83,7 @@ const ItemFriendRequest: React.FC<IComingRequests> = (props) => {
                 <Row>
                     <Col xs="12">
                         <Button variant="primary" className="mr-2" onClick={onAcceptRequest}>Accept</Button>
-                        <Button variant="danger">Cancel</Button>
+                        <Button variant="danger" onClick={onCancelRequest}>Cancel</Button>
                     </Col>
                 </Row>
             </Col>

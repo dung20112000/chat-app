@@ -3,8 +3,8 @@ import * as types from "../types/FriendRequest.types.redux";
 import { callApi } from "../../server-interaction/api.services";
 
 import {
-  fetchUserFriendSuccess,
-  fetchUserFriendFailed,
+  fetchFriendRequestSuccess,
+  fetchFriendRequestFailed,
 } from "./../actions/FriendRequest.action.redux";
 import { IResponseGenerator } from "../../@types/redux-saga";
 
@@ -16,15 +16,15 @@ function* workerUserFriends(): any {
       return callApi(USER_FRIENDS, "GET");
     });
     if (response && response.status === 200) {
-      yield put(fetchUserFriendSuccess(response.data.user.friendsRequests));
+      yield put(fetchFriendRequestSuccess(response.data.user.friendsRequests));
     }
   } catch (error) {
-    yield put(fetchUserFriendFailed());
+    yield put(fetchFriendRequestFailed());
   }
 }
 
 function* watcherUserFriends() {
-  yield takeLatest(types.FETCH_USER_FRIEND, workerUserFriends);
+  yield takeLatest(types.FETCH_FRIEND_REQUEST, workerUserFriends);
 }
 
 export default watcherUserFriends;

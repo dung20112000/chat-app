@@ -13,7 +13,7 @@ const UsersFriendsListReducer = (state = initialState, action: any) => {
     case FETCH_USER_FRIEND_LIST_FAILED:
       return null;
     case ACCEPT_FRIEND_REQUEST: {
-      return [...state, payload.newFriend];
+      return [...state, payload];
     }
     default:
       return state;

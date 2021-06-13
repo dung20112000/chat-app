@@ -1,25 +1,25 @@
 import {
-  FETCH_USER_FRIEND,
-  FETCH_USER_FRIEND_SUCCESS,
-  FETCH_USER_FRIEND_FAILED,
+  FETCH_FRIEND_REQUEST,
+  FETCH_FRIEND_REQUEST_SUCCESS,
+  FETCH_FRIEND_REQUEST_FAILED,
   REMOVE_FRIENDS_REQUEST,
 } from "../types/FriendRequest.types.redux";
 import { Action, ActionCreator } from "redux";
 import { IUserFriends, IUserFriendsAction } from "../../@types/redux";
 
-export const fetchUserFriend: ActionCreator<Action> = () => ({
-  type: FETCH_USER_FRIEND,
+export const fetchFriendRequest: ActionCreator<Action> = () => ({
+  type: FETCH_FRIEND_REQUEST,
 });
 
-export const fetchUserFriendSuccess: ActionCreator<IUserFriendsAction> = (
+export const fetchFriendRequestSuccess: ActionCreator<IUserFriendsAction> = (
   friends: IUserFriends
 ) => ({
-  type: FETCH_USER_FRIEND_SUCCESS,
+  type: FETCH_FRIEND_REQUEST_SUCCESS,
   payload: friends,
 });
 
-export const fetchUserFriendFailed: ActionCreator<Action> = () => ({
-  type: FETCH_USER_FRIEND_FAILED,
+export const fetchFriendRequestFailed: ActionCreator<Action> = () => ({
+  type: FETCH_FRIEND_REQUEST_FAILED,
 });
 
 export const removeFriendsRequest: ActionCreator<Action> = (_id: string) => ({

@@ -86,4 +86,16 @@ export interface IComingRequests {
   };
 }
 
-interface ISendingRequests {}
+interface ISendingRequests {
+  createdAt: string;
+  updatedAt: string;
+  _id: string;
+  requestTo: {
+    personalInfos: {
+      firstName: string;
+      lastName: string;
+      avatarUrl: string;
+    };
+    _id: string;
+  };
+}
