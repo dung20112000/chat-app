@@ -4,6 +4,10 @@ interface IEmitAcceptFriendsRequests {
   acceptorId: string;
   isAcceptedId: string;
 }
+interface IEmitCancelFriendsRequests {
+  acceptorId: string;
+  isRejectedId: string;
+}
 
 export const emitFriendsRequests = (
   socket: Socket,
@@ -49,5 +53,21 @@ export const emitAcceptFriendsRequests = (
 ) => {
   socket.emit("emitAcceptFriendsRequests", body, (response: any) => {
     action(response);
+  });
+};
+
+export const emitCancelFriendsRequests = (
+  socket: Socket,
+  body: IEmitCancelFriendsRequests,
+  action: any
+) => {
+  socket.emit("emitCancelFriendsRequests", body, (response: any) => {
+    action(response);
+  });
+};
+
+export const onAcceptInfosToSender = (socket: Socket, action: any) => {
+  socket.on("emitAcceptInfosToSender", (acceptorInfos: any) => {
+    action(acceptorInfos);
   });
 };

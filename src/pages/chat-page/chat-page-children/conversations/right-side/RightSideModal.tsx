@@ -7,10 +7,18 @@ import { Avatar } from './../../../../../common-components/avatar.common';
 import { callApi } from '../../../../../server-interaction/api.services';
 import { FormikHelpers } from 'formik';
 import querystring from 'query-string';
-import { emitFriendsRequests } from "../../../../../server-interaction/socket-handle/socket-friends-requests";
-import { useSelector } from "react-redux";
+import { emitCancelFriendsRequests, emitFriendsRequests } from "../../../../../server-interaction/socket-handle/socket-friends-requests";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/reducers/RootReducer.reducer.redux";
 import { IUserInfosReducer } from "../../../../../@types/redux";
+import { fetchFriendRequest } from '../../../../../redux/actions/FriendRequest.action.redux';
+
+enum EFriends {
+    sendRequests = "sendRequests",
+    cancelRequest = "cancelRequest",
+    message = "message",
+}
+
 // eslint-disable-next-line no-useless-escape
 const FILTER = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 
@@ -36,13 +44,45 @@ const initialValues: IResponseData = {
 }
 
 const RightSideModal = (props: any) => {
-    const [flag, setFlag] = useState(true);
+    const [flag, setFlag] = useState(EFriends.sendRequests);
     const [errorSearch, setErrorsSearch] = useState("");
     const [friendInfos, setFriendInfos] = useState<IResponseData>(initialValues);
+    const friendsList = useSelector((state: RootState) => state.friendsList);
+    const friendsRequest = useSelector((state: RootState) => state.friendsRequests);
     const userInfosStateRedux: IUserInfosReducer = useSelector((state: RootState) => state.userInfos);
+    const dispatch = useDispatch();
     const socketStateRedux = useSelector((state: RootState) => state.socket);
 
     const { _id: senderId, personalInfos: { avatarUrl, firstName, lastName } } = userInfosStateRedux;
+
+    const checkAlreadyFriendsList = (email: string) => {
+        if (friendsList && friendsList.length > 0) {
+            return friendsList.some((friend: any) => friend.email === email)
+        }
+        return false;
+    }
+
+    const checkAlreadySending = (id: string) => {
+        if (friendsRequest && friendsRequest.sendingRequests.length > 0) {
+            return friendsRequest.sendingRequests.some((friend: any) => {
+                const { requestTo: { _id } } = friend;
+                return id === _id
+            })
+        }
+        return false;
+    }
+
+    const checkEmailOrIdExists = (id: string, email: string) => {
+        if (checkAlreadyFriendsList(email)) {
+            setFlag(EFriends.message)
+        } else {
+            if (checkAlreadySending(id)) {
+                setFlag(EFriends.cancelRequest)
+            } else {
+                setFlag(EFriends.sendRequests)
+            }
+        }
+    }
 
     const onSubmitForm = async (value: IFormValues, action?: FormikHelpers<IFormValues>) => {
         let params = {};
@@ -51,12 +91,15 @@ const RightSideModal = (props: any) => {
             const response = await callApi(`/search/friends?${querystring.stringify(params)}`, "GET");
             if (response) {
                 if (response.data && response.data.friendInfos) {
+                    console.log(response.data);
                     setErrorsSearch("");
                     setFriendInfos(response.data.friendInfos);
+                    checkEmailOrIdExists(response.data.friendInfos._id, response.data.friendInfos.email)
                 }
             }
         } catch (errors) {
-            if (errors.response?.status === 400) {
+            if (errors && errors.response) {
+                console.log(errors);
                 setErrorsSearch(errors.response?.data.errors[0].errors[0]);
                 setFriendInfos(initialValues)
             }
@@ -75,10 +118,21 @@ const RightSideModal = (props: any) => {
         return null;
     }
 
-    const sendRequests = (receiverId: string) => {
+    const sendRequests = () => {
         const senderFullName = firstName + lastName;
-        emitFriendsRequests(socketStateRedux, senderId, receiverId, senderFullName, avatarUrl, () => {
-            setFlag(!flag);
+        emitFriendsRequests(socketStateRedux, senderId, friendInfos._id, senderFullName, avatarUrl, () => {
+            dispatch(fetchFriendRequest());
+            setFlag(EFriends.cancelRequest);
+        })
+    }
+
+    const cancelRequest = () => {
+        const bodyCancel = { acceptorId: friendInfos._id, isRejectedId: userInfosStateRedux._id }// đảo vị trí người cancel và người send
+        emitCancelFriendsRequests(socketStateRedux, bodyCancel, (response: any) => {
+            if (response.status) {
+                dispatch(fetchFriendRequest());
+                setFlag(EFriends.sendRequests);
+            }
         })
     }
 
@@ -88,6 +142,46 @@ const RightSideModal = (props: any) => {
         setErrorsSearch("");
         resetForm();
         onHide();
+    }
+
+    let buttonJSX;
+    switch (flag) {
+        case (EFriends.message):
+            buttonJSX = <Button type="button" className="w-100"
+                variant="outline-info"
+                onClick={sendRequests}>
+                <div className="d-flex justify-content-center align-content-center">
+                    Send Message
+                </div>
+            </Button>;
+            break;
+        case (EFriends.cancelRequest):
+            buttonJSX = <Button type="button" className="w-100"
+                variant="outline-danger"
+                onClick={cancelRequest}>
+                <div className="d-flex justify-content-center align-content-center">
+                    Cancel
+                </div>
+            </Button>;
+            break;
+        case (EFriends.sendRequests):
+            buttonJSX = <Button type="button" className="w-100"
+                variant="outline-primary"
+                onClick={sendRequests}>
+                <div className="d-flex justify-content-center align-content-center">
+                    Send request
+                </div>
+            </Button>;
+            break;
+        default:
+            buttonJSX = <Button type="button" className="w-100"
+                variant="outline-primary"
+                onClick={sendRequests}>
+                <div className="d-flex justify-content-center align-content-center">
+                    Send request
+                </div>
+            </Button>
+            break;
     }
 
     return (
@@ -102,7 +196,7 @@ const RightSideModal = (props: any) => {
                     <Modal.Header closeButton>
                         <Modal.Title id="contained-modal-title-vcenter">
                             Add new friend
-                    </Modal.Title>
+                        </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Row>
@@ -157,13 +251,7 @@ const RightSideModal = (props: any) => {
                                             </div>
                                         </Col>
                                         <Col xs="4" className="d-flex align-items-center">
-                                            <Button type="button" className="w-100"
-                                                variant="outline-primary"
-                                                onClick={() => sendRequests(friendInfos._id)}>
-                                                <div className="d-flex justify-content-center align-content-center">
-                                                    Send request
-                                            </div>
-                                            </Button>
+                                            {buttonJSX}
                                         </Col>
                                     </Row>
                                 </div>

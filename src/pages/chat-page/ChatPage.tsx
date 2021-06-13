@@ -10,8 +10,9 @@ import { fetchUserInfos } from "../../redux/actions/users.actions.redux";
 import { notifyNewFriendRequest, notifySuccess } from "../../helpers/functions/notify.helper";
 import { IUserInfosReducer } from "../../@types/redux";
 import { emitClientConnect } from "../../server-interaction/socket.services";
-import { emitAcceptFriendsRequests, onComingFriendsRequests } from "../../server-interaction/socket-handle/socket-friends-requests";
+import { emitAcceptFriendsRequests, onAcceptInfosToSender, onComingFriendsRequests } from "../../server-interaction/socket-handle/socket-friends-requests";
 import { acceptFriendRequest, fetchUserFriendList } from "../../redux/actions/FriendList.actions.redux";
+import { fetchFriendRequest, removeFriendsRequest } from "../../redux/actions/FriendRequest.action.redux";
 
 const ChatPage = () => {
     const { pathname } = useLocation();
@@ -25,6 +26,7 @@ const ChatPage = () => {
 
     useEffect(() => {
         dispatch(fetchUserInfos());
+        dispatch(fetchFriendRequest());
     }, [dispatch]);
 
     useEffect(() => {
@@ -42,12 +44,17 @@ const ChatPage = () => {
                 senderId,
                 avatarUrl
             }: { senderFullName: string, senderId: string, avatarUrl: string }) => {
+                dispatch(fetchFriendRequest());
                 notifyNewFriendRequest({ senderFullName, senderId, avatarUrl }, (isAcceptedId: string) => {
                     const body = { acceptorId: userInfosStateRedux._id, isAcceptedId }
                     emitAcceptFriendsRequests(socketStateRedux, body, (response: any) => {
-                        if (response.status) dispatch(acceptFriendRequest(response));
+                        if (response.status) dispatch(acceptFriendRequest(response.newFriend));
+                        dispatch(removeFriendsRequest(isAcceptedId));
                     })
                 })
+            })
+            onAcceptInfosToSender(socketStateRedux, (response: any) => {
+                if (response) dispatch(acceptFriendRequest(response.acceptorInfos));
             })
         }
     }, [dispatch, socketStateRedux, userInfosStateRedux, userInfosStateRedux?._id])
@@ -69,11 +76,11 @@ const ChatPage = () => {
     return (
         <div>
             <AppSideBarCommon />
-           <div className="vh-100 pt-3 overflow-hidden">
-               <Switch>
-                   {chatPageRoutesJSX}
-               </Switch>
-           </div>
+            <div className="vh-100 pt-3 overflow-hidden">
+                <Switch>
+                    {chatPageRoutesJSX}
+                </Switch>
+            </div>
         </div>
     )
 }

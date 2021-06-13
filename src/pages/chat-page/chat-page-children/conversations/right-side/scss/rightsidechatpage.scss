@@ -1,7 +1,7 @@
 .friend-request {
     div {
         position: relative;
-        span {
+        .requests-quantity {
             position: absolute;
             display: flex;
             justify-content: center;
@@ -125,4 +125,15 @@ button {
 }
 .vh-55 {
     height: 55vh !important;
+}
+.friends-requests {
+    .dropdown-toggle::after {
+        display: none !important;
+    }
+    .dropdown-menu {
+        min-width: 20rem;
+    }
+    .dropdown-menu.show {
+        inset: auto auto 0px -25px !important;
+    }
 }
