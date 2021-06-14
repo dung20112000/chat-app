@@ -64,7 +64,7 @@ const ChatPage = () => {
                 if (response) dispatch(updateFriendStatus(response));
             })
             onLogout(socketStateRedux, () => {
-
+                dispatch({ type: "USER_LOGOUT" });
                 localStorage.removeItem("authToken");
                 history.push("/");
             })
