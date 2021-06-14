@@ -1,18 +1,20 @@
-import { Col, Row, DropdownButton, Dropdown, ButtonGroup } from "react-bootstrap";
-import { AvatarWithStatus, AvatarGroup, Avatar } from "../../../../../common-components/avatar.common";
+import { Col, Row, Dropdown, ButtonGroup } from "react-bootstrap";
+import { AvatarWithStatus } from "../../../../../common-components/avatar.common";
 import { EOnlineStatus } from "../../../../../@types/enums.d";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/reducers/RootReducer.reducer.redux";
 import { useState } from 'react';
 import "./scss/leftsidechatpage.scss";
 import LeftSideUserInfoModal from "./LeftSideUserInfoModal";
 import LeftSideSecurityModal from "./LeftSideSecurityModal";
-import {Redirect, useHistory} from "react-router-dom";
+import { emitChangeStatus } from "../../../../../server-interaction/socket-handle/socket-change-status";
+import { updateUserStatus } from "../../../../../redux/actions/users.actions.redux";
+import { emitClientLogout } from './../../../../../server-interaction/socket.services';
 
 const LeftSideUserInfos = () => {
-    const history = useHistory();
-    const listTestStatus = [EOnlineStatus.online, EOnlineStatus.busy, EOnlineStatus.offline]
     const userInfos = useSelector((state: RootState) => state.userInfos);
+    const socketStateRedux = useSelector((state: RootState) => state.socket);
+    const dispatch = useDispatch();
     const { onlineStatus, personalInfos: { firstName, lastName, job, avatarUrl } } = userInfos;
     const [changeStatus, setChangeStatus] = useState(onlineStatus);
 
@@ -28,13 +30,24 @@ const LeftSideUserInfos = () => {
         return null;
     }
 
-    const onChangeStatus = (status: EOnlineStatus) => {
-        setChangeStatus(status);
+    const onChangeStatus = (newStatus: EOnlineStatus) => {
+        if (userInfos && socketStateRedux) {
+            const body = { userId: userInfos._id, newStatus, currentStatus: userInfos.onlineStatus }
+            emitChangeStatus(socketStateRedux, body, (response: any) => {
+                if (response.status) {
+                    const { _id, ...rest } = response.updatedStatus;
+                    dispatch(updateUserStatus({ ...rest }));
+                    setChangeStatus(newStatus);
+                }
+            });
+
+        }
+
     }
-    const onLogout = ()=>{
-        localStorage.removeItem("authToken");
-        history.push("/")
+    const onLogout = () => {
+        emitClientLogout(socketStateRedux, userInfos._id);
     }
+
     return (
         <Row>
             <Col xs lg="3">

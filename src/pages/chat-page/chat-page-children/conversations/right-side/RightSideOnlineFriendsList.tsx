@@ -25,7 +25,7 @@ const RowFriend: React.FC<IPropsRowFriend> = ({ _id, avatarUrl, firstName, lastN
         <div className="item-friends">
             <Row className="my-2">
                 <Col xs="3">
-                    <AvatarWithStatus avatarUrl={avatarUrl} alt={`${firstName} ${lastName}`} />
+                    <AvatarWithStatus avatarUrl={avatarUrl} alt={`${firstName} ${lastName}`} status={status} />
                 </Col>
                 <Col>
                     <div className="d-flex align-items-center h-100 name-friend">
@@ -193,8 +193,8 @@ const RightSideOnlineFriendsList = () => {
                         {
                             userFriendsOnline.length > 0 && userFriendsOnline &&
                             userFriendsOnline.map((friend: any, index: number) => {
-                                const { onlineStatus, personalInfos } = friend;
-                                return <RowFriendsMemo key={index} _id={personalInfos._id} avatarUrl={personalInfos.avatarUrl}
+                                const { onlineStatus, personalInfos, _id } = friend;
+                                return <RowFriendsMemo key={_id} _id={personalInfos._id} avatarUrl={personalInfos.avatarUrl}
                                     status={onlineStatus} firstName={personalInfos.firstName}
                                     lastName={personalInfos.lastName} />
                             })
