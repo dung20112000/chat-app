@@ -1,10 +1,10 @@
 import AppSideBarCommon from "../../common-components/app-side-bar.common";
 import chatPageRoutes from "../../routes/chat-page.routes";
-import { Switch, Route, useLocation, Redirect } from "react-router-dom";
+import { Switch, Route, useLocation, Redirect, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/reducers/RootReducer.reducer.redux";
 import { useEffect } from "react";
-import { createSocket } from "../../server-interaction/socket.services";
+import { createSocket, onLogout } from "../../server-interaction/socket.services";
 import { addSocket } from "../../redux/actions/socket.actions.redux";
 import { fetchUserInfos } from "../../redux/actions/users.actions.redux";
 import { notifyNewFriendRequest, notifySuccess } from "../../helpers/functions/notify.helper";
@@ -13,9 +13,12 @@ import { emitClientConnect } from "../../server-interaction/socket.services";
 import { emitAcceptFriendsRequests, onAcceptInfosToSender, onComingFriendsRequests } from "../../server-interaction/socket-handle/socket-friends-requests";
 import { acceptFriendRequest, fetchUserFriendList } from "../../redux/actions/FriendList.actions.redux";
 import { fetchFriendRequest, removeFriendsRequest } from "../../redux/actions/FriendRequest.action.redux";
+import { onStatusToOnlineFriends } from "../../server-interaction/socket-handle/socket-change-status";
+import { updateFriendStatus } from './../../redux/actions/FriendList.actions.redux';
 
 const ChatPage = () => {
     const { pathname } = useLocation();
+    const history = useHistory();
     const userInfosStateRedux: IUserInfosReducer = useSelector((state: RootState) => {
         return state.userInfos;
     });
@@ -27,6 +30,7 @@ const ChatPage = () => {
     useEffect(() => {
         dispatch(fetchUserInfos());
         dispatch(fetchFriendRequest());
+        dispatch(fetchUserFriendList());
     }, [dispatch]);
 
     useEffect(() => {
@@ -56,12 +60,16 @@ const ChatPage = () => {
             onAcceptInfosToSender(socketStateRedux, (response: any) => {
                 if (response) dispatch(acceptFriendRequest(response.acceptorInfos));
             })
+            onStatusToOnlineFriends(socketStateRedux, (response: any) => {
+                if (response) dispatch(updateFriendStatus(response));
+            })
+            onLogout(socketStateRedux, () => {
+                dispatch({ type: "USER_LOGOUT" });
+                localStorage.removeItem("authToken");
+                history.push("/");
+            })
         }
-    }, [dispatch, socketStateRedux, userInfosStateRedux, userInfosStateRedux?._id])
-
-    useEffect(() => {
-        dispatch(fetchUserFriendList());
-    }, [dispatch])
+    }, [dispatch, history, socketStateRedux, userInfosStateRedux?._id])
 
     const chatPageRoutesJSX = chatPageRoutes && chatPageRoutes.length > 0 ? (
         chatPageRoutes.map((route, index) => {
