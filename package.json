@@ -12,6 +12,7 @@
     "@types/react-dom": "^17.0.0",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
+    "env-cmd": "^10.1.0",
     "formik": "^2.2.8",
     "global": "^4.4.0",
     "npm": "^7.15.0",
@@ -32,8 +33,10 @@
     "yup": "^0.32.9"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts start --env=development",
+    "dev": "env-cmd -f .env.dev yarn start",
     "build": "CI=false && react-scripts build",
+    "build:prod": "env-cmd -f .env.prod yarn build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

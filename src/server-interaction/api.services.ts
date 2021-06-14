@@ -1,8 +1,9 @@
 import axios, {AxiosRequestConfig, Method, AxiosInstance} from "axios";
 import {notRequiredTokenApis} from "./apis-list";
 
-const {NODE_ENV, REACT_APP_BASE_URL_DEV, REACT_APP_BASE_URL_BUILD, REACT_APP_BASE_URL_TEST} = process.env;
-const baseURL = NODE_ENV === "development" ? REACT_APP_BASE_URL_DEV : NODE_ENV === "production" ? REACT_APP_BASE_URL_BUILD : REACT_APP_BASE_URL_TEST;
+// const {NODE_ENV, REACT_APP_BASE_URL_DEV, REACT_APP_BASE_URL_BUILD, REACT_APP_BASE_URL_TEST} = process.env;
+// const baseURL = NODE_ENV === "development" ? REACT_APP_BASE_URL_DEV : NODE_ENV === "production" ? REACT_APP_BASE_URL_BUILD : REACT_APP_BASE_URL_TEST;
+const baseURL = process.env.REACT_APP_BASE_URL;
 const axiosInstance: AxiosInstance = axios.create({
     baseURL,
 });
