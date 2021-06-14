@@ -55,7 +55,7 @@ const ItemFriendRequest: React.FC<IComingRequests> = (props) => {
     const onAcceptRequest = () => {
         if (socketStateRedux) {
             emitAcceptFriendsRequests(socketStateRedux, bodyAccept, (response: any) => {
-                if (response.status) dispatch(acceptFriendRequest(response));
+                if (response.status) dispatch(acceptFriendRequest(response.newFriend));
                 dispatch(removeFriendsRequest(requestId));
             })
         }

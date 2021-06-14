@@ -7,8 +7,10 @@ import { useState } from 'react';
 import "./scss/leftsidechatpage.scss";
 import LeftSideUserInfoModal from "./LeftSideUserInfoModal";
 import LeftSideSecurityModal from "./LeftSideSecurityModal";
+import {Redirect, useHistory} from "react-router-dom";
 
 const LeftSideUserInfos = () => {
+    const history = useHistory();
     const listTestStatus = [EOnlineStatus.online, EOnlineStatus.busy, EOnlineStatus.offline]
     const userInfos = useSelector((state: RootState) => state.userInfos);
     const { onlineStatus, personalInfos: { firstName, lastName, job, avatarUrl } } = userInfos;
@@ -29,7 +31,10 @@ const LeftSideUserInfos = () => {
     const onChangeStatus = (status: EOnlineStatus) => {
         setChangeStatus(status);
     }
-
+    const onLogout = ()=>{
+        localStorage.removeItem("authToken");
+        history.push("/")
+    }
     return (
         <Row>
             <Col xs lg="3">
@@ -67,7 +72,7 @@ const LeftSideUserInfos = () => {
                     <Dropdown.Menu className="super-colors">
                         <Dropdown.Item eventKey="1" onClick={handleShowChangeInfos}>Change Information</Dropdown.Item>
                         <Dropdown.Item eventKey="2" onClick={handleShowChangeSecurity}>Security</Dropdown.Item>
-                        <Dropdown.Item eventKey="3">Log out</Dropdown.Item>
+                        <Dropdown.Item eventKey="3" onClick={onLogout}>Log out</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
                 <LeftSideUserInfoModal show={showChangeInfos} handleClose={handleCloseChangeInfos} />

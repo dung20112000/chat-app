@@ -34,7 +34,7 @@ const ChatPage = () => {
             dispatch(addSocket(createSocket()));
             notifySuccess(`Welcome back , ${userInfosStateRedux.personalInfos.firstName}  ${userInfosStateRedux.personalInfos.lastName}`)
         }
-    }, [dispatch, userInfosStateRedux]);
+    }, [dispatch, userInfosStateRedux?._id]);
 
     useEffect(() => {
         if (socketStateRedux && userInfosStateRedux && userInfosStateRedux._id) {
