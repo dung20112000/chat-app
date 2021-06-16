@@ -2,7 +2,9 @@ import {IUserInfosReducer} from "../../../../@types/redux";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../redux/reducers/RootReducer.reducer.redux";
 import {Col, Container, Row} from "react-bootstrap";
-import FriendListContacts from "./left-side/FriendListContacts";
+import LeftSideFriendListContacts from "./left-side/LeftSideFriendListContacts";
+import FriendsSuggestion from "./right-side/RightSideFriendsSuggestion";
+
 
 
 const ContactsChatPage = () => {
@@ -16,8 +18,9 @@ const ContactsChatPage = () => {
     return (
         <Container fluid>
             <Row className="pl-5">
-                <Col xs={3}>
-                    <FriendListContacts />
+                <LeftSideFriendListContacts />
+                <Col xs={9}>
+                    <FriendsSuggestion />
                 </Col>
             </Row>
         </Container>
