@@ -1,11 +1,26 @@
 import {
   FETCH_USER_INFOS,
   FETCH_USER_INFOS_SUCCESS,
-  FETCH_USER_INFOS_FAILED, UPDATE_USER_PERSONAL_INFOS, UPDATE_USER_SECURITY_INFOS,
+  FETCH_USER_INFOS_FAILED,
+  UPDATE_USER_PERSONAL_INFOS,
+  UPDATE_USER_SECURITY_INFOS,
+  UPDATE_USER_STATUS,
 } from "../types/users.types.redux";
 import { Action, ActionCreator } from "redux";
-import {IUpdatePersonalInfos, IUserInfosActions, IUserInfosReducer} from "../../@types/redux";
+import {
+  IUpdatePersonalInfos,
+  IUserInfosActions,
+  IUserInfosReducer,
+} from "../../@types/redux";
+import { EOnlineStatus } from "../../@types/enums.d";
 
+interface changeStatus {
+  onlineStatus: EOnlineStatus;
+  previousOnlineStatus: {
+    status: EOnlineStatus;
+    lastActive: string;
+  };
+}
 
 export const fetchUserInfos: ActionCreator<Action> = () => ({
   type: FETCH_USER_INFOS,
@@ -19,17 +34,30 @@ export const fetchUserInfosSuccess: ActionCreator<IUserInfosActions> = (
     userInfos,
   };
 };
+
 export const fetchUserInfosFailed: ActionCreator<Action> = () => ({
   type: FETCH_USER_INFOS_FAILED,
 });
-export  const updateUserPersonalInfos: ActionCreator<IUpdatePersonalInfos> = (newPersonalInfos) => ({
-  type : UPDATE_USER_PERSONAL_INFOS,
+
+export const updateUserPersonalInfos: ActionCreator<IUpdatePersonalInfos> = (
   newPersonalInfos
-})
-export const updateUserSecurityInfos: ActionCreator<any> = (newSecurityInfos) => {
-  console.log(newSecurityInfos)
+) => ({
+  type: UPDATE_USER_PERSONAL_INFOS,
+  newPersonalInfos,
+});
+
+export const updateUserSecurityInfos: ActionCreator<any> = (
+  newSecurityInfos
+) => {
   return {
     type: UPDATE_USER_SECURITY_INFOS,
-    newSecurityInfos
+    newSecurityInfos,
   };
-}
+};
+
+export const updateUserStatus: ActionCreator<any> = (payload: changeStatus) => {
+  return {
+    type: UPDATE_USER_STATUS,
+    payload,
+  };
+};

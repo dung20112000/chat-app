@@ -1,4 +1,5 @@
 import {
+  UPDATE_FRIEND_STATUS,
   FETCH_USER_FRIEND_LIST_SUCCESS,
   FETCH_USER_FRIEND_LIST_FAILED,
   ACCEPT_FRIEND_REQUEST,
@@ -15,8 +16,28 @@ const UsersFriendsListReducer = (state = initialState, action: any) => {
     case ACCEPT_FRIEND_REQUEST: {
       return [...state, payload];
     }
+    case UPDATE_FRIEND_STATUS: {
+      const index = findFriendById(payload?.justChangeStatusFriend, state);
+      if (index !== -1) {
+        state[index] = {
+          ...state[index],
+          onlineStatus: payload.onlineStatus,
+          previousOnlineStatus: payload.previousOnlineStatus,
+        };
+        return [...state];
+      }
+      return state;
+    }
     default:
       return state;
   }
 };
+
+function findFriendById(id: string, friendsList: any[]) {
+  if (!friendsList || !id) {
+    return -1;
+  }
+  return friendsList.findIndex((friend) => friend._id === id);
+}
+
 export default UsersFriendsListReducer;
