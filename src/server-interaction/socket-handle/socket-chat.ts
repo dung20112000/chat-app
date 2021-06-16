@@ -1,7 +1,7 @@
 import {Socket} from "socket.io-client";
 
-export const emitJoinRoom = (socket:Socket,roomId:string,members:any[] ,action:any)=>{
-    socket.emit("emitJoinRoom",roomId,members,(response:any)=>{
+export const emitJoinRoom = (socket:Socket,members:any[] ,action:any)=>{
+    socket.emit("emitJoinRoom",members,(response:any)=>{
         action(response);
     });
 }

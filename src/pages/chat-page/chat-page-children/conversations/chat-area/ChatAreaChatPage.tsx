@@ -13,19 +13,7 @@ import ChatAreaWelcomePage from "./ChatAreaWelcomPage";
 import ChatAreaMain from "./ChatAreaMain";
 
 const ChatAreaChatPage = () => {
-    const userInfosStateRedux: IUserInfosReducer = useSelector((state: RootState) => {
-        return state.userInfos;
-    });
-    const socketStateRedux: any = useSelector((state: RootState) => {
-        return state.socket
-    });
-    useEffect(()=>{
-       if(socketStateRedux && userInfosStateRedux){
-           onServerSendMessage(socketStateRedux,(data:any)=>{
-               console.log(data);
-           })
-       }
-    },[socketStateRedux,userInfosStateRedux?._id]);
+
     return (
         <Container fluid className="bg-very-light-secondary rounded-1rem chat-area-chat-page">
           <Switch>
