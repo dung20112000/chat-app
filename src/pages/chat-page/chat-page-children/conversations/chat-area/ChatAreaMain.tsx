@@ -5,7 +5,10 @@ import {IUserInfosReducer} from "../../../../../@types/redux";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
 import {useEffect} from "react";
-import {onServerSendMessage} from "../../../../../server-interaction/socket-handle/socket-chat";
+import {
+    emitJoinRoom,
+    onServerSendMessage
+} from "../../../../../server-interaction/socket-handle/socket-chat";
 import {useParams} from "react-router-dom";
 interface IParams {
     conversationsId: string;
