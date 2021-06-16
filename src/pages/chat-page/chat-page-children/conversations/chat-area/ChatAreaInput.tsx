@@ -1,19 +1,33 @@
 import {FormikHelpers, useFormik} from "formik";
 import {Row, Col} from "react-bootstrap";
 import {FocusEvent, FormEventHandler, FormEvent, useRef} from "react";
+import {emitMessage} from "../../../../../server-interaction/socket-handle/socket-chat";
+import {IUserInfosReducer} from "../../../../../@types/redux";
+import {useSelector} from "react-redux";
+import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
 
 interface IFormValues {
     message: string,
 }
 
 const ChatAreaInput = () => {
+    const userInfosStateRedux: IUserInfosReducer = useSelector((state: RootState) => {
+        return state.userInfos;
+    });
+    const socketStateRedux: any = useSelector((state: RootState) => {
+        return state.socket
+    });
     const messageInputRef = useRef(null)
     const textAreaRef = useRef(null)
     const initialValues = {
         message: "",
     }
     const onSubmit = (values: IFormValues, action: FormikHelpers<IFormValues>) => {
-
+        if(values.message && socketStateRedux && userInfosStateRedux){
+            emitMessage(socketStateRedux,"60c9d30b03598e1b9410f1db",userInfosStateRedux._id,values.message,(response:any)=>{
+                console.log(response);
+            })
+        }
     }
 
     const formik = useFormik(
@@ -49,7 +63,7 @@ const ChatAreaInput = () => {
                                   onFocus={onFocus}
                                   placeholder="Enter your message here"/>
                         <div className="message-button pr-3">
-                            <button className="btn btn-primary btn-lg rounded-circle"><i className="fas fa-paper-plane"/>
+                            <button type="submit" className="btn btn-primary btn-lg rounded-circle"><i className="fas fa-paper-plane"/>
                             </button>
                         </div>
                     </div>

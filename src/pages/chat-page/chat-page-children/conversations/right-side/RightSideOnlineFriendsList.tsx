@@ -12,17 +12,42 @@ import { Avatar } from './../../../../../common-components/avatar.common';
 import { emitAcceptFriendsRequests, emitCancelFriendsRequests } from "../../../../../server-interaction/socket-handle/socket-friends-requests";
 import { acceptFriendRequest } from "../../../../../redux/actions/FriendList.actions.redux";
 import { removeFriendsRequest } from "../../../../../redux/actions/FriendRequest.action.redux";
+import {emitJoinRoom} from "../../../../../server-interaction/socket-handle/socket-chat";
+import {useHistory} from "react-router-dom";
 interface IPropsRowFriend {
     _id: string;
     avatarUrl: string;
     status: EOnlineStatus;
     firstName: string;
     lastName: string;
+    conversationsId:string;
 }
 
-const RowFriend: React.FC<IPropsRowFriend> = ({ _id, avatarUrl, firstName, lastName, status }) => {
+const RowFriend: React.FC<IPropsRowFriend> = ({ _id, avatarUrl, firstName, lastName, status,conversationsId }) => {
+    const history = useHistory();
+    const userInfosStateRedux: IUserInfosReducer = useSelector((state: RootState) => {
+        return state.userInfos;
+    });
+    const socketStateRedux: any = useSelector((state: RootState) => {
+        return state.socket
+    });
+    
+    const onChat = ()=>{
+        if(userInfosStateRedux && socketStateRedux){
+
+            const members :any = [];
+            members.push({userId: userInfosStateRedux._id})
+            members.push({userId: _id})
+
+            emitJoinRoom(socketStateRedux,conversationsId,members,(response:any)=>{
+                if(response.status && response.roomId){
+                    history.push(`/chat-page/conversations/${response.roomId}`);
+                }
+            })
+        }
+    }
     return (
-        <div className="item-friends">
+        <div className="item-friends" onClick={onChat}>
             <Row className="my-2">
                 <Col xs="3">
                     <AvatarWithStatus avatarUrl={avatarUrl} alt={`${firstName} ${lastName}`} status={status} />
@@ -193,8 +218,8 @@ const RightSideOnlineFriendsList = () => {
                         {
                             userFriendsOnline.length > 0 && userFriendsOnline &&
                             userFriendsOnline.map((friend: any, index: number) => {
-                                const { onlineStatus, personalInfos, _id } = friend;
-                                return <RowFriendsMemo key={_id} _id={personalInfos._id} avatarUrl={personalInfos.avatarUrl}
+                                const { onlineStatus, personalInfos, _id,conversationsId } = friend;
+                                return <RowFriendsMemo key={_id} _id={_id} conversationsId={conversationsId} avatarUrl={personalInfos.avatarUrl}
                                     status={onlineStatus} firstName={personalInfos.firstName}
                                     lastName={personalInfos.lastName} />
                             })
