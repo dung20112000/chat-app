@@ -1,13 +1,6 @@
 import {Col, Container, Row} from "react-bootstrap";
-import ChatAreaRoomName from "./ChatAreaRoomName";
 import "./scss/chatarea.scss"
-import ChatAreaInput from "./ChatAreaInput";
-import ChatAreaDialog from "./ChatAreaDialog";
-import {onServerSendMessage} from "../../../../../server-interaction/socket-handle/socket-chat";
-import {useEffect} from "react";
-import {IUserInfosReducer} from "../../../../../@types/redux";
-import {useSelector} from "react-redux";
-import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
+
 import {Switch,Route} from "react-router-dom";
 import ChatAreaWelcomePage from "./ChatAreaWelcomPage";
 import ChatAreaMain from "./ChatAreaMain";

@@ -64,13 +64,15 @@ const ChatPage = () => {
             onStatusToOnlineFriends(socketStateRedux, (response: any) => {
                 if (response) dispatch(updateFriendStatus(response));
             })
+
             onLogout(socketStateRedux, () => {
                 dispatch({ type: "USER_LOGOUT" });
                 localStorage.removeItem("authToken");
                 history.push("/");
             })
-
-        }
+            onServerSendMessage(socketStateRedux,(data:any)=> {
+                console.log(data);
+            })}
     }, [dispatch, history, socketStateRedux, userInfosStateRedux?._id])
 
     const chatPageRoutesJSX = chatPageRoutes && chatPageRoutes.length > 0 ? (
