@@ -20,10 +20,9 @@ interface IPropsRowFriend {
     status: EOnlineStatus;
     firstName: string;
     lastName: string;
-    conversationsId:string;
 }
 
-const RowFriend: React.FC<IPropsRowFriend> = ({ _id, avatarUrl, firstName, lastName, status,conversationsId }) => {
+const RowFriend: React.FC<IPropsRowFriend> = ({ _id, avatarUrl, firstName, lastName, status}) => {
     const history = useHistory();
     const userInfosStateRedux: IUserInfosReducer = useSelector((state: RootState) => {
         return state.userInfos;
@@ -39,8 +38,9 @@ const RowFriend: React.FC<IPropsRowFriend> = ({ _id, avatarUrl, firstName, lastN
             members.push({userId: userInfosStateRedux._id})
             members.push({userId: _id})
 
-            emitJoinRoom(socketStateRedux,conversationsId,members,(response:any)=>{
+            emitJoinRoom(socketStateRedux,members,(response:any)=>{
                 if(response.status && response.roomId){
+
                     history.push(`/chat-page/conversations/${response.roomId}`);
                 }
             })
@@ -218,8 +218,8 @@ const RightSideOnlineFriendsList = () => {
                         {
                             userFriendsOnline.length > 0 && userFriendsOnline &&
                             userFriendsOnline.map((friend: any, index: number) => {
-                                const { onlineStatus, personalInfos, _id,conversationsId } = friend;
-                                return <RowFriendsMemo key={_id} _id={_id} conversationsId={conversationsId} avatarUrl={personalInfos.avatarUrl}
+                                const { onlineStatus, personalInfos, _id } = friend;
+                                return <RowFriendsMemo key={_id} _id={_id}  avatarUrl={personalInfos.avatarUrl}
                                     status={onlineStatus} firstName={personalInfos.firstName}
                                     lastName={personalInfos.lastName} />
                             })

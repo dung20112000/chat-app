@@ -1,16 +1,19 @@
 import {FormikHelpers, useFormik} from "formik";
 import {Row, Col} from "react-bootstrap";
-import {FocusEvent, FormEventHandler, FormEvent, useRef} from "react";
+import {FocusEvent,FormEvent, useRef} from "react";
 import {emitMessage} from "../../../../../server-interaction/socket-handle/socket-chat";
 import {IUserInfosReducer} from "../../../../../@types/redux";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
-
+import {useParams} from "react-router-dom";
 interface IFormValues {
     message: string,
 }
-
+interface IParams {
+    conversationsId: string;
+}
 const ChatAreaInput = () => {
+    const {conversationsId} = useParams<IParams>()
     const userInfosStateRedux: IUserInfosReducer = useSelector((state: RootState) => {
         return state.userInfos;
     });
@@ -23,8 +26,8 @@ const ChatAreaInput = () => {
         message: "",
     }
     const onSubmit = (values: IFormValues, action: FormikHelpers<IFormValues>) => {
-        if(values.message && socketStateRedux && userInfosStateRedux){
-            emitMessage(socketStateRedux,"60c9d30b03598e1b9410f1db",userInfosStateRedux._id,values.message,(response:any)=>{
+        if(values.message && socketStateRedux && userInfosStateRedux && conversationsId){
+            emitMessage(socketStateRedux,conversationsId,userInfosStateRedux._id,values.message,(response:any)=>{
                 console.log(response);
             })
         }
