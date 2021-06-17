@@ -1,6 +1,5 @@
-
 .chat-area-chat-page {
-  height: 98vh;
+  height: 95vh;
   padding-bottom: 1rem;
   .chat-area-room-name {
     border-radius: 1rem 1rem 0 0;
@@ -15,16 +14,13 @@
     .message-input {
       width: 100%;
       background-color: white;
-      textarea {
+      input {
         height: 1.5rem;
         resize: none;
         min-width: 80%;
         border: none;
         outline: none;
         background: none;
-      }
-      textarea::-webkit-scrollbar {
-        display: none;
       }
     }
   }
