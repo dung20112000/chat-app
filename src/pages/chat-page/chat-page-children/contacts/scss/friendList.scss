@@ -1,0 +1,19 @@
+.friend-list {
+  .button-setting {
+    background: none;
+    .icon-dropdown {
+      font-size:1.7rem;
+      color: inherit;
+    }
+  }
+  .friend-row.hover:hover  .button-setting {
+    background: none;
+    color: gray!important;
+  }
+  .friend-row {
+    cursor: pointer;
+  }
+  .bg-contact-item {
+    background: rgba(219, 229, 237, 0.4);
+  }
+}
