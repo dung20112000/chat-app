@@ -15,6 +15,7 @@ import { acceptFriendRequest, fetchUserFriendList } from "../../redux/actions/Fr
 import { fetchFriendRequest, removeFriendsRequest } from "../../redux/actions/FriendRequest.action.redux";
 import { onStatusToOnlineFriends } from "../../server-interaction/socket-handle/socket-change-status";
 import { updateFriendStatus } from './../../redux/actions/FriendList.actions.redux';
+import { onServerSendMessage } from "../../server-interaction/socket-handle/socket-chat";
 
 const ChatPage = () => {
     const { pathname } = useLocation();
@@ -63,10 +64,13 @@ const ChatPage = () => {
             onStatusToOnlineFriends(socketStateRedux, (response: any) => {
                 if (response) dispatch(updateFriendStatus(response));
             })
+
             onLogout(socketStateRedux, () => {
                 dispatch({ type: "USER_LOGOUT" });
                 localStorage.removeItem("authToken");
                 history.push("/");
+            })
+            onServerSendMessage(socketStateRedux, (data: any) => {
             })
         }
     }, [dispatch, history, socketStateRedux, userInfosStateRedux?._id])
