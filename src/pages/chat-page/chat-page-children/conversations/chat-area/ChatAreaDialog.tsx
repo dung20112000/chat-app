@@ -1,12 +1,20 @@
-import {Row, Col} from "react-bootstrap";
-
-const ChatAreaDialog = () => {
+import React from "react";
+const ChatAreaDialog = (props: any) => {
+    const { message } = props.dialog;
     return (
-        <Row className="chat-area-dialog">
-            <Col xs={6} className="message-box border rounded-1rem bg-success">
-                <div className="message-text">Hello</div>
-            </Col>
-        </Row>
+        <div
+            className={`chat__item ${props.me ? "me" : "other"}`}
+        >
+            <div className="chat__item__content">
+                <div className="chat__msg">{message}</div>
+                {/* <div className="chat__meta">
+                    <span>16 mins ago</span>
+                    <span>Seen 1.03PM</span>
+                </div> */}
+            </div>
+        </div>
     )
 }
-export default ChatAreaDialog
+export default React.memo(ChatAreaDialog, (prevProps, nextProps) => {
+    return JSON.stringify(prevProps) === JSON.stringify(nextProps);
+});

@@ -91,7 +91,6 @@ const RightSideModal = (props: any) => {
             const response = await callApi(`/search/friends?${querystring.stringify(params)}`, "GET");
             if (response) {
                 if (response.data && response.data.friendInfos) {
-                    console.log(response.data);
                     setErrorsSearch("");
                     setFriendInfos(response.data.friendInfos);
                     checkEmailOrIdExists(response.data.friendInfos._id, response.data.friendInfos.email)
