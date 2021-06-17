@@ -25,12 +25,12 @@ const LeftSideSecurityModal = (props: ILeftSideUserInfoModal) => {
     const dispatch = useDispatch()
     const {show, handleClose} = props;
     const userInfosRedux:IUserInfosReducer = useSelector((state:RootState) => state.userInfos)
-    let initialValues: FormValues = {
-        firstName: "",
-        lastName: "",
-        job: "",
-        gender: EGender.female
-    }
+        let initialValues: FormValues = {
+            firstName: "",
+            lastName: "",
+            job: "",
+            gender: EGender.female
+        }
     const validationSchema = Yup.object({
         firstName: Yup.string()
             .required("Required!"),
