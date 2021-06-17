@@ -1,15 +1,18 @@
 import {Col, Container, Row} from "react-bootstrap";
-import ChatAreaRoomName from "./ChatAreaRoomName";
 import "./scss/chatarea.scss"
-import ChatAreaInput from "./ChatAreaInput";
-import ChatAreaDialog from "./ChatAreaDialog";
+
+import {Switch,Route} from "react-router-dom";
+import ChatAreaWelcomePage from "./ChatAreaWelcomPage";
+import ChatAreaMain from "./ChatAreaMain";
 
 const ChatAreaChatPage = () => {
+
     return (
         <Container fluid className="bg-very-light-secondary rounded-1rem chat-area-chat-page">
-            <ChatAreaRoomName/>
-            <ChatAreaDialog />
-            <ChatAreaInput />
+          <Switch>
+              <Route path="/chat-page/conversations" exact render={()=> <ChatAreaWelcomePage/>}/>
+              <Route path="/chat-page/conversations/:conversationsId" render={()=> <ChatAreaMain/>}/>
+          </Switch>
         </Container>
     )
 }
