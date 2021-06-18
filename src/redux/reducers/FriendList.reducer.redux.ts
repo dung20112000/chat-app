@@ -3,6 +3,7 @@ import {
   FETCH_USER_FRIEND_LIST_SUCCESS,
   FETCH_USER_FRIEND_LIST_FAILED,
   ACCEPT_FRIEND_REQUEST,
+  UPDATE_CONVERSATION_ID,
 } from "../types/FriendList.types.redux";
 
 const initialState: any | null = [];
@@ -28,6 +29,15 @@ const UsersFriendsListReducer = (state = initialState, action: any) => {
       }
       return state;
     }
+    case UPDATE_CONVERSATION_ID: {
+      payload?.members.forEach((memberId: any) => {
+        const index = findFriendById(memberId.userId, state);
+        if (index !== -1) {
+          state[index].conversationsId = payload.conversationsId;
+        }
+      });
+      return [...state];
+    }
     default:
       return state;
   }
@@ -39,5 +49,4 @@ function findFriendById(id: string, friendsList: any[]) {
   }
   return friendsList.findIndex((friend) => friend._id === id);
 }
-
 export default UsersFriendsListReducer;

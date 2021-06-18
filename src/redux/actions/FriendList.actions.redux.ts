@@ -4,6 +4,7 @@ import {
   FETCH_USER_FRIEND_LIST_FAILED,
   ACCEPT_FRIEND_REQUEST,
   UPDATE_FRIEND_STATUS,
+  UPDATE_CONVERSATION_ID,
 } from "../types/FriendList.types.redux";
 import { Action, ActionCreator } from "redux";
 import { IUserFriendsList, IUserFriendsListAction } from "../../@types/redux";
@@ -35,6 +36,15 @@ export const acceptFriendRequest: ActionCreator<Action> = (newFriend) => {
 export const updateFriendStatus: ActionCreator<Action> = (payload) => {
   return {
     type: UPDATE_FRIEND_STATUS,
+    payload,
+  };
+};
+
+export const updateConversationIdOfFriends: ActionCreator<Action> = (
+  payload
+) => {
+  return {
+    type: UPDATE_CONVERSATION_ID,
     payload,
   };
 };
