@@ -76,12 +76,9 @@ const ChatPage = () => {
                 localStorage.removeItem("authToken");
                 history.push("/");
             })
-            onServerSendMessage(socketStateRedux, (data: any) => {
-            })
             onCreateConversations(socketStateRedux, (response: any) => {
                 if (response.conversationsId) dispatch(updateConversationIdOfFriends(response));
             })
-
         }
     }, [dispatch, history, socketStateRedux, userInfosStateRedux?._id])
 
