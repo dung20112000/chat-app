@@ -11,7 +11,7 @@ const ChatAreaChatPage = () => {
         <Container fluid className="bg-very-light-secondary rounded-1rem chat-area-chat-page">
           <Switch>
               <Route path="/chat-page/conversations" exact render={()=> <ChatAreaWelcomePage/>}/>
-              <Route path="/chat-page/conversations/:conversationsId" render={()=> <ChatAreaMain/>}/>
+              <Route path="/chat-page/conversations/:conversationsId" exact render={()=> <ChatAreaMain/>}/>
           </Switch>
         </Container>
     )
