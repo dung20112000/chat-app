@@ -28,7 +28,7 @@ interface IConversationsBlockGroup {
     members: number
 }
 
-export const ConversationBlockCommon: React.FC<IConversationBlockCommon> = ({
+export const ConversationBlock: React.FC<IConversationBlockCommon> = ({
                                                                                 lastMessageTime,
                                                                                 status,
                                                                                 id,
@@ -73,8 +73,8 @@ export const ConversationBlockCommon: React.FC<IConversationBlockCommon> = ({
         </Row>
     )
 }
-
-export const ConversationBlockGroup: React.FC<IConversationsBlockGroup> = ({
+export const ConversationBlockCommon = React.memo(ConversationBlock);
+export const ConversationGroup: React.FC<IConversationsBlockGroup> = ({
                                                                                currentUserAvatarUrl,
                                                                                active,
                                                                                members,
@@ -100,4 +100,6 @@ export const ConversationBlockGroup: React.FC<IConversationsBlockGroup> = ({
             </Col>
         </Row>
     )
+
 }
+export const ConversationBlockGroup = React.memo(ConversationGroup);
