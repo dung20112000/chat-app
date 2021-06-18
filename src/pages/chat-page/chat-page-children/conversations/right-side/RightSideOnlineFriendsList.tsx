@@ -12,18 +12,18 @@ import { Avatar } from './../../../../../common-components/avatar.common';
 import { emitAcceptFriendsRequests, emitCancelFriendsRequests } from "../../../../../server-interaction/socket-handle/socket-friends-requests";
 import { acceptFriendRequest } from "../../../../../redux/actions/FriendList.actions.redux";
 import { removeFriendsRequest } from "../../../../../redux/actions/FriendRequest.action.redux";
-import {emitJoinRoom} from "../../../../../server-interaction/socket-handle/socket-chat";
-import {useHistory} from "react-router-dom";
+import { emitJoinRoom } from "../../../../../server-interaction/socket-handle/socket-chat";
+import { useHistory } from "react-router-dom";
 interface IPropsRowFriend {
     _id: string;
     avatarUrl: string;
     status: EOnlineStatus;
     firstName: string;
     lastName: string;
-    conversationsId:any;
+    conversationsId: any;
 }
 
-const RowFriend: React.FC<IPropsRowFriend> = ({ _id, avatarUrl, firstName, lastName, status,conversationsId}) => {
+const RowFriend: React.FC<IPropsRowFriend> = ({ _id, avatarUrl, firstName, lastName, status, conversationsId }) => {
     const history = useHistory();
     const userInfosStateRedux: IUserInfosReducer = useSelector((state: RootState) => {
         return state.userInfos;
@@ -31,16 +31,16 @@ const RowFriend: React.FC<IPropsRowFriend> = ({ _id, avatarUrl, firstName, lastN
     const socketStateRedux: any = useSelector((state: RootState) => {
         return state.socket
     });
-    
-    const onChat = ()=>{
-        if(userInfosStateRedux && socketStateRedux){
 
-            const members :any = [];
-            members.push({userId: userInfosStateRedux._id})
-            members.push({userId: _id})
+    const onChat = () => {
+        if (userInfosStateRedux && socketStateRedux) {
 
-            emitJoinRoom(socketStateRedux,conversationsId,members,(response:any)=>{
-                if(response.status && response.roomId){
+            const members: any = [];
+            members.push({ userId: userInfosStateRedux._id })
+            members.push({ userId: _id })
+
+            emitJoinRoom(socketStateRedux, conversationsId, members, (response: any) => {
+                if (response.status && response.roomId) {
                     console.log(response);
                     history.push(`/chat-page/conversations/${response.roomId}`);
                 }
@@ -81,6 +81,7 @@ const ItemFriendRequest: React.FC<IComingRequests> = (props) => {
     const onAcceptRequest = () => {
         if (socketStateRedux) {
             emitAcceptFriendsRequests(socketStateRedux, bodyAccept, (response: any) => {
+                response.newFriend.conversationsId = null;
                 if (response.status) dispatch(acceptFriendRequest(response.newFriend));
                 dispatch(removeFriendsRequest(requestId));
             })
@@ -168,15 +169,22 @@ const RightSideOnlineFriendsList = () => {
 
     const changeSearchFriend = (event: any) => {
         const textInput = (event.target.value).toUpperCase();
-        // eslint-disable-next-line array-callback-return
-        const searchFriends = friendsListStateRedux.filter((friend: any) => {
-            const { personalInfos } = friend;
-            if (personalInfos.firstName.toUpperCase().includes(textInput)
-                || personalInfos.lastName.toUpperCase().includes(textInput)) {
-                return friend;
-            }
-        })
-        setUserFriendsOnline(searchFriends);
+        if (textInput === "") {
+            const userFriendsOnline = friendsListStateRedux.filter((friend: any) => {
+                return friend.onlineStatus !== EOnlineStatus.offline;
+            })
+            setUserFriendsOnline(userFriendsOnline);
+        } else {
+            // eslint-disable-next-line array-callback-return
+            const searchFriends = friendsListStateRedux.filter((friend: any) => {
+                const { personalInfos } = friend;
+                if (personalInfos.firstName.toUpperCase().includes(textInput)
+                    || personalInfos.lastName.toUpperCase().includes(textInput)) {
+                    return friend;
+                }
+            })
+            setUserFriendsOnline(searchFriends);
+        }
     }
 
     const onModalShow = () => {
@@ -218,9 +226,9 @@ const RightSideOnlineFriendsList = () => {
                     <div className="list-friend">
                         {
                             userFriendsOnline.length > 0 && userFriendsOnline &&
-                            userFriendsOnline.map((friend: any, index: number) => {
-                                const { onlineStatus, personalInfos, _id,conversationsId } = friend;
-                                return <RowFriendsMemo key={_id} _id={_id} conversationsId={conversationsId}  avatarUrl={personalInfos.avatarUrl}
+                            userFriendsOnline.map((friend: any) => {
+                                const { onlineStatus, personalInfos, _id, conversationsId } = friend;
+                                return <RowFriendsMemo key={_id} _id={_id} conversationsId={conversationsId} avatarUrl={personalInfos.avatarUrl}
                                     status={onlineStatus} firstName={personalInfos.firstName}
                                     lastName={personalInfos.lastName} />
                             })
@@ -231,4 +239,4 @@ const RightSideOnlineFriendsList = () => {
         </Container>
     )
 }
-export default RightSideOnlineFriendsList;
+export default React.memo(RightSideOnlineFriendsList);

@@ -11,12 +11,12 @@ import { notifyNewFriendRequest, notifySuccess } from "../../helpers/functions/n
 import { IUserInfosReducer } from "../../@types/redux";
 import { emitClientConnect } from "../../server-interaction/socket.services";
 import { emitAcceptFriendsRequests, onAcceptInfosToSender, onComingFriendsRequests } from "../../server-interaction/socket-handle/socket-friends-requests";
-import { acceptFriendRequest, fetchUserFriendList } from "../../redux/actions/FriendList.actions.redux";
+import { acceptFriendRequest, fetchUserFriendList, updateConversationIdOfFriends } from "../../redux/actions/FriendList.actions.redux";
 import { fetchFriendRequest, removeFriendsRequest } from "../../redux/actions/FriendRequest.action.redux";
 import { onStatusToOnlineFriends } from "../../server-interaction/socket-handle/socket-change-status";
 import { updateFriendStatus } from './../../redux/actions/FriendList.actions.redux';
-import { onServerSendMessage } from "../../server-interaction/socket-handle/socket-chat";
-import {Socket} from "socket.io-client";
+import { onCreateConversations, onServerSendMessage } from "../../server-interaction/socket-handle/socket-chat";
+import { Socket } from "socket.io-client";
 
 const ChatPage = () => {
     const { pathname } = useLocation();
@@ -54,13 +54,17 @@ const ChatPage = () => {
                 notifyNewFriendRequest({ senderFullName, senderId, avatarUrl }, (isAcceptedId: string) => {
                     const body = { acceptorId: userInfosStateRedux._id, isAcceptedId }
                     emitAcceptFriendsRequests(socketStateRedux, body, (response: any) => {
+                        response.newFriend.conversationsId = null;
                         if (response.status) dispatch(acceptFriendRequest(response.newFriend));
                         dispatch(removeFriendsRequest(isAcceptedId));
                     })
                 })
             })
             onAcceptInfosToSender(socketStateRedux, (response: any) => {
-                if (response) dispatch(acceptFriendRequest(response.acceptorInfos));
+                if (response) {
+                    response.acceptorInfos.conversationsId = null;
+                    dispatch(acceptFriendRequest(response.acceptorInfos));
+                }
             })
             onStatusToOnlineFriends(socketStateRedux, (response: any) => {
                 if (response) dispatch(updateFriendStatus(response));
@@ -72,7 +76,9 @@ const ChatPage = () => {
                 localStorage.removeItem("authToken");
                 history.push("/");
             })
-
+            onCreateConversations(socketStateRedux, (response: any) => {
+                if (response.conversationsId) dispatch(updateConversationIdOfFriends(response));
+            })
         }
     }, [dispatch, history, socketStateRedux, userInfosStateRedux?._id])
 

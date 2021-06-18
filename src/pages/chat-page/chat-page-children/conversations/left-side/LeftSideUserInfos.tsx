@@ -10,11 +10,11 @@ import LeftSideSecurityModal from "./LeftSideSecurityModal";
 import { emitChangeStatus } from "../../../../../server-interaction/socket-handle/socket-change-status";
 import { updateUserStatus } from "../../../../../redux/actions/users.actions.redux";
 import { emitClientLogout } from './../../../../../server-interaction/socket.services';
-import {Socket} from "socket.io-client";
+import { Socket } from "socket.io-client";
 
 const LeftSideUserInfos = () => {
     const userInfos = useSelector((state: RootState) => state.userInfos);
-    const socketStateRedux:Socket = useSelector((state: RootState) => state.socket);
+    const socketStateRedux: Socket = useSelector((state: RootState) => state.socket);
     const dispatch = useDispatch();
     const { onlineStatus, personalInfos: { firstName, lastName, job, avatarUrl } } = userInfos;
     const [changeStatus, setChangeStatus] = useState(onlineStatus);
