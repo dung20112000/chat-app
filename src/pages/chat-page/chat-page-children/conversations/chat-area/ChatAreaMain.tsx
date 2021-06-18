@@ -48,19 +48,18 @@ const ChatAreaMain = () => {
                 const members: any = [];
                 members.push({ userId: userInfosStateRedux._id });
                 members.push({ userId: findFriend._id });
-                emitJoinRoom(socketStateRedux,conversationsId ,members, (response: any) => {
+                emitJoinRoom(socketStateRedux, conversationsId, members, (response: any) => {
                     console.log(response);
                 })
             }
         }
-    }, [conversationsId, socketStateRedux, userInfosStateRedux?._id,friendsListStateRedux])
+    }, [conversationsId, socketStateRedux, userInfosStateRedux?._id, friendsListStateRedux])
 
     useEffect(() => {
         if (socketStateRedux && conversationsInfos) {
             onServerSendMessage(socketStateRedux, (data: any) => {
                 if (data) {
                     const { conversationsId, ...rest } = data;
-                    // conversationsInfos.dialogs.push({ ...rest });
                     const cloneDialogs = [...conversationsInfos.dialogs, { ...rest }]
                     setConversationsInfos({ ...conversationsInfos, dialogs: cloneDialogs });
                 }
