@@ -16,6 +16,7 @@ import { fetchFriendRequest, removeFriendsRequest } from "../../redux/actions/Fr
 import { onStatusToOnlineFriends } from "../../server-interaction/socket-handle/socket-change-status";
 import { updateFriendStatus } from './../../redux/actions/FriendList.actions.redux';
 import { onServerSendMessage } from "../../server-interaction/socket-handle/socket-chat";
+import {Socket} from "socket.io-client";
 
 const ChatPage = () => {
     const { pathname } = useLocation();
@@ -23,7 +24,7 @@ const ChatPage = () => {
     const userInfosStateRedux: IUserInfosReducer = useSelector((state: RootState) => {
         return state.userInfos;
     });
-    const socketStateRedux: any = useSelector((state: RootState) => {
+    const socketStateRedux: Socket = useSelector((state: RootState) => {
         return state.socket
     });
     const dispatch = useDispatch();
