@@ -66,6 +66,7 @@ const ChatPage = () => {
             })
 
             onLogout(socketStateRedux, () => {
+                socketStateRedux.disconnect();
                 dispatch({ type: "USER_LOGOUT" });
                 localStorage.removeItem("authToken");
                 history.push("/");
