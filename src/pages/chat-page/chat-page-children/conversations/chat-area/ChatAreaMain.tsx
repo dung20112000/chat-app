@@ -42,18 +42,18 @@ const ChatAreaMain = () => {
     }, [conversationsId])
 
     useEffect(() => {
-        if (userInfosStateRedux && socketStateRedux && friendsListStateRedux) {
+        if (userInfosStateRedux && socketStateRedux && friendsListStateRedux && conversationsId) {
             const findFriend = friendsListStateRedux.find((friend: any) => friend.conversationsId === conversationsId);
             if (findFriend) {
-                debugger;
                 const members: any = [];
                 members.push({ userId: userInfosStateRedux._id });
                 members.push({ userId: findFriend._id });
-                emitJoinRoom(socketStateRedux, members, (response: any) => {
+                emitJoinRoom(socketStateRedux,conversationsId ,members, (response: any) => {
+                    console.log(response);
                 })
             }
         }
-    }, [conversationsId, socketStateRedux, userInfosStateRedux?._id])
+    }, [conversationsId, socketStateRedux, userInfosStateRedux?._id,friendsListStateRedux])
 
     useEffect(() => {
         if (socketStateRedux && conversationsInfos) {
