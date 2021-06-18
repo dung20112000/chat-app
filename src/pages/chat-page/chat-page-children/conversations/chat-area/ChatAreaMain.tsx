@@ -44,7 +44,6 @@ const ChatAreaMain = () => {
     useEffect(() => {
         if (userInfosStateRedux && socketStateRedux && friendsListStateRedux && conversationsId) {
             const findFriend = friendsListStateRedux.find((friend: any) => friend.conversationsId === conversationsId);
-            console.log(findFriend);
             if (findFriend) {
                 const members: any = [];
                 members.push({ userId: userInfosStateRedux._id });

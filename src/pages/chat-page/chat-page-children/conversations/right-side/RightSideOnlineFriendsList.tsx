@@ -41,7 +41,7 @@ const RowFriend: React.FC<IPropsRowFriend> = ({ _id, avatarUrl, firstName, lastN
 
             emitJoinRoom(socketStateRedux,conversationsId,members,(response:any)=>{
                 if(response.status && response.roomId){
-
+                    console.log(response);
                     history.push(`/chat-page/conversations/${response.roomId}`);
                 }
             })
