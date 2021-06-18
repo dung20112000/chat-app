@@ -42,24 +42,24 @@ const ChatAreaMain = () => {
     }, [conversationsId])
 
     useEffect(() => {
-        if (userInfosStateRedux && socketStateRedux && friendsListStateRedux) {
+        if (userInfosStateRedux && socketStateRedux && friendsListStateRedux && conversationsId) {
             const findFriend = friendsListStateRedux.find((friend: any) => friend.conversationsId === conversationsId);
             if (findFriend) {
                 const members: any = [];
                 members.push({ userId: userInfosStateRedux._id });
                 members.push({ userId: findFriend._id });
-                emitJoinRoom(socketStateRedux, members, (response: any) => {
+                emitJoinRoom(socketStateRedux, conversationsId, members, (response: any) => {
+                    console.log(response);
                 })
             }
         }
-    }, [conversationsId, friendsListStateRedux, socketStateRedux, userInfosStateRedux?._id])
+    }, [conversationsId, socketStateRedux, userInfosStateRedux?._id, friendsListStateRedux])
 
     useEffect(() => {
         if (socketStateRedux && conversationsInfos) {
             onServerSendMessage(socketStateRedux, (data: any) => {
                 if (data) {
                     const { conversationsId, ...rest } = data;
-                    // conversationsInfos.dialogs.push({ ...rest });
                     const cloneDialogs = [...conversationsInfos.dialogs, { ...rest }]
                     setConversationsInfos({ ...conversationsInfos, dialogs: cloneDialogs });
                 }
