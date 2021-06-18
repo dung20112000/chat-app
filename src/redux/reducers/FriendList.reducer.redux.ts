@@ -36,7 +36,6 @@ const UsersFriendsListReducer = (state = initialState, action: any) => {
           state[index].conversationsId = payload.conversationsId;
         }
       });
-      console.log(state);
       return [...state];
     }
     default:
