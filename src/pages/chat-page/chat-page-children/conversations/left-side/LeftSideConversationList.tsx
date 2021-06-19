@@ -50,17 +50,15 @@ const LeftSideConversationList = () => {
             })
         }
     }, [socketStateRedux, conversationsList])
-    const showConversationsList = (arrayList: any[]) => {
-        console.log(arrayList)
-        return arrayList.length > 0 ? arrayList.map((item, index) => {
+    const showConversationsList = (conversationsList: any[], friendsList: any[]) => {
+        return conversationsList.length > 0 && friendsList.length > 0 ? conversationsList.map((item, index) => {
             const {_id, room: {participants, roomName, dialogs}} = item;
-            console.log(participants)
             if (dialogs.length === 0) return;
             const {message, updatedAt} = dialogs.length > 0 && dialogs[dialogs.length - 1]
             if (participants.length <= 2) {
                 const idFriend = participants.find((item: any) => item.userId !== idUserRedux)
-                if (idFriend && friendsListRedux) {
-                    const friendChat = friendsListRedux.find((item: any) => item._id === idFriend.userId)
+                if (idFriend) {
+                    const friendChat = friendsList.find((item: any) => item._id === idFriend.userId)
                     if (friendChat) {
                         const {
                             onlineStatus,
@@ -73,10 +71,11 @@ const LeftSideConversationList = () => {
                             lastMessage={message}/>
                     }
                 }
+                return null;
             }
             return <ConversationBlockGroup currentUserAvatarUrl={""} groupName={"Huy"}
-                                        lastMessage={{sender: "Huy", message: "abc"}}
-                                        members={6}/>
+                                           lastMessage={{sender: "Huy", message: "abc"}}
+                                           members={6}/>
 
 
         }) : null
@@ -84,8 +83,8 @@ const LeftSideConversationList = () => {
     return (
         <Container fluid>
             {
-                showConversationsList(conversationsList)
-                // conversationsList && conversationsList.length > 0 ? showConversationsList(conversationsList) : null
+                conversationsList && conversationsList.length > 0 && friendsListRedux.length > 0 ?
+                    showConversationsList(conversationsList, friendsListRedux) : null
             }
         </Container>
     )
