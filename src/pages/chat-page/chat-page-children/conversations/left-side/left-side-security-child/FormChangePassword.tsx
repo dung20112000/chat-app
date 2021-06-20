@@ -2,7 +2,7 @@ import {ErrorMessage, Field, Form, Formik, FormikHelpers, FormikProps} from "for
 import {Button, Col, Row} from "react-bootstrap";
 import React from "react";
 import * as Yup from "yup";
-import {callApi} from "../../../../../../server-interaction/api.services";
+import {callApi} from "../../../../../../server-interaction/apis/api.services";
 import {updateUserSecurityInfos} from "../../../../../../redux/actions/users.actions.redux";
 import {useDispatch} from "react-redux";
 import {checkFormErrorsHelper} from "../../../../../../helpers/functions/check-form-errors.helper";

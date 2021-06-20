@@ -53,9 +53,7 @@ export const ConversationBlock: React.FC<IConversationBlockCommon> = ({
                     <p className="m-0 text-truncate text-muted">{lastMessage} </p>
                 </div>
             </Col>
-            <Col xs={3} className="text-right pt-2 pl-0">
-                <TimeDistanceCommon lastMessageTime={lastMessageTime} />
-            </Col>
+            <TimeDistanceCommon lastMessageTime={lastMessageTime} />
         </Row>
     )
 }

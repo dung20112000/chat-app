@@ -4,7 +4,7 @@ import { Modal, Button, Row, Col } from 'react-bootstrap';
 import * as Yup from "yup";
 import "./scss/rightsidechatpage.scss";
 import { Avatar } from './../../../../../common-components/avatar.common';
-import { callApi } from '../../../../../server-interaction/api.services';
+import { callApi } from '../../../../../server-interaction/apis/api.services';
 import { FormikHelpers } from 'formik';
 import querystring from 'query-string';
 import { emitCancelFriendsRequests, emitFriendsRequests } from "../../../../../server-interaction/socket-handle/socket-friends-requests";

@@ -3,7 +3,7 @@ import {Formik, Form, Field, ErrorMessage, FormikHelpers, FormikProps} from "for
 import * as Yup from "yup";
 import {useHistory, NavLink} from "react-router-dom";
 import {Row, Col, Button} from "react-bootstrap"
-import {callApi} from "../../../server-interaction/api.services";
+import {callApi} from "../../../server-interaction/apis/api.services";
 import {checkFormErrorsHelper} from "../../../helpers/functions/check-form-errors.helper";
 
 interface FormValues {
