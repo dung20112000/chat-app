@@ -15,7 +15,7 @@ import { acceptFriendRequest, fetchUserFriendList, updateConversationIdOfFriends
 import { fetchFriendRequest, removeFriendsRequest } from "../../redux/actions/FriendRequest.action.redux";
 import { onStatusToOnlineFriends } from "../../server-interaction/socket-handle/socket-change-status";
 import { updateFriendStatus } from './../../redux/actions/FriendList.actions.redux';
-import { onCreateConversations, onServerSendMessage } from "../../server-interaction/socket-handle/socket-chat";
+import { onCreateConversations} from "../../server-interaction/socket-handle/socket-chat";
 import { Socket } from "socket.io-client";
 
 const ChatPage = () => {

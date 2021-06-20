@@ -58,10 +58,9 @@ const ChatAreaMain = () => {
     useEffect(() => {
         if (socketStateRedux && conversationsInfos && conversationsId) {
             onServerSendMessage(socketStateRedux, (data: any) => {
-                if (data && conversationsId === data.conversationsId) {
+                if (data && conversationsId === data.conversationId) {
                     console.log(data);
                     const { conversationsId, ...rest } = data;
-
                     const cloneDialogs = [...conversationsInfos.dialogs, { ...rest }]
                     setConversationsInfos({ ...conversationsInfos, dialogs: cloneDialogs });
                 }
@@ -78,7 +77,7 @@ const ChatAreaMain = () => {
     }, [conversationsInfos?.dialogs.length])
 
     return (
-        <>
+        <div>
             <ChatAreaRoomName />
             <div style={{ minHeight: "72vh" }}>
                 <div className="content__body">
@@ -100,7 +99,7 @@ const ChatAreaMain = () => {
                 </div>
             </div>
             <ChatAreaInput />
-        </>
+        </div>
     )
 };
 export default ChatAreaMain;

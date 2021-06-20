@@ -72,7 +72,7 @@ const LeftSideSecurityModal = (props: ILeftSideSecurityModal) => {
         if(formList.current.indexOf(form) !== -1 ){
             setOpenFormChange({...openFormChange,[form]:false});
         }
-    },[])
+    },[openFormChange])
     return <div>
         <Modal show={show}
                onHide={handleClose}
