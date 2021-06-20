@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import 'react-toastify/dist/ReactToastify.min.css';
 import {Switch, Route, Redirect} from "react-router-dom"
 

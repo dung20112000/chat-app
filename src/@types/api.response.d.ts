@@ -27,6 +27,7 @@ export interface IResponseConversationsList {
                 "updatedAt": string,
                 "createdAt": string
             }[]
+    updateSeen:boolean,
     },
     "createdAt": string,
     "updatedAt": string

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import React, {useCallback, useEffect,  useState} from "react";
 import {Container} from "react-bootstrap";
 import {
     ConversationBlockCommon,
@@ -8,28 +8,34 @@ import {callApi} from "../../../../../server-interaction/apis/api.services";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
 import {IResponseConversationsList} from "../../../../../@types/api.response";
-import {IUserFriendsList} from "../../../../../@types/redux";
+import {IUserFriendsList, IUserInfosReducer} from "../../../../../@types/redux";
 import {EOnlineStatus} from "../../../../../@types/enums.d";
 import {Socket} from "socket.io-client";
-import {onServerSendMessage} from "../../../../../server-interaction/socket-handle/socket-chat";
-import {useLocation,useRouteMatch} from "react-router-dom";
+import {
+    emitSeenMessage,
+    onServerSendMessage
+} from "../../../../../server-interaction/socket-handle/socket-chat";
+import {useLocation} from "react-router-dom";
 
+interface IPropsShowConversations extends IResponseConversationsList {
+    seenAction: (conversationId: string) => void;
+}
 
-const ShowConversations: React.FC<IResponseConversationsList> = (props) => {
+const ShowConversations: React.FC<IPropsShowConversations> = (props) => {
     const {pathname} = useLocation();
-    const urlConversationsId = pathname.replace("/chat-page/conversations/","");
+    const urlConversationsId = pathname.replace("/chat-page/conversations/", "");
 
     const friendsListStateRedux: IUserFriendsList[] = useSelector((state: RootState) => state.friendsList);
-    const {_id: conversationsId} = props;
-    const {participants, roomName, dialogs} = props.room;
+    const {_id: conversationsId, seenAction} = props;
+    const {participants, roomName, dialogs, updateSeen} = props.room;
     if (!dialogs || dialogs.length === 0) return null;
     const {
         sender: {personalInfos: {firstName: senderFirstName, lastName: senderLastName}},
         message,
         updatedAt
-    } = dialogs[0] ;
+    } = dialogs[0];
     const senderLastMessage = senderFirstName + senderLastName;
-    const participantsNames = ()=> {
+    const participantsNames = () => {
         return participants.length > 1 ? participants.reduce((allNames: string, member) => {
             const {userId: {personalInfos: {firstName, lastName}}} = member;
             allNames += `${firstName} ${lastName}, `
@@ -41,7 +47,8 @@ const ShowConversations: React.FC<IResponseConversationsList> = (props) => {
         return <ConversationBlockGroup currentUserAvatarUrl={""}
                                        groupName={roomName ? roomName : participantsNames()}
                                        lastMessage={{sender: senderLastMessage, message}}
-                                       members={participants.length + 1} active={urlConversationsId === conversationsId}/>
+                                       members={participants.length + 1}
+                                       active={urlConversationsId === conversationsId}/>
     }
     const {
         userId: {
@@ -61,14 +68,18 @@ const ShowConversations: React.FC<IResponseConversationsList> = (props) => {
             status={EOnlineStatus.offline} key={partnerId} id={conversationsId}
             friendName={partnerName} avatarUrl={partnerAvatarUrl}
             lastMessage={message}
-            active={urlConversationsId === conversationsId}/>
+            active={urlConversationsId === conversationsId}
+            updateSeen={updateSeen}
+            seenAction={seenAction}/>
     }
     return <ConversationBlockCommon
         lastMessageTime={updatedAt}
         status={isFriend.onlineStatus} key={partnerId} id={conversationsId}
         friendName={partnerName} avatarUrl={partnerAvatarUrl}
         lastMessage={message}
-        active={urlConversationsId === conversationsId}/>
+        active={urlConversationsId === conversationsId}
+        updateSeen={updateSeen}
+        seenAction={seenAction}/>
 }
 
 // const ShowConversationsMemo = React.memo(ShowConversations);
@@ -77,6 +88,9 @@ const ShowConversations: React.FC<IResponseConversationsList> = (props) => {
 const LeftSideConversationList = () => {
     const [conversationsList, setConversationsList] = useState<null | IResponseConversationsList[]>(null);
     const socketStateRedux: Socket = useSelector((state: RootState) => state.socket);
+    const userInfosStateRedux: IUserInfosReducer = useSelector((state: RootState) => {
+        return state.userInfos;
+    });
     useEffect(() => {
         (
             async () => {
@@ -88,38 +102,51 @@ const LeftSideConversationList = () => {
             }
         )()
     }, []);
-    const updateDialogs = useCallback(async ( serverData:any,conversationsList: IResponseConversationsList[]) => {
-        const {conversationId,...rest} = serverData;
+    const updateDialogs = useCallback(async (senderId:string,serverData: any, conversationsList: IResponseConversationsList[]) => {
+        const {conversationId, ...rest} = serverData;
         const indexIdInList = conversationsList.findIndex(conversation => conversation._id === conversationId);
-        if (indexIdInList < 0){
-            const response = await callApi(`conversations/${conversationId}`,"GET");
-            response && response.status === 200 ? conversationsList.push(response.data.conversationsInfo) : console.log(response);
-            conversationsList.unshift(response.data.conversationsInfo);
+        if (indexIdInList < 0) {
+            const response = await callApi(`conversations/${conversationId}`, "GET");
+            response && response.status === 200 ? conversationsList.unshift(response.data.conversationsInfo) : console.log(response);
             return [...conversationsList];
+        }
+        if (senderId !== serverData.sender._id){
+            conversationsList[indexIdInList].room.updateSeen = false;
         }
         conversationsList[indexIdInList].room.dialogs = [{...rest}];
         const topPushing = conversationsList[indexIdInList];
-        conversationsList.splice(indexIdInList,1);
+        conversationsList.splice(indexIdInList, 1);
         conversationsList.unshift(topPushing);
         return [...conversationsList];
 
-    },[])
+    }, []);
+    const seenAction = (conversationsId: string) => {
+        if (conversationsList && conversationsList.length > 0 && socketStateRedux) {
+            const indexIdInList = conversationsList.findIndex((conversation) => conversation._id === conversationsId);
+            if (indexIdInList >= 0) {
+                conversationsList[indexIdInList].room.updateSeen = true;
+                emitSeenMessage(socketStateRedux,conversationsId)
+                setConversationsList([...conversationsList]);
+            }
+        }
+    }
     useEffect(() => {
         if (socketStateRedux && conversationsList) {
-            onServerSendMessage(socketStateRedux,async (data:any)=>{
-                if(data){
-                    const newState = await updateDialogs(data,conversationsList);
+            onServerSendMessage(socketStateRedux, async (data: any) => {
+                if (data) {
+                    const newState = await updateDialogs(userInfosStateRedux._id,data, conversationsList);
                     setConversationsList(newState);
                 }
             })
+
         }
-    }, [socketStateRedux,conversationsList])
+    }, [socketStateRedux, conversationsList,userInfosStateRedux?._id,updateDialogs]);
     return (
         <Container fluid>
             {
                 conversationsList && conversationsList.length > 0 ? conversationsList.map((conversation, index) => {
                     const {_id} = conversation;
-                    return <ShowConversations {...conversation} key={_id}/>
+                    return <ShowConversations seenAction={seenAction} {...conversation} key={_id}/>
                 }) : conversationsList && conversationsList.length === 0 ?
                     <p>You have no conversation</p> : <p>Loading</p>
             }
