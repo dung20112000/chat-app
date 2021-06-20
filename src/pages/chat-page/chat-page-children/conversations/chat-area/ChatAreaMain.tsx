@@ -12,6 +12,7 @@ import {
 import { useParams } from "react-router-dom";
 import { callApi } from "../../../../../server-interaction/apis/api.services";
 import "./scss/chatbody.scss"
+import {Row} from "react-bootstrap";
 interface IParams {
     conversationsId: string;
 }
@@ -34,6 +35,7 @@ const ChatAreaMain = () => {
         if (conversationsId) {
             callApi(`/conversations/${conversationsId}`, "GET").then((response: any) => {
                 if (response && response.data) {
+                    console.log(response.data)
                     setConversationsInfos(response.data.conversationsInfo?.room);
                     firstRender.current = false;
                 }
@@ -77,7 +79,8 @@ const ChatAreaMain = () => {
 
     return (
         <>
-            <ChatAreaRoomName />
+            <ChatAreaRoomName  participants={conversationsInfos?.participants} />
+
             <div style={{ minHeight: "72vh" }}>
                 <div className="content__body">
                     <div className="chat__items">
