@@ -4,3 +4,4 @@ export const FETCH_USER_INFOS_FAILED = "users/fetch-failed";
 export const UPDATE_USER_PERSONAL_INFOS = "users/update-user-infos";
 export const UPDATE_USER_SECURITY_INFOS = "user/update-security";
 export const UPDATE_USER_STATUS = "user/update-status";
+export const UPADTE_AVATAR_USER = "user/upadte-avatar";

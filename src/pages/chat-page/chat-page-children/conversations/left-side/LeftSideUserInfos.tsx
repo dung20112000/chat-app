@@ -8,10 +8,13 @@ import "./scss/leftsidechatpage.scss";
 import LeftSideUserInfoModal from "./LeftSideUserInfoModal";
 import LeftSideSecurityModal from "./LeftSideSecurityModal";
 import { emitChangeStatus } from "../../../../../server-interaction/socket-handle/socket-change-status";
-import { updateUserStatus } from "../../../../../redux/actions/users.actions.redux";
+import { updateAvatarUser, updateUserStatus } from "../../../../../redux/actions/users.actions.redux";
 import { emitClientLogout } from '../../../../../server-interaction/socket-handle/socket.services';
-import {Socket} from "socket.io-client";
+import { Socket } from "socket.io-client";
+import axios from "axios";
+import { callApi } from "../../../../../server-interaction/apis/api.services";
 
+const apiUrlUpload = "https://api.cloudinary.com/v1_1/fptssss/image/upload";
 
 const LeftSideUserInfos = () => {
     const userInfos = useSelector((state: RootState) => state.userInfos);
@@ -46,17 +49,48 @@ const LeftSideUserInfos = () => {
         }
 
     }
+
     const onLogout = () => {
         emitClientLogout(socketStateRedux, userInfos._id);
+    }
 
+    const apiUploadAvatar = async (formData: any) => {
+        const response = await axios.post(apiUrlUpload, formData);
+        if (response.status === 200) {
+            return callApi("/users/avatar", "PUT", {
+                avatarUrl: response.data.secure_url,
+            });
+        }
+    };
+
+    const uploadFile = async (file: any) => {
+        const formData = new FormData();
+        formData.append("file", file[0]);
+        formData.append("upload_preset", "upload-image-fpt");
+
+        const uploadAvatar = await apiUploadAvatar(formData);
+        if (uploadAvatar && uploadAvatar.data.success) {
+            dispatch(updateAvatarUser(uploadAvatar.data.avatarUrl));
+        }
     }
 
     return (
         <Row>
             <Col xs lg="3">
-                <AvatarWithStatus
-                    avatarUrl={avatarUrl}
-                    status={changeStatus} alt={`${firstName} ${lastName}`} />
+                <div className="upload-image">
+                    <div className="show-avtar">
+                        <AvatarWithStatus
+                            avatarUrl={avatarUrl}
+                            status={changeStatus} alt={`${firstName} ${lastName}`} />
+                    </div>
+                    <div className="overlay">
+                        <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg"
+                            onChange={(event) => uploadFile(event.target.files)} />
+                        <label htmlFor="imageUpload">
+                            <i className="fas fa-camera"></i>
+                        </label>
+                    </div>
+                </div>
             </Col>
             <Col xs className="pl-0">
                 <div className="user-info">
