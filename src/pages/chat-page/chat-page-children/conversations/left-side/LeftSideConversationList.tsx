@@ -1,90 +1,127 @@
-import React from "react";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {Container} from "react-bootstrap";
 import {
     ConversationBlockCommon,
     ConversationBlockGroup
 } from "../../../../../common-components/conversation-block.common";
-import {useEffect, useState} from "react";
-import {callApi} from "../../../../../server-interaction/api.services";
+import {callApi} from "../../../../../server-interaction/apis/api.services";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
-import {onServerSendMessage} from "../../../../../server-interaction/socket-handle/socket-chat";
+import {IResponseConversationsList} from "../../../../../@types/api.response";
+import {IUserFriendsList} from "../../../../../@types/redux";
+import {EOnlineStatus} from "../../../../../@types/enums.d";
 import {Socket} from "socket.io-client";
+import {onServerSendMessage} from "../../../../../server-interaction/socket-handle/socket-chat";
+import {useLocation,useRouteMatch} from "react-router-dom";
+
+
+const ShowConversations: React.FC<IResponseConversationsList> = (props) => {
+    const {pathname} = useLocation();
+    const urlConversationsId = pathname.replace("/chat-page/conversations/","");
+
+    const friendsListStateRedux: IUserFriendsList[] = useSelector((state: RootState) => state.friendsList);
+    const {_id: conversationsId} = props;
+    const {participants, roomName, dialogs} = props.room;
+    if (!dialogs || dialogs.length === 0) return null;
+    const {
+        sender: {personalInfos: {firstName: senderFirstName, lastName: senderLastName}},
+        message,
+        updatedAt
+    } = dialogs[0] ;
+    const senderLastMessage = senderFirstName + senderLastName;
+    const participantsNames = ()=> {
+        return participants.length > 1 ? participants.reduce((allNames: string, member) => {
+            const {userId: {personalInfos: {firstName, lastName}}} = member;
+            allNames += `${firstName} ${lastName}, `
+            return allNames;
+        }, "") : `${participants[0].userId.personalInfos.firstName} ${participants[0].userId.personalInfos.lastName}`
+    }
+    if (!friendsListStateRedux) return null;
+    if (participants.length > 2) {
+        return <ConversationBlockGroup currentUserAvatarUrl={""}
+                                       groupName={roomName ? roomName : participantsNames()}
+                                       lastMessage={{sender: senderLastMessage, message}}
+                                       members={participants.length + 1} active={urlConversationsId === conversationsId}/>
+    }
+    const {
+        userId: {
+            _id: partnerId,
+            personalInfos: {
+                firstName: partnerFirstName,
+                lastName: partnerLastName,
+                avatarUrl: partnerAvatarUrl
+            }
+        }
+    } = participants[0];
+    const partnerName = `${partnerFirstName} ${partnerLastName}`;
+    const isFriend = friendsListStateRedux.find(friend => friend._id === partnerId);
+    if (!isFriend) {
+        return <ConversationBlockCommon
+            lastMessageTime={updatedAt}
+            status={EOnlineStatus.offline} key={partnerId} id={conversationsId}
+            friendName={partnerName} avatarUrl={partnerAvatarUrl}
+            lastMessage={message}
+            active={urlConversationsId === conversationsId}/>
+    }
+    return <ConversationBlockCommon
+        lastMessageTime={updatedAt}
+        status={isFriend.onlineStatus} key={partnerId} id={conversationsId}
+        friendName={partnerName} avatarUrl={partnerAvatarUrl}
+        lastMessage={message}
+        active={urlConversationsId === conversationsId}/>
+}
+
+// const ShowConversationsMemo = React.memo(ShowConversations);
+
 
 const LeftSideConversationList = () => {
-    const [conversationsList, setConversationsList] = useState<any[]>([])
-    const idUserRedux = useSelector((state: RootState) => state.userInfos._id)
-    const socketStateRedux: Socket = useSelector((state: RootState) => {
-        return state.socket
-    });
-    const friendsListRedux = useSelector((state: RootState) => state.friendsList)
+    const [conversationsList, setConversationsList] = useState<null | IResponseConversationsList[]>(null);
+    const socketStateRedux: Socket = useSelector((state: RootState) => state.socket);
     useEffect(() => {
-        callApi(`/conversations`, "get")
-            .then(res => {
-                if (res.data && res.data.userConversations && res.data.userConversations.conversations) {
-                    setConversationsList(res.data.userConversations.conversations)
+        (
+            async () => {
+                const response = await callApi("/conversations", "GET");
+                if (response && response.status === 200 && response.data && response.data.conversations) {
+                    const {conversations} = response.data;
+                    setConversationsList(conversations);
                 }
-            })
-            .catch(err => console.log(err.response))
-    }, [])
+            }
+        )()
+    }, []);
+    const updateDialogs = useCallback(async ( serverData:any,conversationsList: IResponseConversationsList[]) => {
+        const {conversationId,...rest} = serverData;
+        const indexIdInList = conversationsList.findIndex(conversation => conversation._id === conversationId);
+        if (indexIdInList < 0){
+            const response = await callApi(`conversations/${conversationId}`,"GET");
+            response && response.status === 200 ? conversationsList.push(response.data.conversationsInfo) : console.log(response);
+            conversationsList.unshift(response.data.conversationsInfo);
+            return [...conversationsList];
+        }
+        conversationsList[indexIdInList].room.dialogs = [{...rest}];
+        const topPushing = conversationsList[indexIdInList];
+        conversationsList.splice(indexIdInList,1);
+        conversationsList.unshift(topPushing);
+        return [...conversationsList];
+
+    },[])
     useEffect(() => {
         if (socketStateRedux && conversationsList) {
-            onServerSendMessage(socketStateRedux, (data: any) => {
-                const {conversationId, ...rest} = data;
-                const isConversationsIdInlist = conversationsList.find((item: any) => item._id === conversationId)
-                if (!isConversationsIdInlist) {
-                    callApi(`/conversations/${conversationId}`, "get").then((res) => {
-                        if (res.status === 200 && res.data && res.data.conversationsInfo) {
-                            setConversationsList([res.data.conversationsInfo, ...conversationsList])
-                        }
-                    })
-                }
-                if (isConversationsIdInlist) {
-                    conversationsList.forEach((item: any, index) => {
-                        if (item._id === conversationId && item.room && item.room.dialogs) {
-                            item.room.dialogs.push({...rest})
-                            setConversationsList([...conversationsList])
-                        }
-                    })
+            onServerSendMessage(socketStateRedux,async (data:any)=>{
+                if(data){
+                    const newState = await updateDialogs(data,conversationsList);
+                    setConversationsList(newState);
                 }
             })
         }
-    }, [socketStateRedux, conversationsList])
-    const showConversationsList = (conversationsList: any[], friendsList: any[]) => {
-        return conversationsList.length > 0 && friendsList.length > 0 ? conversationsList.map((item, index) => {
-            const {_id, room: {participants, roomName, dialogs}} = item;
-            if (dialogs.length === 0) return;
-            const {message, updatedAt} = dialogs.length > 0 && dialogs[dialogs.length - 1]
-            if (participants.length <= 2) {
-                const idFriend = participants.find((item: any) => item.userId !== idUserRedux)
-                if (idFriend) {
-                    const friendChat = friendsList.find((item: any) => item._id === idFriend.userId)
-                    if (friendChat) {
-                        const {
-                            onlineStatus,
-                            personalInfos: {firstName, lastName, avatarUrl}
-                        } = friendChat
-                        return <ConversationBlockCommon
-                            lastMessageTime={updatedAt}
-                            status={onlineStatus} key={_id} id={_id}
-                            friendName={`${firstName} ${lastName}`} avatarUrl={avatarUrl}
-                            lastMessage={message}/>
-                    }
-                }
-                return null;
-            }
-            return <ConversationBlockGroup currentUserAvatarUrl={""} groupName={"Huy"}
-                                           lastMessage={{sender: "Huy", message: "abc"}}
-                                           members={6}/>
-
-
-        }) : null
-    }
+    }, [socketStateRedux,conversationsList])
     return (
         <Container fluid>
             {
-                conversationsList && conversationsList.length > 0 && friendsListRedux.length > 0 ?
-                    showConversationsList(conversationsList, friendsListRedux) : null
+                conversationsList && conversationsList.length > 0 ? conversationsList.map((conversation, index) => {
+                    const {_id} = conversation;
+                    return <ShowConversations {...conversation} key={_id}/>
+                }) : conversationsList && conversationsList.length === 0 ?
+                    <p>You have no conversation</p> : <p>Loading</p>
             }
         </Container>
     )

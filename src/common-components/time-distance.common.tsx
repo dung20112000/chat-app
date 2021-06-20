@@ -30,7 +30,7 @@ const TimeDistanceCommon: React.FC<IPropsTimeDistanceCommon> = ({lastMessageTime
     useEffect(() => {
         const lastTime = new Date(lastMessageTime).toLocaleString("vi-vn").split(",").reverse();
         let seconds = (moment(getDateTime(), "DD/MM/YYYY HH:mm:ss").diff(moment(lastTime, "DD/MM/YYYY HH:mm:ss"), "seconds"))
-        let timeLoop:number = 5*1000;
+        let timeLoop:number = 30*1000;
         if (makeRound(seconds/3600) > 24) {
             timeLoop = 86400*1000
         } else if (makeRound(seconds/3600) > 0) {
@@ -44,7 +44,7 @@ const TimeDistanceCommon: React.FC<IPropsTimeDistanceCommon> = ({lastMessageTime
         showRefTime.current.innerHTML = convertSeconds(seconds);
         const interval = setInterval(() => {
             // @ts-ignore
-            showRefTime.current.innerHTML = "changed";
+            showRefTime.current.innerHTML = convertSeconds(seconds);
             seconds += timeLoop/1000
             console.log(seconds)
         },timeLoop);

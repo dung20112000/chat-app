@@ -10,7 +10,7 @@ import {
     onServerSendMessage
 } from "../../../../../server-interaction/socket-handle/socket-chat";
 import { useParams } from "react-router-dom";
-import { callApi } from "../../../../../server-interaction/api.services";
+import { callApi } from "../../../../../server-interaction/apis/api.services";
 import "./scss/chatbody.scss"
 interface IParams {
     conversationsId: string;
@@ -60,7 +60,6 @@ const ChatAreaMain = () => {
             onServerSendMessage(socketStateRedux, (data: any) => {
                 if (data) {
                     const { conversationsId, ...rest } = data;
-                    // conversationsInfos.dialogs.push({ ...rest });
                     const cloneDialogs = [...conversationsInfos.dialogs, { ...rest }]
                     setConversationsInfos({ ...conversationsInfos, dialogs: cloneDialogs });
                 }
@@ -86,8 +85,9 @@ const ChatAreaMain = () => {
                             userInfosStateRedux && conversationsInfos && conversationsInfos.dialogs
                                 && conversationsInfos.dialogs.length > 0 ? (
                                 conversationsInfos.dialogs.map((dialog: any, index: number) => {
-                                    if (dialog.sender === userInfosStateRedux._id) {
-                                        return <ChatAreaDialog key={index} dialog={dialog} me={true} />
+                                    const {_id} = dialog;
+                                    if (dialog.sender._id === userInfosStateRedux._id) {
+                                        return <ChatAreaDialog key={_id} dialog={dialog} me={true} />
                                     }
                                     return <ChatAreaDialog key={index} dialog={dialog} me={false} />
                                 })
