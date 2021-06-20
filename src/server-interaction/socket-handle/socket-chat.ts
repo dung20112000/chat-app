@@ -1,4 +1,4 @@
-import {Socket} from "socket.io-client";
+import { Socket } from "socket.io-client";
 
 interface ISenderInfos {
     _id: string;
@@ -24,3 +24,8 @@ export const onServerSendMessage = (socket:Socket,action:any)=>{
         action(data);
     })
 }
+export const onCreateConversations = (socket: Socket, action: any) => {
+  socket.on("emitCreateConversations", (data) => {
+    action(data);
+  });
+};
