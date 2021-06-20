@@ -93,8 +93,7 @@ const LeftSideConversationList = () => {
         const indexIdInList = conversationsList.findIndex(conversation => conversation._id === conversationId);
         if (indexIdInList < 0){
             const response = await callApi(`conversations/${conversationId}`,"GET");
-            response && response.status === 200 ? conversationsList.push(response.data.conversationsInfo) : console.log(response);
-            conversationsList.unshift(response.data.conversationsInfo);
+            response && response.status === 200 ? conversationsList.unshift(response.data.conversationsInfo) : console.log(response);
             return [...conversationsList];
         }
         conversationsList[indexIdInList].room.dialogs = [{...rest}];
