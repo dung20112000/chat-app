@@ -1,4 +1,4 @@
-import {Col, Container, Row} from "react-bootstrap";
+import {Container} from "react-bootstrap";
 import "./scss/chatarea.scss"
 
 import {Switch,Route} from "react-router-dom";

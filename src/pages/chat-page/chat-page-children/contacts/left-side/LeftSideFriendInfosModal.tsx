@@ -3,7 +3,6 @@ import { Col, Modal, Row} from "react-bootstrap";
 import {Avatar} from "../../../../../common-components/avatar.common";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
-import {EGender} from "../../../../../@types/enums";
 
 interface ILeftSideUserInfoModal {
     show: boolean,

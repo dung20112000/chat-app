@@ -26,7 +26,7 @@ const TimeDistanceCommon: React.FC<IPropsTimeDistanceCommon> = ({lastMessageTime
                     )
     )
 
-    },[])
+    },[makeRound])
     useEffect(() => {
         const lastTime = new Date(lastMessageTime).toLocaleString("vi-vn").split(",").reverse();
         let seconds = (moment(getDateTime(), "DD/MM/YYYY HH:mm:ss").diff(moment(lastTime, "DD/MM/YYYY HH:mm:ss"), "seconds"))
@@ -53,7 +53,7 @@ const TimeDistanceCommon: React.FC<IPropsTimeDistanceCommon> = ({lastMessageTime
                 clearInterval(interval);
             }
         }
-    },[lastMessageTime])
+    },[lastMessageTime,convertSeconds,getDateTime,makeRound])
     return (
         <Col ref={showRefTime} xs={3} className="text-right pt-2 pl-0 text-muted">
 

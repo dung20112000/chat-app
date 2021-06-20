@@ -58,16 +58,17 @@ const ChatAreaMain = () => {
     }, [conversationsId, socketStateRedux, userInfosStateRedux?._id, friendsListStateRedux])
 
     useEffect(() => {
-        if (socketStateRedux && conversationsInfos) {
+        if (socketStateRedux && conversationsInfos && conversationsId) {
             onServerSendMessage(socketStateRedux, (data: any) => {
-                if (data) {
+                if (data && conversationsId === data.conversationId) {
+                    console.log(data);
                     const { conversationsId, ...rest } = data;
                     const cloneDialogs = [...conversationsInfos.dialogs, { ...rest }]
                     setConversationsInfos({ ...conversationsInfos, dialogs: cloneDialogs });
                 }
             })
         }
-    }, [socketStateRedux, conversationsInfos]);
+    }, [socketStateRedux, conversationsInfos,conversationsId]);
 
     useEffect(() => {
         if (!firstRender.current) {
@@ -78,9 +79,9 @@ const ChatAreaMain = () => {
     }, [conversationsInfos?.dialogs.length])
 
     return (
-        <>
-            <ChatAreaRoomName  participants={conversationsInfos?.participants} />
 
+        <div>
+            <ChatAreaRoomName  participants={conversationsInfos?.participants} />
             <div style={{ minHeight: "72vh" }}>
                 <div className="content__body">
                     <div className="chat__items">
@@ -101,7 +102,7 @@ const ChatAreaMain = () => {
                 </div>
             </div>
             <ChatAreaInput />
-        </>
+        </div>
     )
 };
 export default ChatAreaMain;
