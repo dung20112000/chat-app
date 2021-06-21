@@ -46,6 +46,12 @@ export const offLoadingInterceptors = (axiosInstance: AxiosInstance) => {
         }
         return response;
     }, (error) => {
-        return Promise.reject(error);
+        if (error){
+            currentRequests=-1;
+            if (currentRequests <= 0){
+                store.dispatch(offLoading());
+            }
+            return Promise.reject(error);
+        }
     })
 }
