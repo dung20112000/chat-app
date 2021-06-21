@@ -1,4 +1,4 @@
-import {IMethodUrlObject} from "../@types/ApiServices";
+import {IMethodUrlObject} from "../../@types/ApiServices";
 
 export const notRequiredTokenApis: IMethodUrlObject[] = [
     {

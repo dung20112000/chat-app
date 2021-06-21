@@ -6,6 +6,7 @@ import {useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
 import "../scss/friendList.scss"
 import LeftSideFriendInfosModal from "./LeftSideFriendInfosModal";
+import LeftSideDeleteFriendModal from "./LeftSideDEleteFriendModal";
 
 interface IPropsSearch {
     handleChange: (searchValue: string) => void
@@ -56,6 +57,10 @@ const ContactsCommon: React.FC<IConversationBlockCommon> = ({avatarUrl, friendNa
     const handleCloseFriendInfos = () => setShowFriendInfos(false);
     const handleShowFriendInfos = () => setShowFriendInfos(true);
 
+    const [showDeleteFriend, setShowDeleteFriend] = useState(false);
+    const handleCloseDeleteFriend = () => setShowDeleteFriend(false);
+    const handleShowDeleteFriend = () => setShowDeleteFriend(true);
+
     const onMouseOverArea = (event: MouseEvent) => {
         if (areaRef.current) {
             //@ts-ignore
@@ -90,10 +95,11 @@ const ContactsCommon: React.FC<IConversationBlockCommon> = ({avatarUrl, friendNa
                     </Dropdown.Toggle>
                     <Dropdown.Menu className="super-colors">
                         <Dropdown.Item eventKey="1" onClick={handleShowFriendInfos}>View Information</Dropdown.Item>
-                        <Dropdown.Item eventKey="3">Delete</Dropdown.Item>
+                        <Dropdown.Item eventKey="3" onClick={handleShowDeleteFriend}>Delete</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
-                <LeftSideFriendInfosModal show={showFriendInfos} handleClose={handleCloseFriendInfos} id={_id}/>
+                <LeftSideDeleteFriendModal show={showDeleteFriend} handleClose={handleCloseDeleteFriend} id={_id} />
+                <LeftSideFriendInfosModal show={showFriendInfos} handleClose={handleCloseFriendInfos} _id={_id}/>
             </Col>
         </Row>
     )

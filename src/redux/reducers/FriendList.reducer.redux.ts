@@ -3,7 +3,7 @@ import {
   FETCH_USER_FRIEND_LIST_SUCCESS,
   FETCH_USER_FRIEND_LIST_FAILED,
   ACCEPT_FRIEND_REQUEST,
-  UPDATE_CONVERSATION_ID,
+  UPDATE_CONVERSATION_ID, DELETE_FRIEND,
 } from "../types/FriendList.types.redux";
 
 const initialState: any | null = [];
@@ -37,6 +37,15 @@ const UsersFriendsListReducer = (state = initialState, action: any) => {
         }
       });
       return [...state];
+    }
+    case DELETE_FRIEND: {
+      const friendIndex = findFriendById(payload,state)
+      if (friendIndex || friendIndex === 0) {
+        const friendList = [...state]
+        friendList.splice(friendIndex,1)
+        return friendList;
+      }
+      return state;
     }
     default:
       return state;

@@ -43,7 +43,7 @@ export interface IUserInfosActions extends Action {
 
 export interface IUserFriendsList {
   email: string;
-  onlineStatus: string;
+  onlineStatus: EOnlineStatus;
   personalInfos: {
     firstName: string;
     lastName: string;
@@ -51,7 +51,7 @@ export interface IUserFriendsList {
     _id: string;
   };
   previousOnlineStatus: {
-    status: string;
+    status: EOnlineStatus;
     lastActive: string;
   };
   _id: string;
