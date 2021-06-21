@@ -1,8 +1,8 @@
-@mixin span-style{
-  position:absolute;
+@mixin span-style {
+  position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
 }
 .avatar {
   background-repeat: no-repeat;
@@ -12,10 +12,10 @@
   padding-top: 100%;
 
   span {
-   @include span-style;
+    @include span-style;
     font: {
       size: 150%;
-      weight:700;
+      weight: 700;
     }
   }
 
@@ -25,9 +25,8 @@
     bottom: 0rem;
     right: 0rem;
     border: white 2px solid;
+    z-index: 1000;
   }
-
-
 
   .avatar-member {
     background-repeat: no-repeat;
@@ -39,18 +38,18 @@
     bottom: 0rem;
     border: 1px solid white;
   }
-  .members{
+  .members {
     width: 60%;
     height: 60%;
     right: -20%;
     bottom: 0rem;
     border: 1px solid white;
-    span{
+    span {
       @include span-style;
       font: {
-        size:100%;
+        size: 100%;
         weight: 400;
-      };
+      }
     }
   }
 }
