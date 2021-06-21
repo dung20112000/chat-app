@@ -99,7 +99,7 @@ const ContactsCommon: React.FC<IConversationBlockCommon> = ({avatarUrl, friendNa
                     </Dropdown.Menu>
                 </Dropdown>
                 <LeftSideDeleteFriendModal show={showDeleteFriend} handleClose={handleCloseDeleteFriend} id={_id} />
-                <LeftSideFriendInfosModal show={showFriendInfos} handleClose={handleCloseFriendInfos} id={_id}/>
+                <LeftSideFriendInfosModal show={showFriendInfos} handleClose={handleCloseFriendInfos} _id={_id}/>
             </Col>
         </Row>
     )

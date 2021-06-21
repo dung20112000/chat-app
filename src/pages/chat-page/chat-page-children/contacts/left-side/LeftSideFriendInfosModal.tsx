@@ -3,35 +3,62 @@ import { Col, Modal, Row} from "react-bootstrap";
 import {Avatar} from "../../../../../common-components/avatar.common";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
+import {useHistory} from "react-router-dom";
+import {emitJoinRoom} from "../../../../../server-interaction/socket-handle/socket-chat";
+import {IUserInfosReducer} from "../../../../../@types/redux";
 
 interface ILeftSideUserInfoModal {
     show: boolean,
     handleClose: any,
-    id: string
+    _id: string
 }
-interface FormValues {
+interface IValues {
     avatarUrl:string,
     firstName: string,
     lastName: string,
+    conversationsId: string,
     // gender: EGender,
 }
 
-const LeftSideFriendInfosModal = ({show,handleClose,id}: ILeftSideUserInfoModal) => {
+const LeftSideFriendInfosModal = ({show,handleClose,_id}: ILeftSideUserInfoModal) => {
+    const history = useHistory()
     const friendListInfosRedux:any = useSelector((state:RootState) => state.friendsList)
-    let initialValues: FormValues = {
+    const userInfosStateRedux: IUserInfosReducer = useSelector((state: RootState) => {
+        return state.userInfos;
+    });
+    const socketStateRedux: any = useSelector((state: RootState) => {
+        return state.socket
+    });
+    let initialValues: IValues = {
         avatarUrl: "",
         firstName: "",
         lastName: "",
+        conversationsId: "",
         // gender: EGender.female
     }
     if(friendListInfosRedux) {
-        const friendInfos = friendListInfosRedux.find((item:any) => item._id === id);
+        const friendInfos = friendListInfosRedux.find((item:any) => item._id === _id);
         if (friendInfos) {
             const {personalInfos : {firstName,lastName,avatarUrl}} = friendInfos;
-            initialValues = {avatarUrl,firstName,lastName}
+            const {conversationsId} = friendInfos
+            initialValues = {avatarUrl,firstName,lastName,conversationsId}
         }
     }
-    const {firstName,lastName,avatarUrl} = initialValues;
+    const onChat = () => {
+        if (userInfosStateRedux && socketStateRedux) {
+            const members: any = [];
+            members.push({ userId: userInfosStateRedux._id })
+            members.push({ userId: _id })
+
+            emitJoinRoom(socketStateRedux, conversationsId, members, (response: any) => {
+                console.log(response)
+                if (response.status && response.roomId) {
+                    history.push(`/chat-page/conversations/${response.roomId}`);
+                }
+            })
+        }
+    }
+    const {firstName,lastName,avatarUrl,conversationsId} = initialValues;
     return (
         <div>
             <Modal show={show}
@@ -50,15 +77,10 @@ const LeftSideFriendInfosModal = ({show,handleClose,id}: ILeftSideUserInfoModal)
                                 <Avatar avatarUrl={avatarUrl} alt={firstName}/>
                             </div>
                         </Col>
-                        <Col xs={9} className="mb-2 ml-5">
+                        <Col xs={12} className="pt-2">
                             <div>
-                                <h3 className="pl-4 mb-1 pt-2">{firstName} {lastName}</h3>
+                                <h3 >{firstName} {lastName}</h3>
                             </div>
-                        </Col>
-                        <Col xs={1}>
-                            <button type="button" className="btn text-right pt-2">
-                                <i className="fas fa-pencil-alt"/>
-                            </button>
                         </Col>
                         <Col xs={12} className="mb-3">
                             <div className="text-muted" style={{fontSize: "1.2rem"}}>
@@ -66,9 +88,17 @@ const LeftSideFriendInfosModal = ({show,handleClose,id}: ILeftSideUserInfoModal)
                             </div>
                         </Col>
                         <Col xs={12} className="pb-4">
-                            <button className="btn btn-primary w-25">
-                                Chat
-                            </button>
+                            {
+                                conversationsId ? (
+                                    <button type="button" onClick={() => history.push(`/chat-page/conversations/${conversationsId}`)} className="btn btn-primary w-25">
+                                        Chat
+                                    </button>
+                                ) : (
+                                    <button type="button" onClick={onChat} className="btn btn-primary w-25">
+                                        Chat
+                                    </button>
+                                )
+                            }
                         </Col>
                     </Row>
                     <Row className="text-left d-flex align-items-center">

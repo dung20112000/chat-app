@@ -1,0 +1,1 @@
+export const CHANGE_CONVERSATION_DETAIL = "friends-list/conversation-detail"
