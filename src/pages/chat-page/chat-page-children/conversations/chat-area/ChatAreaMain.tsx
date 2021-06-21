@@ -2,7 +2,7 @@ import ChatAreaRoomName from "./ChatAreaRoomName";
 import ChatAreaDialog from "./ChatAreaDialog";
 import ChatAreaInput from "./ChatAreaInput";
 import { IUserInfosReducer } from "../../../../../@types/redux";
-import { useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { RootState } from "../../../../../redux/reducers/RootReducer.reducer.redux";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -12,10 +12,12 @@ import {
 import { useParams } from "react-router-dom";
 import { callApi } from "../../../../../server-interaction/apis/api.services";
 import "./scss/chatbody.scss"
+import {changeConversationDetail} from "../../../../../redux/actions/Conversation.redux";
 interface IParams {
     conversationsId: string;
 }
 const ChatAreaMain = () => {
+    const dispath = useDispatch()
     const { conversationsId } = useParams<IParams>();
     const [conversationsInfos, setConversationsInfos] = useState<any>(null);
     const endRef = useRef(null);
@@ -34,7 +36,21 @@ const ChatAreaMain = () => {
         if (conversationsId) {
             callApi(`/conversations/${conversationsId}`, "GET").then((response: any) => {
                 if (response && response.data) {
+                    console.log(response.data)
                     setConversationsInfos(response.data.conversationsInfo?.room);
+                    const {_id,room : {roomName, participants}} = response.data.conversationsInfo
+                    if (participants && participants.length === 1) {
+                        const {firstName, lastName, avatarUrl} = participants[0].userId.personalInfos
+                        const uploadRedux = {
+                            _id : _id,
+                            roomName: roomName,
+                            firstName: firstName,
+                            lastName: lastName,
+                            avatarUrl: avatarUrl,
+                            members: participants.length
+                        }
+                        dispath(changeConversationDetail(uploadRedux))
+                    }
                     firstRender.current = false;
                 }
             })
@@ -77,8 +93,9 @@ const ChatAreaMain = () => {
     }, [conversationsInfos?.dialogs.length])
 
     return (
+
         <div>
-            <ChatAreaRoomName />
+            <ChatAreaRoomName  participants={conversationsInfos?.participants} />
             <div style={{ minHeight: "72vh" }}>
                 <div className="content__body">
                     <div className="chat__items">
