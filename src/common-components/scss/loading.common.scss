@@ -1,0 +1,18 @@
+.wrapper-loading {
+  &::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0.4;
+    z-index: 900;
+  }
+  img{
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+  }
+}

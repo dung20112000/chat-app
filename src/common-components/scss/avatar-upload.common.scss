@@ -1,0 +1,17 @@
+.upload-image {
+  & * {
+    cursor:pointer;
+  }
+  .dropdown-menu.show{
+    padding: 0!important;
+  }
+  .dropdown-toggle::after{
+    display: none!important;
+  }
+  .btn-primary{
+    background-color: transparent!important;
+    border: none!important;
+  }
+    .input-change-avatar {
+    }
+}
