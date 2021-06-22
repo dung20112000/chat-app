@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Redirect} from "react-router-dom";
-import {callApi} from "../../server-interaction/api.services";
+import {callApi} from "../../server-interaction/apis/api.services";
 
 const withAuthentication = (WrappedComponent: React.ComponentType<any>) => {
     const WithAuthentication: React.FC<any> = (props: any) => {

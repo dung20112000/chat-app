@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
 import {IUserInfosReducer} from "../../../../../@types/redux";
 import {EGender} from "../../../../../@types/enums.d";
-import {callApi} from "../../../../../server-interaction/api.services";
+import {callApi} from "../../../../../server-interaction/apis/api.services";
 import {updateUserPersonalInfos} from "../../../../../redux/actions/users.actions.redux";
 
 interface ILeftSideUserInfoModal {

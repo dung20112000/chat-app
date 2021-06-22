@@ -2,7 +2,7 @@ import { EOnlineStatus } from "../@types/enums.d";
 import React from "react";
 import "./scss/avatar.common.scss";
 
-interface IAvatar {
+export interface IAvatar {
     avatarUrl: string;
     avatarUrlMember?: string;
     _id?: string;

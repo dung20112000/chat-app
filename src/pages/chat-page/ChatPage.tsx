@@ -4,18 +4,18 @@ import { Switch, Route, useLocation, Redirect, useHistory } from "react-router-d
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/reducers/RootReducer.reducer.redux";
 import { useEffect } from "react";
-import { createSocket, onLogout } from "../../server-interaction/socket.services";
+import { createSocket, onLogout } from "../../server-interaction/socket-handle/socket.services";
 import { addSocket } from "../../redux/actions/socket.actions.redux";
 import { fetchUserInfos } from "../../redux/actions/users.actions.redux";
 import { notifyNewFriendRequest, notifySuccess } from "../../helpers/functions/notify.helper";
 import { IUserInfosReducer } from "../../@types/redux";
-import { emitClientConnect } from "../../server-interaction/socket.services";
+import { emitClientConnect } from "../../server-interaction/socket-handle/socket.services";
 import { emitAcceptFriendsRequests, onAcceptInfosToSender, onComingFriendsRequests } from "../../server-interaction/socket-handle/socket-friends-requests";
 import { acceptFriendRequest, fetchUserFriendList, updateConversationIdOfFriends } from "../../redux/actions/FriendList.actions.redux";
 import { fetchFriendRequest, removeFriendsRequest } from "../../redux/actions/FriendRequest.action.redux";
 import { onStatusToOnlineFriends } from "../../server-interaction/socket-handle/socket-change-status";
 import { updateFriendStatus } from './../../redux/actions/FriendList.actions.redux';
-import { onCreateConversations, onServerSendMessage } from "../../server-interaction/socket-handle/socket-chat";
+import { onCreateConversations} from "../../server-interaction/socket-handle/socket-chat";
 import { Socket } from "socket.io-client";
 
 const ChatPage = () => {

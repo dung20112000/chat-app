@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import {IUserInfosReducer} from "../../../../../../@types/redux";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../../../../../redux/reducers/RootReducer.reducer.redux";
-import {callApi} from "../../../../../../server-interaction/api.services";
+import {callApi} from "../../../../../../server-interaction/apis/api.services";
 import {updateUserSecurityInfos} from "../../../../../../redux/actions/users.actions.redux";
 import {notifySuccess} from "../../../../../../helpers/functions/notify.helper";
 import {checkFormErrorsHelper} from "../../../../../../helpers/functions/check-form-errors.helper";
