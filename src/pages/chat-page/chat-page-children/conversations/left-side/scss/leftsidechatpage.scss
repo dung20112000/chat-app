@@ -56,3 +56,39 @@ span {
     }
 }
 
+form {
+    .form-group {
+        cursor: pointer;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        border-radius: 5px;
+        &:hover {
+            background-color: #f1f1f1;
+        }
+    }
+}
+
+.box-friend-group {
+    .item-friend-group {
+        background-color: #ccc;
+        border-radius: 15px;
+        &:hover {
+            background-color: #aaa;
+        }
+        .name-friend {
+            width: 50%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .remove-friend {
+            i {
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+.w-20 {
+    width: 20% !important;
+}
