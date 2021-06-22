@@ -137,3 +137,34 @@ button {
         inset: auto auto 0px -25px !important;
     }
 }
+.search-area-input {
+   .search-input {
+        width: 100%;
+        input {
+            height: 3rem;
+            resize: none;
+            width: 100%;
+            border: none;
+            outline: none;
+            background: none;
+        }
+    }
+}
+.friend-list-add {
+    max-height: 50vh;
+    overflow: auto;
+    .friend-row-modal.hover:hover  .button-setting {
+        background: none;
+        color: gray!important;
+    }
+    .friend-row-modal {
+        cursor: pointer;
+        .checkbox-input {
+            -webkit-transform: scale(2);
+            transform: scale(2);
+        }
+    }
+    .bg-contact-item {
+        background: rgba(219, 229, 237, 0.4);
+    }
+}

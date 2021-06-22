@@ -1,6 +1,10 @@
 import {Row, Col, Container} from "react-bootstrap";
 import LeftSideUserInfos from "./LeftSideUserInfos";
 import LeftSideConversationList from "./LeftSideConversationList";
+import React from "react";
+
+
+
 const LeftSideChatPage = () => {
     return (
         <Container fluid={true}>
@@ -16,19 +20,6 @@ const LeftSideChatPage = () => {
                     <div className="border-bottom pb-3">
                         <LeftSideUserInfos/>
                     </div>
-                </Col>
-            </Row>
-            <Row className="mb-3">
-                <Col xs={12}>
-                    <form>
-                        <Row>
-                            <Col xs={12}>
-                                <div>
-                                    <input type="text" className="form-control rounded" placeholder="Search conversations"/>
-                                </div>
-                            </Col>
-                        </Row>
-                    </form>
                 </Col>
             </Row>
             <Row>

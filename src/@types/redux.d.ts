@@ -55,6 +55,7 @@ export interface IUserFriendsList {
     lastActive: string;
   };
   _id: string;
+  conversationsId: string | null;
 }
 
 export interface IUserFriendsListAction extends Action {
