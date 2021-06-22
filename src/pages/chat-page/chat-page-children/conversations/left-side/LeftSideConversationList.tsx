@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect,  useState} from "react";
-import {Container} from "react-bootstrap";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {Col, Container, Row} from "react-bootstrap";
 import {
     ConversationBlockCommon,
     ConversationBlockGroup
@@ -83,7 +83,35 @@ const ShowConversations: React.FC<IPropsShowConversations> = (props) => {
 }
 
 // const ShowConversationsMemo = React.memo(ShowConversations);
+interface IPropsSearch {
+    handleChange: (searchValue: string) => void
+}
 
+const SearchConversation = (props: IPropsSearch) => {
+    const onSearchChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+        const target = evt.target;
+        const value = target.value;
+        props.handleChange(value)
+    }
+    return (
+        <Row className="mb-3">
+            <Col xs={12} className="p-0">
+                <form>
+                    <div>
+                        <input
+                            id="searchValues"
+                            name="searchValues"
+                            type="text"
+                            onChange={onSearchChange}
+                            placeholder="Search Conversation"
+                            className="form-control"
+                        />
+                    </div>
+                </form>
+            </Col>
+        </Row>
+    )
+}
 
 const LeftSideConversationList = () => {
     const [conversationsList, setConversationsList] = useState<null | IResponseConversationsList[]>(null);
@@ -91,18 +119,45 @@ const LeftSideConversationList = () => {
     const userInfosStateRedux: IUserInfosReducer = useSelector((state: RootState) => {
         return state.userInfos;
     });
+    const allConversationsRef = useRef<any[]>([])
+
     useEffect(() => {
         (
             async () => {
                 const response = await callApi("/conversations", "GET");
                 if (response && response.status === 200 && response.data && response.data.conversations) {
                     const {conversations} = response.data;
+                    allConversationsRef.current = conversations
                     setConversationsList(conversations);
                 }
             }
         )()
     }, []);
-    const updateDialogs = useCallback(async (senderId:string,serverData: any, conversationsList: IResponseConversationsList[]) => {
+
+    const isMatchParticipants = useCallback((participants: any[], searchValue: string) => {
+        for (const participant of participants) {
+            const {userId: {personalInfos: {firstName, lastName}}} = participant;
+            if (firstName.includes(searchValue) || lastName.includes(searchValue)) {
+                return true
+            }
+        }
+        return false
+    }, [])
+    const handleSearch = (searchValue: string) => {
+        if (allConversationsRef.current.length > 0 && conversationsList) {
+            if (!searchValue) {
+                setConversationsList(allConversationsRef.current)
+            }
+            const result = allConversationsRef.current.filter(conversation => {
+                return conversation.room.roomName.includes(searchValue) ||
+                    isMatchParticipants(conversation.room.participants, searchValue)
+
+            })
+            setConversationsList(result)
+        }
+    }
+
+    const updateDialogs = useCallback(async (senderId: string, serverData: any, conversationsList: IResponseConversationsList[]) => {
         const {conversationId, ...rest} = serverData;
         const indexIdInList = conversationsList.findIndex(conversation => conversation._id === conversationId);
         if (indexIdInList < 0) {
@@ -110,7 +165,7 @@ const LeftSideConversationList = () => {
             response && response.status === 200 ? conversationsList.unshift(response.data.conversationsInfo) : console.log(response);
             return [...conversationsList];
         }
-        if (senderId !== serverData.sender._id){
+        if (senderId !== serverData.sender._id) {
             conversationsList[indexIdInList].room.updateSeen = false;
         }
         conversationsList[indexIdInList].room.dialogs = [{...rest}];
@@ -125,7 +180,7 @@ const LeftSideConversationList = () => {
             const indexIdInList = conversationsList.findIndex((conversation) => conversation._id === conversationsId);
             if (indexIdInList >= 0) {
                 conversationsList[indexIdInList].room.updateSeen = true;
-                emitSeenMessage(socketStateRedux,conversationsId)
+                emitSeenMessage(socketStateRedux, conversationsId)
                 setConversationsList([...conversationsList]);
             }
         }
@@ -134,15 +189,16 @@ const LeftSideConversationList = () => {
         if (socketStateRedux && conversationsList) {
             onServerSendMessage(socketStateRedux, async (data: any) => {
                 if (data) {
-                    const newState = await updateDialogs(userInfosStateRedux._id,data, conversationsList);
+                    const newState = await updateDialogs(userInfosStateRedux._id, data, conversationsList);
                     setConversationsList(newState);
                 }
             })
 
         }
-    }, [socketStateRedux, conversationsList,userInfosStateRedux?._id,updateDialogs]);
+    }, [socketStateRedux, conversationsList, userInfosStateRedux?._id, updateDialogs]);
     return (
         <Container fluid>
+            <SearchConversation handleChange={handleSearch}/>
             {
                 conversationsList && conversationsList.length > 0 ? conversationsList.map((conversation, index) => {
                     const {_id} = conversation;

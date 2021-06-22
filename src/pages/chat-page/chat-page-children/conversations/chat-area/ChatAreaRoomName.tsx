@@ -1,5 +1,5 @@
 import {Row,Col} from "react-bootstrap";
-import {AvatarWithStatus} from "../../../../../common-components/avatar.common";
+import {AvatarGroup, AvatarWithStatus} from "../../../../../common-components/avatar.common";
 
 interface IPropsChatAreaRoomName {
     participants: any[],
@@ -26,7 +26,13 @@ const ChatAreaRoomName = ({participants}:IPropsChatAreaRoomName) => {
             <Col xs={4}>
                 <Row className="d-flex align-items-center">
                     <Col xs={4}>
-                        <AvatarWithStatus avatarUrl={participantsAvatar()} alt={participantsNames()} />
+                        {
+                            participants.length > 1 ? (
+                                <AvatarGroup avatarUrl={""} alt={""} altMembers={""} members={0} />
+                            ) : (
+                                <AvatarWithStatus avatarUrl={participantsAvatar()} alt={participantsNames()} />
+                            )
+                        }
                     </Col>
                     <Col className="pl-0">
                         <h4>{participantsNames()}</h4>

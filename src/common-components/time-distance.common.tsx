@@ -46,7 +46,6 @@ const TimeDistanceCommon: React.FC<IPropsTimeDistanceCommon> = ({lastMessageTime
             // @ts-ignore
             showRefTime.current.innerHTML = convertSeconds(seconds);
             seconds += timeLoop/1000
-            console.log(seconds)
         },timeLoop);
         return ()=> {
             if(interval){

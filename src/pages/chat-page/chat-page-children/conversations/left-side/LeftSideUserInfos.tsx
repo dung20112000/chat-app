@@ -1,5 +1,4 @@
 import {Col, Row, Dropdown, ButtonGroup} from "react-bootstrap";
-import {AvatarWithStatus} from "../../../../../common-components/avatar.common";
 import {EOnlineStatus} from "../../../../../@types/enums.d";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
@@ -8,14 +7,11 @@ import "./scss/leftsidechatpage.scss";
 import LeftSideUserInfoModal from "./LeftSideUserInfoModal";
 import LeftSideSecurityModal from "./LeftSideSecurityModal";
 import {emitChangeStatus} from "../../../../../server-interaction/socket-handle/socket-change-status";
-import {updateAvatarUser, updateUserStatus} from "../../../../../redux/actions/users.actions.redux";
+import { updateUserStatus} from "../../../../../redux/actions/users.actions.redux";
 import {emitClientLogout} from '../../../../../server-interaction/socket-handle/socket.services';
 import {Socket} from "socket.io-client";
-import axios from "axios";
-import {callApi} from "../../../../../server-interaction/apis/api.services";
 import AvatarUploadCommon from "../../../../../common-components/avatar-upload.common";
 
-const apiUrlUpload = "https://api.cloudinary.com/v1_1/fptssss/image/upload";
 
 const LeftSideUserInfos = () => {
     const userInfos = useSelector((state: RootState) => state.userInfos);
@@ -55,25 +51,6 @@ const LeftSideUserInfos = () => {
         emitClientLogout(socketStateRedux, userInfos._id);
     }
 
-    // const apiUploadAvatar = async (formData: any) => {
-    //     const response = await axios.post(apiUrlUpload, formData);
-    //     if (response.status === 200) {
-    //         return callApi("/users/avatar", "PUT", {
-    //             avatarUrl: response.data.secure_url,
-    //         });
-    //     }
-    // };
-    //
-    // const uploadFile = async (file: any) => {
-    //     const formData = new FormData();
-    //     formData.append("file", file[0]);
-    //     formData.append("upload_preset", "upload-image-fpt");
-    //
-    //     const uploadAvatar = await apiUploadAvatar(formData);
-    //     if (uploadAvatar && uploadAvatar.data.success) {
-    //         dispatch(updateAvatarUser(uploadAvatar.data.avatarUrl));
-    //     }
-    // }
 
     return (
         <Row>
