@@ -1,9 +1,9 @@
-import React, {useRef, MouseEvent, useState, useEffect} from "react";
-import {ButtonGroup, Col, Dropdown, Row} from "react-bootstrap";
-import {Avatar} from "../../../../../common-components/avatar.common";
-import {IUserFriendsList} from "../../../../../@types/redux";
-import {useSelector} from "react-redux";
-import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
+import React, { useRef, MouseEvent, useState, useEffect } from "react";
+import { ButtonGroup, Col, Dropdown, Row } from "react-bootstrap";
+import { Avatar } from "../../../../../common-components/avatar.common";
+import { IUserFriendsList } from "../../../../../@types/redux";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../redux/reducers/RootReducer.reducer.redux";
 import "../scss/friendList.scss"
 import LeftSideFriendInfosModal from "./LeftSideFriendInfosModal";
 import LeftSideDeleteFriendModal from "./LeftSideDEleteFriendModal";
@@ -50,7 +50,7 @@ interface IConversationBlockCommon {
 
 }
 
-const ContactsCommon: React.FC<IConversationBlockCommon> = ({avatarUrl, friendName, _id}) => {
+const ContactsCommon: React.FC<IConversationBlockCommon> = ({ avatarUrl, friendName, _id }) => {
     const areaRef = useRef(null)
 
     const [showFriendInfos, setShowFriendInfos] = useState(false);
@@ -79,13 +79,13 @@ const ContactsCommon: React.FC<IConversationBlockCommon> = ({avatarUrl, friendNa
     }
     return (
         <Row ref={areaRef} onMouseOver={onMouseOverArea} onMouseOut={onMouseOutArea}
-             className="friend-row pl-3 py-3 rounded-1rem align-items-center mb-3">
+            className="friend-row pl-3 py-3 rounded-1rem align-items-center mb-3">
             <Col xs={3}>
-                <Avatar avatarUrl={avatarUrl} alt={friendName}/>
+                <Avatar avatarUrl={avatarUrl} alt={friendName} />
             </Col>
             <Col xs={6} className="pl-0">
                 <div>
-                    <h5 className="mb-0" style={{fontSize: "1.5rem"}}>{friendName}</h5>
+                    <h5 className="mb-0" style={{ fontSize: "1.5rem" }}>{friendName}</h5>
                 </div>
             </Col>
             <Col xs={3} className="text-right pt-2 pl-0">
@@ -99,7 +99,7 @@ const ContactsCommon: React.FC<IConversationBlockCommon> = ({avatarUrl, friendNa
                     </Dropdown.Menu>
                 </Dropdown>
                 <LeftSideDeleteFriendModal show={showDeleteFriend} handleClose={handleCloseDeleteFriend} id={_id} />
-                <LeftSideFriendInfosModal show={showFriendInfos} handleClose={handleCloseFriendInfos} _id={_id}/>
+                <LeftSideFriendInfosModal show={showFriendInfos} handleClose={handleCloseFriendInfos} _id={_id} />
             </Col>
         </Row>
     )
@@ -108,31 +108,33 @@ const LeftSideFriendListContacts = () => {
     const [showListFriend, setShowListFriend] = useState<IUserFriendsList[]>([])
     const friendsListRedux: IUserFriendsList[] = useSelector((state: RootState) => state.friendsList)
 
-    useEffect(()=>{
+    useEffect(() => {
         setShowListFriend(friendsListRedux)
-    },[friendsListRedux])
+    }, [friendsListRedux])
     const handleSearch = (searchValues: string) => {
         if (!searchValues) {
             setShowListFriend(friendsListRedux)
         }
         const result = friendsListRedux.filter(friend => {
-            return friend.email.includes(searchValues) ||
-                friend.personalInfos.firstName.includes(searchValues) ||
-                friend.personalInfos.lastName.includes(searchValues)
+            const { email, personalInfos: { firstName, lastName } } = friend;
+            const fullName = `${firstName} ${lastName}`;
+            return email.includes(searchValues) ||
+                firstName.includes(searchValues) ||
+                lastName.includes(searchValues) ||
+                fullName.includes(searchValues)
         })
         setShowListFriend(result)
-
     }
     return (
         <Col xs={3} className="friend-list">
-            <Search handleChange={handleSearch}/>
+            <Search handleChange={handleSearch} />
             {
                 showListFriend && showListFriend.length > 0 ?
                     showListFriend.map((item, index: number) => {
-                        const {personalInfos: {firstName, lastName, avatarUrl}, _id} = item;
+                        const { personalInfos: { firstName, lastName, avatarUrl }, _id } = item;
                         return (
                             <ContactsCommon key={_id} friendName={`${firstName} ${lastName}`} _id={_id}
-                                            avatarUrl={avatarUrl}/>
+                                avatarUrl={avatarUrl} />
                         )
                     }) : null
             }

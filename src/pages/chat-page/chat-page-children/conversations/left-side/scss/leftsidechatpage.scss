@@ -70,20 +70,22 @@ form {
 
 .box-friend-group {
     .item-friend-group {
-        background-color: #ccc;
         border-radius: 15px;
+        cursor: context-menu;
         &:hover {
-            background-color: #aaa;
+            opacity: 0.5;
         }
         .name-friend {
             width: 50%;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            margin-right: 5px;
         }
         .remove-friend {
             i {
                 cursor: pointer;
+                font-size: 1.5rem;
             }
         }
     }
@@ -91,4 +93,24 @@ form {
 
 .w-20 {
     width: 20% !important;
+}
+.friend-list-add {
+    height: 50vh;
+    .friend-row-modal.hover:hover .button-setting {
+        background: none;
+        color: gray !important;
+    }
+    .friend-row-modal {
+        cursor: pointer;
+        &:hover {
+            background-color: rgba(219, 229, 237, 0.4);
+        }
+        .checkbox-input {
+            -webkit-transform: scale(2);
+            transform: scale(2);
+        }
+    }
+    .bg-contact-item {
+        background: rgba(219, 229, 237, 0.4);
+    }
 }

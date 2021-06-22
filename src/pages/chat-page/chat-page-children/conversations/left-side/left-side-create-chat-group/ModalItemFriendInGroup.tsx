@@ -14,7 +14,7 @@ export const ModalItemFriendInGroup = (props: any) => {
         onChooseFriend(id);
     }
     return (
-        <div className="p-2 d-flex align-items-center m-2 w-20 item-friend-group">
+        <div className="bg-info text-white p-2 d-flex align-items-center m-2 w-20 item-friend-group">
             <div className="w-25 mr-2">
                 <Avatar avatarUrl={avatarUrl} alt={`${firstName} ${lastName}`} />
             </div>
@@ -23,8 +23,8 @@ export const ModalItemFriendInGroup = (props: any) => {
             </div>
             {
                 userInfosStateRedux._id !== id && (
-                    <div className="remove-friend" onClick={() => onRemoveFriend(id)}>
-                        <i className="fas fa-user-times"></i>
+                    <div className="remove-friend text-danger" onClick={() => onRemoveFriend(id)}>
+                        <i className="fas fa-times"></i>
                     </div>
                 )
             }

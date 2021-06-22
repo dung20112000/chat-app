@@ -1,9 +1,8 @@
 import React from "react";
-import { Row, Col, Form } from 'react-bootstrap';
 import { Avatar } from './../../../../../../common-components/avatar.common';
 
 export const ModalItemFriend = (props: any) => {
-    const { id, personalInfos: { firstName, lastName, avatarUrl }, onChooseFriend } = props;
+    const { id, personalInfos: { firstName, lastName, avatarUrl }, onChooseFriend, checked } = props;
 
     const onChoose = (event: any) => {
         const target = event.target;
@@ -13,27 +12,30 @@ export const ModalItemFriend = (props: any) => {
 
     return (
         <label htmlFor={id} className="d-block">
-            <Form.Group className="px-3 m-0">
-                <Row className="align-items-center">
-                    <Col xs="1">
-                        <div className="d-flex ">
-                            <Form.Check type="checkbox" id={id}
-                                value={id}
-                                onChange={onChoose}
-                                custom={true} />
+            <div className="d-flex friend-row-modal pl-5 py-3 rounded-1rem align-items-center w-100">
+                <div className="checkbox-input text-center mr-4">
+                    <input
+                        name="firstName"
+                        type="checkbox"
+                        id={id}
+                        value={id}
+                        onChange={onChoose}
+                        checked={checked}
+                    />
+                </div>
+                <div className="d-flex align-items-center w-100 ml-3">
+                    <div className="mr-3" style={{ width: "10%" }}>
+                        <Avatar avatarUrl={avatarUrl} alt={`${firstName} ${lastName}`} />
+                    </div>
+                    <div className="">
+                        <div>
+                            <h5 className="mb-0" style={{ fontSize: "1.5rem" }}>
+                                {`${firstName} ${lastName}`}
+                            </h5>
                         </div>
-                    </Col>
-                    <Col xs="1" className="pl-1">
-                        <Avatar avatarUrl={avatarUrl}
-                            alt={`${firstName} ${lastName}`} />
-                    </Col>
-                    <Col xs="6">
-                        <div className="d-flex align-items-center h-100">
-                            <h6 className="m-0"> {`${firstName} ${lastName}`}</h6>
-                        </div>
-                    </Col>
-                </Row>
-            </Form.Group>
+                    </div>
+                </div>
+            </div>
         </label>
     )
 }
