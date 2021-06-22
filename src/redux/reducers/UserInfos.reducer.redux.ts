@@ -4,7 +4,7 @@ import {
   UPDATE_USER_PERSONAL_INFOS,
   UPDATE_USER_SECURITY_INFOS,
   UPDATE_USER_STATUS,
-  UPADTE_AVATAR_USER,
+  UPDATE_AVATAR_USER,
 } from "../types/users.types.redux";
 import { IUserInfosReducer } from "../../@types/redux";
 
@@ -43,7 +43,7 @@ const UsersInfosReducer = (state = initialState, action: any) => {
         previousOnlineStatus: payload.previousOnlineStatus,
       };
       return newState;
-    case UPADTE_AVATAR_USER:
+    case UPDATE_AVATAR_USER:
       // @ts-ignore
       state.personalInfos.avatarUrl = payload;
       // @ts-ignore

@@ -1,10 +1,11 @@
 import {Container, Row, Col} from "react-bootstrap";
 import {Avatar} from "../../../../../common-components/avatar.common";
-import React from "react";
+import React, {useState} from "react";
 import ComponentTitleCommon from "../../../../../common-components/component-title.common";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
 import RightSideChatFiles from "./RightSideChatFiles";
+import RightSideChatDetailModal from "./RightSideChatDetailModal";
 
 interface IChatDetailFriend {
     avatarUrl: string,
@@ -14,6 +15,10 @@ interface IChatDetailFriend {
 }
 
 const ChatDetailFriend: React.FC<IChatDetailFriend> = ({avatarUrl, friendName, friendQuantity,lastMessage}) => {
+    const [showAddMembers, setShowAddMembers] = useState(false);
+    const handleCloseAddMembers = () => setShowAddMembers(false);
+    const handleShowAddMembers = () => setShowAddMembers(true);
+
     return (
         <Row className="pt-3">
             <Col xs={3} className="align-items-center">
@@ -22,13 +27,14 @@ const ChatDetailFriend: React.FC<IChatDetailFriend> = ({avatarUrl, friendName, f
             <Col xs={6} className=" pl-0 align-items-center" >
                 <div>
                     <h5 className="mb-1 pt-2 text-truncate">{friendName}</h5>
-                    <p className="m-0 text-truncate text-muted">{friendQuantity} members</p>
+                    <p className="m-0 text-truncate text-muted">{friendQuantity + 1} members</p>
                 </div>
             </Col>
             <Col xs={3} className="text-right pl-0">
-                <button className="btn mt-2">
+                <button type="button" className="btn mt-2" onClick={handleShowAddMembers}>
                     <i style={{fontSize:"1.8rem",color:"#76c00d"}} className="fas fa-plus-circle"/>
                 </button>
+                <RightSideChatDetailModal show={showAddMembers} handleClose={handleCloseAddMembers} members={friendQuantity} />
             </Col>
         </Row>
     )
