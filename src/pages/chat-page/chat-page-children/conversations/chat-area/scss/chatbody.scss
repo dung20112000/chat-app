@@ -1,13 +1,26 @@
 .content__body {
-    max-height: calc(100vh - calc(100vh / 3.2));
+    //max-height: calc(100vh - calc(100vh / 3.2));
+    height: 75vh;
+    overflow: hidden!important;
+    margin-bottom: 1rem;
+}
+.chat__items{
+    box-sizing: content-box;
     overflow: auto;
+    padding-right: 20px;
+    width: 100%;
+    height: 99%;
+}
+.chat__items.scrolling{
+    padding-right: 0;
 }
 .chat__item {
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
     margin-top: 15px;
-    margin-right: 15px;
+    margin-right: 10px;
+    margin-left: 10px;
     transition: all 0.3s ease;
     transform: scale(1);
     transform-origin: right;

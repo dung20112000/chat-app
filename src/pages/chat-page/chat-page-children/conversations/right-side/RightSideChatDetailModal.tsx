@@ -182,10 +182,10 @@ const RightSideChatDetailModal = ({show, handleClose, members}: ILeftSideDeleteF
                 </Modal.Body>
                 <Modal.Footer>
                     <button className="btn btn-danger" onClick={handleClose}>
-                        Close
+                        Cancel
                     </button>
                     <button className="btn btn-primary" form="form-edit-infos" type="submit">
-                        Save
+                        Add
                     </button>
                 </Modal.Footer>
             </Modal>
