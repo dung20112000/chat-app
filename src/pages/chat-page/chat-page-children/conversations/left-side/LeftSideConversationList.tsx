@@ -95,22 +95,18 @@ const SearchConversation = (props: IPropsSearch) => {
     }
     return (
         <Row className="mb-3">
-            <Col xs={12}>
+            <Col xs={12} className="p-0">
                 <form>
-                    <Row>
-                        <Col xs={12}>
-                            <div>
-                                <input
-                                    id="searchValues"
-                                    name="searchValues"
-                                    type="text"
-                                    onChange={onSearchChange}
-                                    placeholder="Search Conversation"
-                                    className="form-control rounded-1rem"
-                                />
-                            </div>
-                        </Col>
-                    </Row>
+                    <div>
+                        <input
+                            id="searchValues"
+                            name="searchValues"
+                            type="text"
+                            onChange={onSearchChange}
+                            placeholder="Search Conversation"
+                            className="form-control"
+                        />
+                    </div>
                 </form>
             </Col>
         </Row>
@@ -138,15 +134,15 @@ const LeftSideConversationList = () => {
         )()
     }, []);
 
-    const isMatchParticipants = useCallback((participants:any[],searchValue:string) => {
-        for (const participant of participants){
+    const isMatchParticipants = useCallback((participants: any[], searchValue: string) => {
+        for (const participant of participants) {
             const {userId: {personalInfos: {firstName, lastName}}} = participant;
-            if(firstName.includes(searchValue) || lastName.includes(searchValue)) {
+            if (firstName.includes(searchValue) || lastName.includes(searchValue)) {
                 return true
             }
         }
         return false
-    },[])
+    }, [])
     const handleSearch = (searchValue: string) => {
         if (allConversationsRef.current.length > 0 && conversationsList) {
             if (!searchValue) {
@@ -154,7 +150,7 @@ const LeftSideConversationList = () => {
             }
             const result = allConversationsRef.current.filter(conversation => {
                 return conversation.room.roomName.includes(searchValue) ||
-                    isMatchParticipants(conversation.room.participants,searchValue)
+                    isMatchParticipants(conversation.room.participants, searchValue)
 
             })
             setConversationsList(result)

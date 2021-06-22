@@ -144,15 +144,11 @@ button {
             height: 3rem;
             resize: none;
             width: 100%;
-            border: none;
-            outline: none;
-            background: none;
         }
     }
 }
 .friend-list-add {
-    max-height: 50vh;
-    overflow: auto;
+    height: 50vh;
     .friend-row-modal.hover:hover  .button-setting {
         background: none;
         color: gray!important;

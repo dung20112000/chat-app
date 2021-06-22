@@ -1,5 +1,5 @@
-import {Button, Col, Modal, Row} from "react-bootstrap"
-import {Formik, Field, Form, useFormik} from 'formik';
+import { Col, Modal, Row} from "react-bootstrap"
+import { useFormik} from 'formik';
 import React, {MouseEvent, useEffect, useRef, useState} from "react";
 import {IUserFriendsList} from "../../../../../@types/redux";
 import {useSelector} from "react-redux";
@@ -116,7 +116,6 @@ const RightSideChatDetailModal = ({show, handleClose, members}: ILeftSideDeleteF
     const [showListFriend, setShowListFriend] = useState<IUserFriendsList[]>([])
     const friendsListRedux: IUserFriendsList[] = useSelector((state: RootState) => state.friendsList)
 
-
     useEffect(() => {
         setShowListFriend(friendsListRedux)
     }, [friendsListRedux])
@@ -164,19 +163,20 @@ const RightSideChatDetailModal = ({show, handleClose, members}: ILeftSideDeleteF
                             <h4>Friend List</h4>
                         </Col>
                         <Col xs={12}>
-                            <form className="friend-list-add">
-                                {
-                                    showListFriend && showListFriend.length > 0 ?
-                                        showListFriend.map((item, index: number) => {
-                                            const {conversationsId,personalInfos: {firstName, lastName, avatarUrl}, _id} = item;
-                                            return (
-                                                <ContactsCommon key={_id} friendName={`${firstName} ${lastName}`}
-                                                                _id={_id} conversationsId={conversationsId}
-                                                                avatarUrl={avatarUrl}/>
-                                            )
-                                        }) : null
-                                }
-                            </form>
+                                <form className="overflow-auto friend-list-add">
+                                    {
+                                        showListFriend && showListFriend.length > 0 ?
+                                            showListFriend.map((item, index: number) => {
+                                                const {conversationsId,personalInfos: {firstName, lastName, avatarUrl}, _id} = item;
+                                                return (
+                                                    <ContactsCommon key={_id} friendName={`${firstName} ${lastName}`}
+                                                                    _id={_id} conversationsId={conversationsId}
+                                                                    avatarUrl={avatarUrl}/>
+                                                )
+                                            }) : null
+                                    }
+                                </form>
+
                         </Col>
                     </Row>
                 </Modal.Body>

@@ -1,5 +1,5 @@
 import {Avatar, AvatarWithStatus, IAvatar} from "./avatar.common";
-import React, {useMemo, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import {callApi} from "../server-interaction/apis/api.services";
 import {updateAvatarUser} from "../redux/actions/users.actions.redux";
 import {useDispatch} from "react-redux";
@@ -64,17 +64,6 @@ const AvatarUploadCommon: React.FC<IPropsAvatarUploadCommon> = ({avatarUrl, stat
             onCloseDeleteModal()
         }
     }
-    const lightboxAvatar = useMemo(() => {
-        return [
-            {
-                src: avatarUrl,
-                caption: alt,
-                width: 1920,
-                height: 'auto'
-            },
-
-        ]
-    }, [avatarUrl])
     return (
         (<div>
             <div className="upload-image">
