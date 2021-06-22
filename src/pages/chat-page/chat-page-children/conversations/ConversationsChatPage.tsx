@@ -21,7 +21,7 @@ const ConversationsChatPage = () => {
                 <Col xs={3}>
                     <LeftSideChatPage/>
                 </Col>
-                <Col>
+                <Col xs={6}>
                     <ChatAreaChatPage/>
                 </Col>
                 <Col xs={3}>
