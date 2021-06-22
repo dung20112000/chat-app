@@ -14,3 +14,10 @@ export const notRequiredTokenApis: IMethodUrlObject[] = [
         method:"POST"
     }
 ];
+
+export const noLoadingApis: IMethodUrlObject[] = [
+    {
+        url: "/users/friends-requests",
+        method: "GET"
+    }
+]
