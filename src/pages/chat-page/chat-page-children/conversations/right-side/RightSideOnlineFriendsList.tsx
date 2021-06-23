@@ -33,8 +33,10 @@ const RowFriend: React.FC<IPropsRowFriend> = ({ _id, avatarUrl, firstName, lastN
     });
 
     const onChat = () => {
+        if(conversationsId){
+           return  history.push(`/chat-page/conversations/${conversationsId}`);
+        }
         if (userInfosStateRedux && socketStateRedux) {
-
             const members: any = [];
             members.push({ userId: userInfosStateRedux._id })
             members.push({ userId: _id })
