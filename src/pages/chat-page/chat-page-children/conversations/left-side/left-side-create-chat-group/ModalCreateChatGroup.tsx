@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Modal, Button, Row, Col, Container } from 'react-bootstrap';
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { IUserInfosReducer } from "../../../../../../@types/redux";
 import { RootState } from "../../../../../../redux/reducers/RootReducer.reducer.redux";
 import { callApi } from "../../../../../../server-interaction/apis/api.services";
@@ -35,6 +36,7 @@ export const ModalCreateChatGroup = (props: any) => {
     const initialValues = itemFriend(userInfosStateRedux._id, userInfosStateRedux.personalInfos);
     const [listFriendsInGroup, setListFriendsInGroup] = useState<IAddFriend[]>([initialValues]);
     const [nameGroup, setNameGroup] = useState("");
+    const history = useHistory();
     // const [disabledButton, setDisabledButton] = useState(false);
     const changeSearchFriend = (event: any) => {
 
@@ -73,7 +75,10 @@ export const ModalCreateChatGroup = (props: any) => {
         })
         if (nameGroup) {
             callApi("/conversations", "POST", { participants, roomName: nameGroup }).then(response => {
-                console.log(response);
+                if (response.status === 200 && response.data.success) {
+                    onCloseForm();
+                    history.push(`/chat-page/conversations/${response.data.conversationsId}`);
+                }
             })
         }
 
@@ -132,7 +137,7 @@ export const ModalCreateChatGroup = (props: any) => {
                             <Col xs={12}>
                                 <form className="overflow-auto friend-list-add">
                                     {
-                                        friendsList.length > 0 && friendsList.map((friend: any) => {
+                                        friendsList && friendsList.length > 0 && friendsList.map((friend: any) => {
                                             const { personalInfos, _id } = friend;
                                             const checked = listFriendsInGroup.some(item => item.id === _id);
                                             return <ModalItemFriend key={_id} personalInfos={personalInfos}
