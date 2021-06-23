@@ -14,7 +14,9 @@ const ChatAreaRoomName = ({participants}:IPropsChatAreaRoomName) => {
         const participantsNames = ()=> {
         return participants.length > 1 ? participants.reduce((allNames: string, member) => {
             const {userId: {personalInfos: {firstName, lastName}}} = member;
-            allNames += `${firstName} ${lastName}, `
+            if (firstName && lastName){
+                allNames += `${firstName} ${lastName},`
+            }
             return allNames;
         }, "") : `${participants[0].userId.personalInfos.firstName} ${participants[0].userId.personalInfos.lastName}`
     }
