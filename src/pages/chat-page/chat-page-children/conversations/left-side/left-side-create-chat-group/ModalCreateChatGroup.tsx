@@ -3,6 +3,7 @@ import { Modal, Button, Row, Col, Container } from 'react-bootstrap';
 import { useSelector } from "react-redux";
 import { IUserInfosReducer } from "../../../../../../@types/redux";
 import { RootState } from "../../../../../../redux/reducers/RootReducer.reducer.redux";
+import { callApi } from "../../../../../../server-interaction/apis/api.services";
 import { ModalItemFriend } from "./ModalItemFriend";
 import { ModalItemFriendInGroup } from "./ModalItemFriendInGroup";
 
@@ -33,8 +34,18 @@ export const ModalCreateChatGroup = (props: any) => {
     });
     const initialValues = itemFriend(userInfosStateRedux._id, userInfosStateRedux.personalInfos);
     const [listFriendsInGroup, setListFriendsInGroup] = useState<IAddFriend[]>([initialValues]);
+    const [nameGroup, setNameGroup] = useState("");
+    // const [disabledButton, setDisabledButton] = useState(false);
     const changeSearchFriend = (event: any) => {
 
+    }
+
+    const onChangeNameRoom = (event: any) => {
+        const nameGroupInput = event.target.value;
+        if (nameGroupInput) {
+
+        }
+        setNameGroup(nameGroupInput);
     }
     const onCloseForm = () => {
         const { onHide } = props;
@@ -56,9 +67,17 @@ export const ModalCreateChatGroup = (props: any) => {
         }
     }
 
-    // const unCheckedFriends = () => {
+    const createGroup = () => {
+        const participants = listFriendsInGroup.map(item => {
+            return { userId: item.id }
+        })
+        if (nameGroup) {
+            callApi("/conversations", "POST", { participants, roomName: nameGroup }).then(response => {
+                console.log(response);
+            })
+        }
 
-    // }
+    }
 
     return (
         <>
@@ -77,7 +96,8 @@ export const ModalCreateChatGroup = (props: any) => {
                             <Col>
                                 <h6>Name Group</h6>
                                 <input type="text" className="form-control"
-                                    placeholder="Name Group" onChange={(e) => changeSearchFriend(e)}
+                                    value={nameGroup}
+                                    placeholder="Name Group" onChange={(e) => onChangeNameRoom(e)}
                                 />
                             </Col>
                         </Row>
@@ -131,7 +151,7 @@ export const ModalCreateChatGroup = (props: any) => {
                     <Button variant="secondary" onClick={() => onCloseForm()}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={() => onCloseForm()}>
+                    <Button type="submit" variant="primary" onClick={() => createGroup()}>
                         Create
                     </Button>
                 </Modal.Footer>
