@@ -9,6 +9,7 @@ import LoadingCommon from "./common-components/loading.common";
 import "slick-carousel/slick/slick.scss";
 import "slick-carousel/slick/slick-theme.scss";
 
+
 function App() {
     const loading = useSelector((state:RootState) => state.loading);
     const appRouters = appRoutes.map((route, index) => {

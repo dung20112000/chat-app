@@ -1,12 +1,14 @@
 import {Container, Row, Col} from "react-bootstrap";
 import {Avatar} from "../../../../../common-components/avatar.common";
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import ComponentTitleCommon from "../../../../../common-components/component-title.common";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
 import RightSideChatFiles from "./RightSideChatFiles";
 import RightSideChatDetailModal from "./RightSideChatDetailModal";
-
+import {openChatWindow} from "../../../../../server-interaction/peerjs/peer.services";
+import {emit} from "cluster";
+import {emitCall} from "../../../../../server-interaction/socket-handle/socket-peer.services";
 interface IChatDetailFriend {
     avatarUrl: string,
     friendName: string,
@@ -14,7 +16,12 @@ interface IChatDetailFriend {
     lastMessage?: string,
 }
 
-const ChatDetailFriend: React.FC<IChatDetailFriend> = ({avatarUrl, friendName, friendQuantity,lastMessage}) => {
+const ChatDetailFriend: React.FC<IChatDetailFriend> = ({
+                                                           avatarUrl,
+                                                           friendName,
+                                                           friendQuantity,
+                                                           lastMessage
+                                                       }) => {
     const [showAddMembers, setShowAddMembers] = useState(false);
     const handleCloseAddMembers = () => setShowAddMembers(false);
     const handleShowAddMembers = () => setShowAddMembers(true);
@@ -22,9 +29,9 @@ const ChatDetailFriend: React.FC<IChatDetailFriend> = ({avatarUrl, friendName, f
     return (
         <Row className="pt-3">
             <Col xs={3} className="align-items-center">
-                <Avatar avatarUrl={avatarUrl} alt={friendName} />
+                <Avatar avatarUrl={avatarUrl} alt={friendName}/>
             </Col>
-            <Col xs={6} className=" pl-0 align-items-center" >
+            <Col xs={6} className=" pl-0 align-items-center">
                 <div>
                     <h5 className="mb-1 pt-2 text-truncate">{friendName}</h5>
                     <p className="m-0 text-truncate text-muted">{friendQuantity + 1} members</p>
@@ -32,27 +39,43 @@ const ChatDetailFriend: React.FC<IChatDetailFriend> = ({avatarUrl, friendName, f
             </Col>
             <Col xs={3} className="text-right pl-0">
                 <button type="button" className="btn mt-2" onClick={handleShowAddMembers}>
-                    <i style={{fontSize:"1.8rem",color:"#76c00d"}} className="fas fa-plus-circle"/>
+                    <i style={{fontSize: "1.8rem", color: "#76c00d"}}
+                       className="fas fa-plus-circle"/>
                 </button>
-                <RightSideChatDetailModal show={showAddMembers} handleClose={handleCloseAddMembers} members={friendQuantity} />
+                <RightSideChatDetailModal show={showAddMembers} handleClose={handleCloseAddMembers}
+                                          members={friendQuantity}/>
             </Col>
         </Row>
     )
 }
 const RightSideChatDetail = () => {
-    const conversationDetailRedux = useSelector((state:RootState) => state.conversationDetail)
-    if(!conversationDetailRedux){
+    const conversationDetailRedux = useSelector((state: RootState) => state.conversationDetail);
+    const peerStateRedux = useSelector((state:RootState)=> state.peer);
+    const socketStateRedux = useSelector((state:RootState) => state.socket);
+
+    const onVideoChat = useCallback(()=>{
+        if(socketStateRedux && peerStateRedux){
+            // emitCall()
+        }
+    },[peerStateRedux,peerStateRedux])
+    if (!conversationDetailRedux) {
         return (
             <Container>
                 <Row className="align-items-center">
                     <Col xs={10}>
-                        <ComponentTitleCommon title="Chat Detail" />
+                        <ComponentTitleCommon title="Chat Detail"/>
                     </Col>
                     <Col xs={2}>
-                        <div className="rounded-circle w-100 position-relative bg-light-secondary" style={{paddingTop: "100%"}}>
+                        <div className="rounded-circle w-100 position-relative bg-light-secondary"
+                             style={{paddingTop: "100%"}}>
                             <div className="position-absolute"
-                                 style={{top: "50%", left: "50%", transform: "translate(-50%,-50%)"}}>
-                                <button style={{fontSize: "1.4rem"}} className="btn p-0" type="button"><i
+                                 style={{
+                                     top: "50%",
+                                     left: "50%",
+                                     transform: "translate(-50%,-50%)"
+                                 }}>
+                                <button style={{fontSize: "1.4rem"}} className="btn p-0"
+                                        type="button"><i
                                     className="fas fa-arrow-right"/></button>
                             </div>
                         </div>
@@ -66,23 +89,27 @@ const RightSideChatDetail = () => {
         <Container>
             <Row className="align-items-center">
                 <Col xs={10}>
-                    <ComponentTitleCommon title="Chat Detail" />
+                    <ComponentTitleCommon title="Chat Detail"/>
                 </Col>
                 <Col xs={2}>
-                    <div className="rounded-circle w-100 position-relative bg-light-secondary" style={{paddingTop: "100%"}}>
+                    <div className="rounded-circle w-100 position-relative bg-light-secondary"
+                         style={{paddingTop: "100%"}}>
                         <div className="position-absolute"
                              style={{top: "50%", left: "50%", transform: "translate(-50%,-50%)"}}>
-                            <button style={{fontSize: "1.4rem"}} className="btn p-0" type="button"><i
-                                className="fas fa-arrow-right"/></button>
+                            <button style={{fontSize: "1.4rem"}} className="btn p-0" type="button">
+                                <i
+                                    className="fas fa-arrow-right"/></button>
                         </div>
                     </div>
                 </Col>
             </Row>
             {
                 roomName === "" ? (
-                    <ChatDetailFriend friendName={`${firstName} ${lastName}`} friendQuantity={members} avatarUrl={avatarUrl} />
+                    <ChatDetailFriend friendName={`${firstName} ${lastName}`}
+                                      friendQuantity={members} avatarUrl={avatarUrl}/>
                 ) : (
-                    <ChatDetailFriend friendName={roomName} friendQuantity={members} avatarUrl={avatarUrl} />
+                    <ChatDetailFriend friendName={roomName} friendQuantity={members}
+                                      avatarUrl={avatarUrl}/>
                 )
             }
             <Row className="align-items-center pt-3">
@@ -92,12 +119,12 @@ const RightSideChatDetail = () => {
                     </button>
                 </Col>
                 <Col xs={6} className="pl-1">
-                    <button className="btn btn-danger w-100 rounded-1rem pt-2 pb-2">
+                    <button className="btn btn-danger w-100 rounded-1rem pt-2 pb-2" onClick={onVideoChat}>
                         <i className="fas fa-video"/> Video call
                     </button>
                 </Col>
                 <Col xs="12" className="mt-5 h-25">
-                    <RightSideChatFiles />
+                    <RightSideChatFiles/>
                 </Col>
             </Row>
         </Container>
