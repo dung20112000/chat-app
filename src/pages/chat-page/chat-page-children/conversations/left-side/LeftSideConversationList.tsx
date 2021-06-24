@@ -43,8 +43,11 @@ const ShowConversations: React.FC<IPropsShowConversations> = (props) => {
         }, "") : `${participants[0].userId.personalInfos.firstName} ${participants[0].userId.personalInfos.lastName}`
     }
     if (!friendsListStateRedux) return null;
-    if (participants.length > 2) {
+    if (participants.length > 1) {
         return <ConversationBlockGroup currentUserAvatarUrl={""}
+            id={conversationsId}
+            updateSeen={updateSeen}
+            seenAction={seenAction}
             groupName={roomName ? roomName : participantsNames()}
             lastMessage={{ sender: senderLastMessage, message }}
             members={participants.length + 1}
@@ -127,6 +130,7 @@ const LeftSideConversationList = () => {
                 const response = await callApi("/conversations", "GET");
                 if (response && response.status === 200 && response.data && response.data.conversations) {
                     const { conversations } = response.data;
+                    console.log(response.data);
                     allConversationsRef.current = conversations
                     setConversationsList(conversations);
                 }

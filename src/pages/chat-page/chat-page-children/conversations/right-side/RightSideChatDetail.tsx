@@ -1,9 +1,9 @@
-import {Container, Row, Col} from "react-bootstrap";
-import {Avatar} from "../../../../../common-components/avatar.common";
-import React, {useState} from "react";
+import { Container, Row, Col } from "react-bootstrap";
+import { Avatar } from "../../../../../common-components/avatar.common";
+import React, { useState } from "react";
 import ComponentTitleCommon from "../../../../../common-components/component-title.common";
-import {useSelector} from "react-redux";
-import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../redux/reducers/RootReducer.reducer.redux";
 import RightSideChatFiles from "./RightSideChatFiles";
 import RightSideChatDetailModal from "./RightSideChatDetailModal";
 
@@ -14,11 +14,10 @@ interface IChatDetailFriend {
     lastMessage?: string,
 }
 
-const ChatDetailFriend: React.FC<IChatDetailFriend> = ({avatarUrl, friendName, friendQuantity,lastMessage}) => {
+const ChatDetailFriend: React.FC<IChatDetailFriend> = ({ avatarUrl, friendName, friendQuantity, lastMessage }) => {
     const [showAddMembers, setShowAddMembers] = useState(false);
     const handleCloseAddMembers = () => setShowAddMembers(false);
     const handleShowAddMembers = () => setShowAddMembers(true);
-
     return (
         <Row className="pt-3">
             <Col xs={3} className="align-items-center">
@@ -32,7 +31,7 @@ const ChatDetailFriend: React.FC<IChatDetailFriend> = ({avatarUrl, friendName, f
             </Col>
             <Col xs={3} className="text-right pl-0">
                 <button type="button" className="btn mt-2" onClick={handleShowAddMembers}>
-                    <i style={{fontSize:"1.8rem",color:"#76c00d"}} className="fas fa-plus-circle"/>
+                    <i style={{ fontSize: "1.8rem", color: "#76c00d" }} className="fas fa-plus-circle" />
                 </button>
                 <RightSideChatDetailModal show={showAddMembers} handleClose={handleCloseAddMembers} members={friendQuantity} />
             </Col>
@@ -40,8 +39,8 @@ const ChatDetailFriend: React.FC<IChatDetailFriend> = ({avatarUrl, friendName, f
     )
 }
 const RightSideChatDetail = () => {
-    const conversationDetailRedux = useSelector((state:RootState) => state.conversationDetail)
-    if(!conversationDetailRedux){
+    const conversationDetailRedux = useSelector((state: RootState) => state.conversationDetail)
+    if (!conversationDetailRedux) {
         return (
             <Container>
                 <Row className="align-items-center">
@@ -49,11 +48,11 @@ const RightSideChatDetail = () => {
                         <ComponentTitleCommon title="Chat Detail" />
                     </Col>
                     <Col xs={2}>
-                        <div className="rounded-circle w-100 position-relative bg-light-secondary" style={{paddingTop: "100%"}}>
+                        <div className="rounded-circle w-100 position-relative bg-light-secondary" style={{ paddingTop: "100%" }}>
                             <div className="position-absolute"
-                                 style={{top: "50%", left: "50%", transform: "translate(-50%,-50%)"}}>
-                                <button style={{fontSize: "1.4rem"}} className="btn p-0" type="button"><i
-                                    className="fas fa-arrow-right"/></button>
+                                style={{ top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>
+                                <button style={{ fontSize: "1.4rem" }} className="btn p-0" type="button"><i
+                                    className="fas fa-arrow-right" /></button>
                             </div>
                         </div>
                     </Col>
@@ -61,7 +60,7 @@ const RightSideChatDetail = () => {
             </Container>
         )
     }
-    const {firstName, lastName, avatarUrl, _id, roomName, members} = conversationDetailRedux
+    const { firstName, lastName, avatarUrl, _id, roomName, members } = conversationDetailRedux
     return (
         <Container>
             <Row className="align-items-center">
@@ -69,31 +68,31 @@ const RightSideChatDetail = () => {
                     <ComponentTitleCommon title="Chat Detail" />
                 </Col>
                 <Col xs={2}>
-                    <div className="rounded-circle w-100 position-relative bg-light-secondary" style={{paddingTop: "100%"}}>
+                    <div className="rounded-circle w-100 position-relative bg-light-secondary" style={{ paddingTop: "100%" }}>
                         <div className="position-absolute"
-                             style={{top: "50%", left: "50%", transform: "translate(-50%,-50%)"}}>
-                            <button style={{fontSize: "1.4rem"}} className="btn p-0" type="button"><i
-                                className="fas fa-arrow-right"/></button>
+                            style={{ top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>
+                            <button style={{ fontSize: "1.4rem" }} className="btn p-0" type="button"><i
+                                className="fas fa-arrow-right" /></button>
                         </div>
                     </div>
                 </Col>
             </Row>
             {
                 roomName === "" ? (
-                    <ChatDetailFriend friendName={`${firstName} ${lastName}`} friendQuantity={members} avatarUrl={avatarUrl} />
+                    <ChatDetailFriend friendName={`${firstName} ${lastName}`} friendQuantity={members.length} avatarUrl={avatarUrl} />
                 ) : (
-                    <ChatDetailFriend friendName={roomName} friendQuantity={members} avatarUrl={avatarUrl} />
+                    <ChatDetailFriend friendName={roomName} friendQuantity={members.length} avatarUrl={avatarUrl} />
                 )
             }
             <Row className="align-items-center pt-3">
                 <Col xs={6} className="pr-1">
                     <button className="btn btn-primary w-100 rounded-1rem pt-2 pb-2">
-                        <i className="fas fa-phone-alt"/> Voice chat
+                        <i className="fas fa-phone-alt" /> Voice chat
                     </button>
                 </Col>
                 <Col xs={6} className="pl-1">
                     <button className="btn btn-danger w-100 rounded-1rem pt-2 pb-2">
-                        <i className="fas fa-video"/> Video call
+                        <i className="fas fa-video" /> Video call
                     </button>
                 </Col>
                 <Col xs="12" className="mt-5 h-25">
