@@ -1,0 +1,22 @@
+.remote-stream{
+  top:0;
+  left: 0;
+  object-fit: cover;
+}
+
+.local-stream{
+  bottom: 2rem;
+  right:2rem;
+  object-fit: cover;
+}
+
+.btn-close-video{
+  width: 4rem;
+  height: 4rem;
+  bottom: 4rem;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  i{
+    font-size: 1.25rem;
+  }
+}
