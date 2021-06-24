@@ -87,8 +87,8 @@ export const ConversationGroup: React.FC<IConversationsBlockGroup> = ({
             </Col>
             <Col xs={6} className="pt-2 pl-0">
                 <div>
-                    <h5 className="mb-1 text-truncate">{groupName} dajdhajdhwajdhakwdhwakdhak</h5>
-                    <p className="m-0 text-truncate text-muted">{lastMessage.sender} : {lastMessage.message} djadhjawhdjhdjwakdhakwdhwka</p>
+                    <h5 className="mb-1 text-truncate">{groupName}</h5>
+                    <p className="m-0 text-truncate text-muted">{lastMessage.sender} : {lastMessage.message}</p>
                 </div>
             </Col>
             <Col xs={3} className="text-right pt-2 pl-0">

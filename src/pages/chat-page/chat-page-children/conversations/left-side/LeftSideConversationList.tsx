@@ -1,20 +1,21 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {Col, Container, Row} from "react-bootstrap";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Col, Container, Row } from "react-bootstrap";
 import {
     ConversationBlockCommon,
     ConversationBlockGroup
 } from "../../../../../common-components/conversation-block.common";
-import {callApi} from "../../../../../server-interaction/apis/api.services";
-import {useSelector} from "react-redux";
-import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
-import {IResponseConversationsList} from "../../../../../@types/api.response";
-import {IUserFriendsList, IUserInfosReducer} from "../../../../../@types/redux";
-import {EOnlineStatus} from "../../../../../@types/enums.d";
-import {Socket} from "socket.io-client";
+import { callApi } from "../../../../../server-interaction/apis/api.services";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../redux/reducers/RootReducer.reducer.redux";
+import { IResponseConversationsList } from "../../../../../@types/api.response";
+import { IUserFriendsList, IUserInfosReducer } from "../../../../../@types/redux";
+import { EOnlineStatus } from "../../../../../@types/enums.d";
+import { Socket } from "socket.io-client";
 import {
     emitSeenMessage,
     onServerSendMessage
 } from "../../../../../server-interaction/socket-handle/socket-chat";
+
 import {useLocation} from "react-router-dom";
 import {toggleScrollbar} from "../../../../../helpers/functions/toggle-scrollbar";
 
@@ -23,22 +24,22 @@ interface IPropsShowConversations extends IResponseConversationsList {
 }
 
 const ShowConversations: React.FC<IPropsShowConversations> = (props) => {
-    const {pathname} = useLocation();
+    const { pathname } = useLocation();
     const urlConversationsId = pathname.replace("/chat-page/conversations/", "");
 
     const friendsListStateRedux: IUserFriendsList[] = useSelector((state: RootState) => state.friendsList);
-    const {_id: conversationsId, seenAction} = props;
-    const {participants, roomName, dialogs, updateSeen} = props.room;
+    const { _id: conversationsId, seenAction } = props;
+    const { participants, roomName, dialogs, updateSeen } = props.room;
     if (!dialogs || dialogs.length === 0) return null;
     const {
-        sender: {personalInfos: {firstName: senderFirstName, lastName: senderLastName}},
+        sender: { personalInfos: { firstName: senderFirstName, lastName: senderLastName } },
         message,
         updatedAt
     } = dialogs[0];
     const senderLastMessage = senderFirstName + senderLastName;
     const participantsNames = () => {
         return participants.length > 1 ? participants.reduce((allNames: string, member) => {
-            const {userId: {personalInfos: {firstName, lastName}}} = member;
+            const { userId: { personalInfos: { firstName, lastName } } } = member;
             allNames += `${firstName} ${lastName}, `
             return allNames;
         }, "") : `${participants[0].userId.personalInfos.firstName} ${participants[0].userId.personalInfos.lastName}`
@@ -46,10 +47,10 @@ const ShowConversations: React.FC<IPropsShowConversations> = (props) => {
     if (!friendsListStateRedux) return null;
     if (participants.length > 2) {
         return <ConversationBlockGroup currentUserAvatarUrl={""}
-                                       groupName={roomName ? roomName : participantsNames()}
-                                       lastMessage={{sender: senderLastMessage, message}}
-                                       members={participants.length + 1}
-                                       active={urlConversationsId === conversationsId}/>
+            groupName={roomName ? roomName : participantsNames()}
+            lastMessage={{ sender: senderLastMessage, message }}
+            members={participants.length + 1}
+            active={urlConversationsId === conversationsId} />
     }
     const {
         userId: {
@@ -71,7 +72,7 @@ const ShowConversations: React.FC<IPropsShowConversations> = (props) => {
             lastMessage={message}
             active={urlConversationsId === conversationsId}
             updateSeen={updateSeen}
-            seenAction={seenAction}/>
+            seenAction={seenAction} />
     }
     return <ConversationBlockCommon
         lastMessageTime={updatedAt}
@@ -80,7 +81,7 @@ const ShowConversations: React.FC<IPropsShowConversations> = (props) => {
         lastMessage={message}
         active={urlConversationsId === conversationsId}
         updateSeen={updateSeen}
-        seenAction={seenAction}/>
+        seenAction={seenAction} />
 }
 
 // const ShowConversationsMemo = React.memo(ShowConversations);
@@ -132,7 +133,7 @@ const LeftSideConversationList = () => {
             async () => {
                 const response = await callApi("/conversations", "GET");
                 if (response && response.status === 200 && response.data && response.data.conversations) {
-                    const {conversations} = response.data;
+                    const { conversations } = response.data;
                     allConversationsRef.current = conversations
                     setConversationsList(conversations);
                 }
@@ -142,8 +143,11 @@ const LeftSideConversationList = () => {
 
     const isMatchParticipants = useCallback((participants: any[], searchValue: string) => {
         for (const participant of participants) {
-            const {userId: {personalInfos: {firstName, lastName}}} = participant;
-            if (firstName.includes(searchValue) || lastName.includes(searchValue)) {
+            const { userId: { personalInfos: { firstName, lastName } } } = participant;
+            const fullName = `${firstName} ${lastName}`;
+            if (firstName.includes(searchValue)
+                || lastName.includes(searchValue)
+                || fullName.includes(searchValue)) {
                 return true
             }
         }
@@ -164,7 +168,7 @@ const LeftSideConversationList = () => {
     }
 
     const updateDialogs = useCallback(async (senderId: string, serverData: any, conversationsList: IResponseConversationsList[]) => {
-        const {conversationId, ...rest} = serverData;
+        const { conversationId, ...rest } = serverData;
         const indexIdInList = conversationsList.findIndex(conversation => conversation._id === conversationId);
         if (indexIdInList < 0) {
             const response = await callApi(`conversations/${conversationId}`, "GET");
@@ -174,7 +178,7 @@ const LeftSideConversationList = () => {
         if (senderId !== serverData.sender._id) {
             conversationsList[indexIdInList].room.updateSeen = false;
         }
-        conversationsList[indexIdInList].room.dialogs = [{...rest}];
+        conversationsList[indexIdInList].room.dialogs = [{ ...rest }];
         const topPushing = conversationsList[indexIdInList];
         conversationsList.splice(indexIdInList, 1);
         conversationsList.unshift(topPushing);
