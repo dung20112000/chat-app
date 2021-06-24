@@ -65,7 +65,7 @@ const VideoChat = () => {
         ref={remoteRef}
       ></video>
       <video
-        muted
+        
         className="position-absolute local-stream w-25 h-25 rounded-1rem"
         ref={localRef}
       ></video>
