@@ -4,6 +4,7 @@ import RegisterForm from "./login-page-child/RegisterForm";
 import React, {useRef} from "react";
 import {Col, Container, Row } from "react-bootstrap";
 import "./login-page-child/scss/form.scss"
+import ForgetPassword from "./login-page-child/ForgetPassword";
 
 
 const LoginPage = ()=>{
@@ -20,6 +21,7 @@ const LoginPage = ()=>{
                        <Switch>
                            <Route exact path="/authenticate/login" component={LoginForm}  />
                            <Route exact path="/authenticate/register" component={RegisterForm}  />
+                           <Route exact path="/authenticate/forget-password" component={ForgetPassword} />
                        </Switch>
                    </div>
                 </Col>
