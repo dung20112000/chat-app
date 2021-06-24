@@ -68,10 +68,8 @@ const RightSideChatDetail = () => {
   const conversationDetailRedux = useSelector(
     (state: RootState) => state.conversationDetail
   );
-  const peerStateRedux = useSelector((state: RootState) => state.peer);
   const socketStateRedux = useSelector((state: RootState) => state.socket);
   const userIdRedux = useSelector((state: RootState) => state.userInfos._id);
-  const history = useHistory();
   if (!conversationDetailRedux) {
     return (
       <Container>
