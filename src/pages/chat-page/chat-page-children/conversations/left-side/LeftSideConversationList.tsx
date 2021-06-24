@@ -16,6 +16,7 @@ import {
     onServerSendMessage
 } from "../../../../../server-interaction/socket-handle/socket-chat";
 import {useLocation} from "react-router-dom";
+import {toggleScrollbar} from "../../../../../helpers/functions/toggle-scrollbar";
 
 interface IPropsShowConversations extends IResponseConversationsList {
     seenAction: (conversationId: string) => void;
@@ -95,7 +96,7 @@ const SearchConversation = (props: IPropsSearch) => {
     }
     return (
         <Row className="mb-3">
-            <Col xs={12} className="p-0">
+            <Col xs={12}>
                 <form>
                     <div>
                         <input
@@ -120,6 +121,11 @@ const LeftSideConversationList = () => {
         return state.userInfos;
     });
     const allConversationsRef = useRef<any[]>([])
+    const conversationItemRef = useRef(null);
+
+    useEffect(()=>{
+        toggleScrollbar(conversationItemRef.current);
+    } ,[])
 
     useEffect(() => {
         (
@@ -197,16 +203,20 @@ const LeftSideConversationList = () => {
         }
     }, [socketStateRedux, conversationsList, userInfosStateRedux?._id, updateDialogs]);
     return (
-        <Container fluid>
+        <div>
             <SearchConversation handleChange={handleSearch}/>
-            {
-                conversationsList && conversationsList.length > 0 ? conversationsList.map((conversation, index) => {
-                    const {_id} = conversation;
-                    return <ShowConversations seenAction={seenAction} {...conversation} key={_id}/>
-                }) : conversationsList && conversationsList.length === 0 ?
-                    <p>You have no conversation</p> : <p>Loading</p>
-            }
-        </Container>
+            <div className="conversation-area">
+                <div ref={conversationItemRef} className="conversation-item">
+                    {
+                        conversationsList && conversationsList.length > 0 ? conversationsList.map((conversation, index) => {
+                            const {_id} = conversation;
+                            return <ShowConversations seenAction={seenAction} {...conversation} key={_id}/>
+                        }) : conversationsList && conversationsList.length === 0 ?
+                            <p>You have no conversation</p> : <p>Loading</p>
+                    }
+                </div>
+            </div>
+        </div>
     )
 }
 export default React.memo(LeftSideConversationList);
