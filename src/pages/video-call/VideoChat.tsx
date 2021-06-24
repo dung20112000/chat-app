@@ -20,7 +20,16 @@ const VideoChat = () => {
   const audioConfig = JSON.parse(audio as string) as boolean;
   is_caller = JSON.parse(is_caller as string);
   const callIds = Object.values({ ...rest }) as string[];
+
   useEffect(() => {
+    //@ts-ignore
+    localRef.current.volume = 0;
+    //@ts-ignore
+    localRef.current.muted = 1;
+    //@ts-ignore
+    remoteRef.current.muted = 0;
+    //@ts-ignore
+    remoteRef.current.volume = 1;
     const appPeer = createPeer(callerId as string);
     appPeer.on('connection', (conn) => {
       console.log(conn);
@@ -63,10 +72,11 @@ const VideoChat = () => {
       <video
         className="position-absolute remote-stream w-100 h-100"
         ref={remoteRef}
+        autoPlay={true}
       ></video>
       <video
-        
         className="position-absolute local-stream w-25 h-25 rounded-1rem"
+        autoPlay={true}
         ref={localRef}
       ></video>
       <Button
