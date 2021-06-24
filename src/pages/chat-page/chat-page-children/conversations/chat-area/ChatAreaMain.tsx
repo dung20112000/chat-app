@@ -55,7 +55,7 @@ const ChatAreaMain = () => {
                             firstName: firstName,
                             lastName: lastName,
                             avatarUrl: avatarUrl,
-                            members: participants.length
+                            members: participants
                         }
                         dispatch(changeConversationDetail(uploadRedux))
                     }

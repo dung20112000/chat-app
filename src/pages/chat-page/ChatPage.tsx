@@ -3,7 +3,7 @@ import chatPageRoutes from "../../routes/chat-page.routes";
 import {Switch, Route, useLocation, Redirect, useHistory} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
 import {RootState} from "../../redux/reducers/RootReducer.reducer.redux";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {createSocket, onLogout} from "../../server-interaction/socket-handle/socket.services";
 import {addSocket} from "../../redux/actions/socket.actions.redux";
 import {fetchUserInfos} from "../../redux/actions/users.actions.redux";
@@ -28,9 +28,19 @@ import {onStatusToOnlineFriends} from "../../server-interaction/socket-handle/so
 import {updateFriendStatus} from './../../redux/actions/FriendList.actions.redux';
 import {onCreateConversations} from "../../server-interaction/socket-handle/socket-chat";
 import {Socket} from "socket.io-client";
-import "../../server-interaction/peerjs/peer.services";
+
+import {onComingCall} from "../../server-interaction/socket-handle/socket-peer.services";
+import {openChatWindow} from "../../server-interaction/peerjs/peer.services";
+import qs from "querystring";
+import {Button, Modal} from "react-bootstrap";
+import ComingCallModalCommon from "../../common-components/coming-call-modal.common";
 
 const ChatPage = () => {
+    const [comingCall,setComingCall] = useState<any>(null);
+    const openModalComing = (callerInfos:any) =>{
+        setComingCall(callerInfos)
+    }
+    const closeModalComing = ()=> setComingCall(null);
     const {pathname} = useLocation();
     const history = useHistory();
     const userInfosStateRedux: IUserInfosReducer = useSelector((state: RootState) => {
@@ -39,9 +49,7 @@ const ChatPage = () => {
     const socketStateRedux: Socket = useSelector((state: RootState) => {
         return state.socket
     });
-    const peerStateRedux: any = useSelector((state: RootState) => {
-        return state.peer;
-    })
+
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -58,9 +66,8 @@ const ChatPage = () => {
     }, [dispatch, userInfosStateRedux?._id]);
 
     useEffect(() => {
-        if (socketStateRedux  && userInfosStateRedux && userInfosStateRedux._id && peerStateRedux) {
-            console.log(peerStateRedux);
-            emitClientConnect(socketStateRedux, userInfosStateRedux._id, peerStateRedux);
+        if (socketStateRedux  && userInfosStateRedux && userInfosStateRedux._id) {
+            emitClientConnect(socketStateRedux, userInfosStateRedux._id);
             onComingFriendsRequests(socketStateRedux, ({
                                                            senderFullName,
                                                            senderId,
@@ -99,9 +106,12 @@ const ChatPage = () => {
             onCreateConversations(socketStateRedux, (response: any) => {
                 if (response.conversationsId) dispatch(updateConversationIdOfFriends(response));
             })
-        }
-    }, [dispatch, history, socketStateRedux, userInfosStateRedux?._id, peerStateRedux])
+            onComingCall(socketStateRedux,(callerInfos:any)=>{
 
+                openModalComing(callerInfos.callerInfos);
+            })
+        }
+    }, [dispatch, history, socketStateRedux, userInfosStateRedux?._id])
     const chatPageRoutesJSX = chatPageRoutes && chatPageRoutes.length > 0 ? (
         chatPageRoutes.map((route, index) => {
             const {main, ...rest} = route;
@@ -120,6 +130,7 @@ const ChatPage = () => {
                     {chatPageRoutesJSX}
                 </Switch>
             </div>
+            <ComingCallModalCommon callerInfos={comingCall} closeModalComing={closeModalComing}/>
         </div>
     )
 }

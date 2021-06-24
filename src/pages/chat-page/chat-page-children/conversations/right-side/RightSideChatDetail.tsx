@@ -1,14 +1,19 @@
 import {Container, Row, Col} from "react-bootstrap";
+import qs from "querystring";
 import {Avatar} from "../../../../../common-components/avatar.common";
-import React, {useCallback, useState} from "react";
+import React, {useState} from "react";
 import ComponentTitleCommon from "../../../../../common-components/component-title.common";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
 import RightSideChatFiles from "./RightSideChatFiles";
 import RightSideChatDetailModal from "./RightSideChatDetailModal";
-import {openChatWindow} from "../../../../../server-interaction/peerjs/peer.services";
-import {emit} from "cluster";
 import {emitCall} from "../../../../../server-interaction/socket-handle/socket-peer.services";
+import {convertArrayPeerToObject} from "../../../../../helpers/functions/convertArrayToObject";
+import {
+    IOpenStreamConfigs,
+    openChatWindow
+} from "../../../../../server-interaction/peerjs/peer.services";
+import {useHistory} from "react-router-dom";
 interface IChatDetailFriend {
     avatarUrl: string,
     friendName: string,
@@ -52,12 +57,8 @@ const RightSideChatDetail = () => {
     const conversationDetailRedux = useSelector((state: RootState) => state.conversationDetail);
     const peerStateRedux = useSelector((state:RootState)=> state.peer);
     const socketStateRedux = useSelector((state:RootState) => state.socket);
-
-    const onVideoChat = useCallback(()=>{
-        if(socketStateRedux && peerStateRedux){
-            // emitCall()
-        }
-    },[peerStateRedux,peerStateRedux])
+    const userIdRedux = useSelector((state:RootState)=> state.userInfos._id);
+    const history = useHistory();
     if (!conversationDetailRedux) {
         return (
             <Container>
@@ -84,7 +85,26 @@ const RightSideChatDetail = () => {
             </Container>
         )
     }
-    const {firstName, lastName, avatarUrl, _id, roomName, members} = conversationDetailRedux
+    const {firstName, lastName, avatarUrl, _id, roomName, members} = conversationDetailRedux;
+    const onVideoChat = ({video,audio}:IOpenStreamConfigs)=>{
+        if(socketStateRedux && userIdRedux){
+            const infosIds = {
+                connectUserIds: members.map((member:any) => member.userId._id),
+                callerId: userIdRedux
+            }
+            const paramsObj = convertArrayPeerToObject(infosIds.connectUserIds);
+            paramsObj.callerId = userIdRedux;
+            paramsObj.is_caller = true;
+            paramsObj.video = video;
+            paramsObj.audio = audio;
+            const queriesParams = qs.stringify(paramsObj);
+            emitCall(socketStateRedux,infosIds,_id,(response:any)=>{
+                if(response && response.status){
+                    openChatWindow(queriesParams);
+                }
+            })
+        }
+    }
     return (
         <Container>
             <Row className="align-items-center">
@@ -106,20 +126,20 @@ const RightSideChatDetail = () => {
             {
                 roomName === "" ? (
                     <ChatDetailFriend friendName={`${firstName} ${lastName}`}
-                                      friendQuantity={members} avatarUrl={avatarUrl}/>
+                                      friendQuantity={members.length} avatarUrl={avatarUrl}/>
                 ) : (
-                    <ChatDetailFriend friendName={roomName} friendQuantity={members}
+                    <ChatDetailFriend friendName={roomName} friendQuantity={members.length}
                                       avatarUrl={avatarUrl}/>
                 )
             }
             <Row className="align-items-center pt-3">
                 <Col xs={6} className="pr-1">
-                    <button className="btn btn-primary w-100 rounded-1rem pt-2 pb-2">
+                    <button className="btn btn-primary w-100 rounded-1rem pt-2 pb-2" onClick={()=> onVideoChat({video:false, audio:true})}>
                         <i className="fas fa-phone-alt"/> Voice chat
                     </button>
                 </Col>
                 <Col xs={6} className="pl-1">
-                    <button className="btn btn-danger w-100 rounded-1rem pt-2 pb-2" onClick={onVideoChat}>
+                    <button className="btn btn-danger w-100 rounded-1rem pt-2 pb-2" onClick={()=> onVideoChat({video:true, audio:true})}>
                         <i className="fas fa-video"/> Video call
                     </button>
                 </Col>

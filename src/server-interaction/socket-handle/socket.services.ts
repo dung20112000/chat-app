@@ -5,12 +5,11 @@ const ioURL = process.env.REACT_APP_SOCKET_URL;
 
 export const createSocket = () => io(ioURL as string);
 
-export const emitClientConnect = (socketInstance: Socket, userId: string,peerId:string) => {
+export const emitClientConnect = (socketInstance: Socket, userId: string) => {
    socketInstance.on("connect",()=>{
      socketInstance.emit("client-connect", {
        socketId: socketInstance.id,
        userId,
-       peerId
      });
    })
 };

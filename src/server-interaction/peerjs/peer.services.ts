@@ -6,17 +6,17 @@ export interface IOpenStreamConfigs {
     video: boolean;
     audio: boolean;
 }
-let chatWindow:any;
-export const openChatWindow = (connectPeerId:string)=>{
-    chatWindow = window.open(`http://localhost:3000/video-chat/${connectPeerId}`,"chatWindow", "width=500,height=500");
+
+let chatWindow: any;
+let callingUsers: any = {};
+export const openChatWindow = (querystring: string) => {
+    chatWindow = window.open(`http://localhost:3000/video-chat?${querystring}`, "chatWindow", "width=700,height=700");
 }
-export const closeChatWindow = ()=>{
-    chatWindow.close()
+export const closeChatWindow = () => {
+    window.close();
 }
-const appPeer = new Peer();
-appPeer.on("open", peerId=>{
-    store.dispatch(addPeer(peerId));
-})
+
+export const createPeer = (userId: string) => new Peer(userId, {secure: true});
 export const openStream = (config: IOpenStreamConfigs) => {
     return navigator.mediaDevices.getUserMedia(config);
 }
@@ -28,25 +28,80 @@ export const playStream = (videoRef: any, stream: any) => {
     }
 }
 
-export const onCallPeer = (streamConfigs: IOpenStreamConfigs, callId: string, localRef: any, remoteRef: any) => {
+export const onCallPeer = (appPeer: Peer, streamConfigs: IOpenStreamConfigs, callIds: string[], localRef: any, remoteRef: any) => {
     openStream(streamConfigs).then(stream => {
         playStream(localRef, stream);
-        const call = appPeer.call(callId, stream);
-        if (!callId){
-            return setTimeout(()=> {
-                call.close();
-            },1000 )
+        if (!callIds || callIds.length === 0) {
+            return setTimeout(() => {
+                closeChatWindow()
+            }, 1000)
         }
-        return  call.on("stream", (remoteStream) => playStream(remoteRef, remoteStream));
+        for (const callId of callIds) {
+            let waitTime:any;
+            const call = appPeer.call(callId, stream);
+            callingUsers[callId] = call;
+            call.on("stream", (remoteStream) => {
+                if(waitTime){
+                    clearTimeout(waitTime);
+                }
+                playStream(remoteRef, remoteStream)
+            });
+            waitTime = setTimeout(()=>{
+                if(!call.open){
+                    call.close();
+                    closeChatWindow();
+                }
+            },10000)
+            call.on("close", () => {
+                setTimeout(()=>{
+                    closeChatWindow()
+                },2000)
+            })
+            call.on("error", (error)=>{
+                if(error){
+                    console.log("error");
+                    onCloseCall(callIds);
+                    closeChatWindow()
+                }
+            })
+        }
     })
 }
 
-export const onAnswerPeer = (streamConfigs: IOpenStreamConfigs, localRef: any, remoteRef: any) => {
+export const onAnswerPeer = (appPeer: Peer, streamConfigs: IOpenStreamConfigs, callIds: string[], localRef: any, remoteRef: any) => {
     appPeer.on("call", (call) => {
         openStream(streamConfigs).then(stream => {
             call.answer(stream);
             playStream(localRef, stream);
-            call.on("stream", remoteStream => playStream(remoteRef, remoteStream))
+            for (const callId of callIds) {
+                callingUsers[callId] = call;
+            }
+
+            call.on("stream", (remoteStream)=>{
+                if(!stream){
+                    console.log("no stream");
+                }
+                 playStream(remoteRef, remoteStream)
+            });
+            call.on("close", () => {
+                // onCloseCall(callIds);
+                closeChatWindow();
+            })
+            call.on("error", (error)=>{
+                if(error){
+                    closeChatWindow()
+                }
+            })
         })
     })
 }
+
+export const onCloseCall = (callIds: string[]) => {
+    for (const callId of callIds) {
+        if (callingUsers[callId]) {
+            callingUsers[callId].close();
+        }
+    }
+
+}
+
