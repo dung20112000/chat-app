@@ -15,7 +15,9 @@ import {
     emitSeenMessage,
     onServerSendMessage
 } from "../../../../../server-interaction/socket-handle/socket-chat";
-import { useLocation } from "react-router-dom";
+
+import {useLocation} from "react-router-dom";
+import {toggleScrollbar} from "../../../../../helpers/functions/toggle-scrollbar";
 
 interface IPropsShowConversations extends IResponseConversationsList {
     seenAction: (conversationId: string) => void;
@@ -43,8 +45,11 @@ const ShowConversations: React.FC<IPropsShowConversations> = (props) => {
         }, "") : `${participants[0].userId.personalInfos.firstName} ${participants[0].userId.personalInfos.lastName}`
     }
     if (!friendsListStateRedux) return null;
-    if (participants.length > 2) {
+    if (participants.length > 1) {
         return <ConversationBlockGroup currentUserAvatarUrl={""}
+            id={conversationsId}
+            updateSeen={updateSeen}
+            seenAction={seenAction}
             groupName={roomName ? roomName : participantsNames()}
             lastMessage={{ sender: senderLastMessage, message }}
             members={participants.length + 1}
@@ -95,7 +100,7 @@ const SearchConversation = (props: IPropsSearch) => {
     }
     return (
         <Row className="mb-3">
-            <Col xs={12} className="p-0">
+            <Col xs={12}>
                 <form>
                     <div>
                         <input
@@ -120,6 +125,11 @@ const LeftSideConversationList = () => {
         return state.userInfos;
     });
     const allConversationsRef = useRef<any[]>([])
+    const conversationItemRef = useRef(null);
+
+    useEffect(()=>{
+        toggleScrollbar(conversationItemRef.current);
+    } ,[])
 
     useEffect(() => {
         (
@@ -127,6 +137,7 @@ const LeftSideConversationList = () => {
                 const response = await callApi("/conversations", "GET");
                 if (response && response.status === 200 && response.data && response.data.conversations) {
                     const { conversations } = response.data;
+                    console.log(response.data);
                     allConversationsRef.current = conversations
                     setConversationsList(conversations);
                 }
@@ -200,16 +211,20 @@ const LeftSideConversationList = () => {
         }
     }, [socketStateRedux, conversationsList, userInfosStateRedux?._id, updateDialogs]);
     return (
-        <Container fluid>
-            <SearchConversation handleChange={handleSearch} />
-            {
-                conversationsList && conversationsList.length > 0 ? conversationsList.map((conversation, index) => {
-                    const { _id } = conversation;
-                    return <ShowConversations seenAction={seenAction} {...conversation} key={_id} />
-                }) : conversationsList && conversationsList.length === 0 ?
-                    <p>You have no conversation</p> : <p>Loading</p>
-            }
-        </Container>
+        <div>
+            <SearchConversation handleChange={handleSearch}/>
+            <div className="conversation-area">
+                <div ref={conversationItemRef} className="conversation-item">
+                    {
+                        conversationsList && conversationsList.length > 0 ? conversationsList.map((conversation, index) => {
+                            const {_id} = conversation;
+                            return <ShowConversations seenAction={seenAction} {...conversation} key={_id}/>
+                        }) : conversationsList && conversationsList.length === 0 ?
+                            <p>You have no conversation</p> : <p>Loading</p>
+                    }
+                </div>
+            </div>
+        </div>
     )
 }
 export default React.memo(LeftSideConversationList);
