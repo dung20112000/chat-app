@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Button, Row, Col, Container } from 'react-bootstrap';
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { IUserInfosReducer } from "../../../../../../@types/redux";
+import { IUserFriendsList, IUserInfosReducer } from "../../../../../../@types/redux";
 import { RootState } from "../../../../../../redux/reducers/RootReducer.reducer.redux";
 import { callApi } from "../../../../../../server-interaction/apis/api.services";
 import { ModalItemFriend } from "./ModalItemFriend";
@@ -29,7 +29,7 @@ const itemFriend = (id: string, personalInfos: any): IAddFriend => {
 }
 
 export const ModalCreateChatGroup = (props: any) => {
-    const friendsList = useSelector((state: RootState) => state.friendsList);
+    const friendsListRedux = useSelector((state: RootState) => state.friendsList);
     const userInfosStateRedux: IUserInfosReducer = useSelector((state: RootState) => {
         return state.userInfos;
     });
@@ -37,9 +37,23 @@ export const ModalCreateChatGroup = (props: any) => {
     const [listFriendsInGroup, setListFriendsInGroup] = useState<IAddFriend[]>([initialValues]);
     const [nameGroup, setNameGroup] = useState("");
     const [errorNameGroup, setErrorNameGroup] = useState(false);
+    const [showListFriend, setShowListFriend] = useState<IUserFriendsList[]>([]);
+
     const history = useHistory();
     const changeSearchFriend = (event: any) => {
-
+        const searchValues = event.target.value;
+        if (!searchValues) {
+            setShowListFriend(friendsListRedux)
+        }
+        const result = friendsListRedux.filter((friend: IUserFriendsList) => {
+            const { email, personalInfos: { firstName, lastName } } = friend;
+            const fullName = `${firstName} ${lastName}`;
+            return email.includes(searchValues) ||
+                firstName.includes(searchValues) ||
+                lastName.includes(searchValues) ||
+                fullName.includes(searchValues)
+        })
+        setShowListFriend(result)
     }
 
     const onChangeNameRoom = (event: any) => {
@@ -57,7 +71,7 @@ export const ModalCreateChatGroup = (props: any) => {
 
     const onChooseFriend = (id: string) => {
         if (!listFriendsInGroup.some(item => item.id === id)) {
-            const itemFr = friendsList.find((item: any) => item._id === id);
+            const itemFr = friendsListRedux.find((item: any) => item._id === id);
             if (itemFr) {
                 const addItemFriend = itemFriend(itemFr._id, itemFr.personalInfos);
                 listFriendsInGroup.push(addItemFriend);
@@ -85,6 +99,10 @@ export const ModalCreateChatGroup = (props: any) => {
         }
 
     }
+
+    useEffect(() => {
+        setShowListFriend(friendsListRedux)
+    }, [friendsListRedux])
 
     return (
         <>
@@ -142,7 +160,7 @@ export const ModalCreateChatGroup = (props: any) => {
                             <Col xs={12}>
                                 <form className="overflow-auto friend-list-create">
                                     {
-                                        friendsList && friendsList.length > 0 && friendsList.map((friend: any) => {
+                                        showListFriend && showListFriend.length > 0 && showListFriend.map((friend: any) => {
                                             const { personalInfos, _id } = friend;
                                             const checked = listFriendsInGroup.some(item => item.id === _id);
                                             return <ModalItemFriend key={_id} personalInfos={personalInfos}
