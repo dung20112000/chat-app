@@ -31,9 +31,6 @@ const VideoChat = () => {
     //@ts-ignore
     remoteRef.current.volume = 1;
     const appPeer = createPeer(callerId as string);
-    appPeer.on('connection', (conn) => {
-      console.log(conn);
-    });
     if (search) {
       appPeer.on('open', (id) => {
         if (is_caller) {
@@ -65,7 +62,7 @@ const VideoChat = () => {
     return () => {
       appPeer.disconnect();
     };
-  }, [search]);
+  }, [audioConfig, callIds, callerId, is_caller, search, videoConfig]);
 
   return (
     <div className="position-relative vw-100 vh-100 bg-dark">
