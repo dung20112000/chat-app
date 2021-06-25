@@ -148,7 +148,7 @@ const SearchConversation = (props: IPropsSearch) => {
     </Row>
   );
 };
-
+const SearchConversationMemo = React.memo(SearchConversation);
 const LeftSideConversationList = () => {
   const [conversationsList, setConversationsList] = useState<
     null | IResponseConversationsList[]
@@ -205,46 +205,57 @@ const LeftSideConversationList = () => {
     },
     []
   );
-  const handleSearch = (searchValue: string) => {
-    if (allConversationsRef.current.length > 0 && conversationsList) {
-      if (!searchValue) {
-        setConversationsList(allConversationsRef.current);
+  const handleSearch = useCallback(
+    (searchValue: string) => {
+      let debounce: any;
+      if (allConversationsRef.current.length > 0 && conversationsList) {
+        if (debounce) {
+          clearTimeout(debounce);
+        }
+        debounce = setTimeout(() => {
+          if (!searchValue) {
+            return setConversationsList(allConversationsRef.current);
+          }
+          const result = allConversationsRef.current.filter((conversation) => {
+            return (
+              conversation.room.roomName.includes(searchValue) ||
+              isMatchParticipants(conversation.room.participants, searchValue)
+            );
+          });
+          return setConversationsList(result);
+        }, 1500);
       }
-      const result = allConversationsRef.current.filter((conversation) => {
-        return (
-          conversation.room.roomName.includes(searchValue) ||
-          isMatchParticipants(conversation.room.participants, searchValue)
-        );
-      });
-      setConversationsList(result);
+    },
+    [conversationsList, isMatchParticipants, allConversationsRef]
+  );
+  const getNewConversation = useCallback(async (conversationsId: string) => {
+    const response = await callApi(`/conversations/${conversationsId}`, 'GET');
+    if (response && response.status === 200) {
+      return response.data.conversationsInfo;
     }
-  };
+    return null;
+  }, []);
 
-  const updateDialogs = async (
-    senderId: string,
-    serverData: any,
-    conversationsList: IResponseConversationsList[]
-  ) => {
-    const { conversationId, ...rest } = serverData;
-    const indexIdInList = conversationsList.findIndex(
-      (conversation) => conversation._id === conversationId
-    );
-    if (indexIdInList < 0) {
-      const response = await callApi(`/conversations/${conversationId}`, 'GET');
-      if (response && response.status === 200) {
-        conversationsList.unshift(response.data.conversationsInfo);
+  const updateDialogs = useCallback(
+    (currentUserId: string, socketData: any, conversationsList: any[]) => {
+      const indexModify = conversationsList.findIndex(
+        (conversation) => conversation._id === socketData.conversationId
+      );
+      const { conversationId, ...rest } = socketData;
+      if (indexModify < 0) return null;
+      if (currentUserId !== socketData.sender._id) {
+        conversationsList[indexModify].room.updateSeen = false;
+      } else {
+        conversationsList[indexModify].room.updateSeen = true;
       }
-      return [...conversationsList];
-    }
-    if (senderId !== serverData.sender._id) {
-      conversationsList[indexIdInList].room.updateSeen = false;
-    }
-    conversationsList[indexIdInList].room.dialogs = [{ ...rest }];
-    const topPushing = conversationsList[indexIdInList];
-    conversationsList.splice(indexIdInList, 1);
-    conversationsList.unshift(topPushing);
-    return [...conversationsList];
-  };
+      conversationsList[indexModify].room.dialogs = [{ ...rest }];
+      const topPushing = conversationsList[indexModify];
+      conversationsList.splice(indexModify, 1);
+      conversationsList.unshift(topPushing);
+      return conversationsList;
+    },
+    []
+  );
   const seenAction = (conversationsId: string) => {
     if (conversationsList && conversationsList.length > 0 && socketStateRedux) {
       const indexIdInList = conversationsList.findIndex(
@@ -261,19 +272,39 @@ const LeftSideConversationList = () => {
     if (socketStateRedux && conversationsList) {
       onServerSendMessage(socketStateRedux, async (data: any) => {
         if (data) {
-          const newState = await updateDialogs(
-            userInfosStateRedux._id,
-            data,
-            conversationsList
+          const isConversationInList = allConversationsRef.current.find(
+            (conversation) => conversation._id === data.conversationId
           );
-          setConversationsList(newState);
+          if (!isConversationInList) {
+            const newConversation = await getNewConversation(
+              data.conversationId
+            );
+            if (newConversation) {
+              conversationsList.unshift(newConversation);
+              setConversationsList([...conversationsList]);
+            }
+          }
+          if (conversationsList) {
+            const newState = await updateDialogs(
+              userInfosStateRedux._id,
+              data,
+              conversationsList
+            );
+            if (newState) setConversationsList([...newState]);
+          }
         }
       });
     }
-  }, [socketStateRedux, conversationsList, userInfosStateRedux?._id]);
+  }, [
+    socketStateRedux,
+    userInfosStateRedux?._id,
+    updateDialogs,
+    conversationsList,
+    getNewConversation,
+  ]);
   return (
     <div>
-      <SearchConversation handleChange={handleSearch} />
+      <SearchConversationMemo handleChange={handleSearch} />
       <div className="conversation-area">
         <div ref={conversationItemRef} className="conversation-item">
           {conversationsList && conversationsList.length > 0 ? (

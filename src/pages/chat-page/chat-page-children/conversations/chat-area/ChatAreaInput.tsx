@@ -6,8 +6,7 @@ import { IUserInfosReducer } from '../../../../../@types/redux';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
 import { useParams } from 'react-router-dom';
-// @ts-ignore
-// import shortid from 'shortid';
+import shortid from 'shortid';
 interface IFormValues {
   message: string;
 }
@@ -59,13 +58,14 @@ const ChatAreaInput: React.FC<any> = ({ pushMessage }) => {
         (response: any) => {}
       );
     }
-    // pushMessage({
-    //   _id: shortid.generate(),
-    //   sender: sender,
-    //   message: values.message,
-    //   updatedAt,
-    //   createdAt,
-    // });
+    pushMessage({
+      _id: shortid.generate(),
+      sender: sender,
+      message: values.message,
+      updatedAt,
+      createdAt,
+    });
+    action.resetForm();
   };
 
   const formik = useFormik({ initialValues, onSubmit });

@@ -20,9 +20,6 @@ const ChatAreaRoomName = ({
       return state.userInfos;
     }
   );
-  if (!participants || participants.length === 0) {
-    return <Row className="vh-100"></Row>;
-  }
   const participantsNames = () => {
     if (!roomName) {
       return participants.length > 1

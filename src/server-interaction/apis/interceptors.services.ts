@@ -33,7 +33,6 @@ export const checkTokenInterceptors = (axiosInstance: AxiosInstance) => {
 export const checkTokenOnResponse = (axiosInstance: AxiosInstance) => {
   return axiosInstance.interceptors.response.use(
     (response) => {
-      console.log(response);
       return response;
     },
     (error) => {

@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 import { Container, Row, Col } from 'react-bootstrap';
-import withAuthentication from '../../../../helpers/HOCs/withAuthentication';
 import { RootState } from '../../../../redux/reducers/RootReducer.reducer.redux';
 
 import { IUserInfosReducer } from '../../../../@types/redux';

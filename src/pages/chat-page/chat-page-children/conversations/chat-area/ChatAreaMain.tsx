@@ -14,7 +14,6 @@ import { callApi } from '../../../../../server-interaction/apis/api.services';
 import './scss/chatbody.scss';
 import { changeConversationDetail } from '../../../../../redux/actions/Conversation.redux';
 import { toggleScrollbar } from '../../../../../helpers/functions/toggle-scrollbar';
-
 interface IParams {
   conversationsId: string;
 }
@@ -27,6 +26,7 @@ const ChatAreaMain = () => {
   const endRef = useRef(null);
   const firstRender = useRef(true);
   const chatItemsRef = useRef(null);
+  const dialogsLength = useRef(dialogs.length);
   const userInfosStateRedux: IUserInfosReducer = useSelector(
     (state: RootState) => {
       return state.userInfos;
@@ -77,7 +77,7 @@ const ChatAreaMain = () => {
         }
       );
     }
-  }, [conversationsId]);
+  }, [conversationsId, dispatch]);
 
   useEffect(() => {
     if (
@@ -95,38 +95,53 @@ const ChatAreaMain = () => {
         socketStateRedux,
         conversationsId,
         members,
-        (response: any) => {
-          console.log(response);
-        }
+        (response: any) => {}
       );
     }
   }, [
     conversationsId,
     socketStateRedux,
     userInfosStateRedux?._id,
-    conversationsInfos?.participants,
+    conversationsInfos,
   ]);
 
   useEffect(() => {
     if (socketStateRedux && conversationsId) {
       onServerSendMessage(socketStateRedux, (data: any) => {
-        if (data && conversationsId === data.conversationId) {
+        if (
+          data &&
+          conversationsId === data.conversationId &&
+          data.sender._id !== userInfosStateRedux._id
+        ) {
           const { conversationsId, ...rest } = data;
           dialogs.push({ ...rest });
           setDialogs([...dialogs]);
         }
       });
     }
-  }, [socketStateRedux, dialogs, conversationsId]);
-
+  }, [socketStateRedux, dialogs, conversationsId, userInfosStateRedux?._id]);
   useEffect(() => {
-    if (!firstRender.current) {
+    if (
+      endRef.current &&
+      chatItemsRef.current &&
+      dialogs.length > dialogsLength.current
+    ) {
       //@ts-ignore
       endRef.current.scrollIntoView({ behavior: 'smooth' });
+      //@ts-ignore
+      chatItemsRef.current.classList.remove('pr-0');
     }
-  }, [conversationsInfos?.dialogs.length]);
+    dialogsLength.current = dialogs.length;
+  }, [dialogs]);
+
   useEffect(() => {
-    toggleScrollbar(chatItemsRef.current);
+    if (chatItemsRef.current) {
+      //@ts-ignore
+      chatItemsRef.current.onscroll = (event: any) => {
+        event.target.classList.add('pr-0');
+        toggleScrollbar(event.target);
+      };
+    }
   }, []);
 
   const pushOwnMessageDialogs = useCallback(
@@ -136,6 +151,9 @@ const ChatAreaMain = () => {
     },
     [dialogs]
   );
+  if (!conversationsInfos) {
+    return null;
+  }
   return (
     <div>
       <ChatAreaRoomName
@@ -147,10 +165,28 @@ const ChatAreaMain = () => {
           {userInfosStateRedux && conversationsInfos && dialogs.length > 0 ? (
             dialogs.map((dialog: any, index: number) => {
               const { _id } = dialog;
+              const lastSenderId =
+                index > 0
+                  ? dialogs[index - 1].sender._id === dialog.sender._id
+                  : false;
               if (dialog.sender._id === userInfosStateRedux._id) {
-                return <ChatAreaDialog key={_id} dialog={dialog} me={true} />;
+                return (
+                  <ChatAreaDialog
+                    isLastSenderId={lastSenderId}
+                    key={_id}
+                    dialog={dialog}
+                    me={true}
+                  />
+                );
               }
-              return <ChatAreaDialog key={index} dialog={dialog} me={false} />;
+              return (
+                <ChatAreaDialog
+                  isLastSenderId={lastSenderId}
+                  key={index}
+                  dialog={dialog}
+                  me={false}
+                />
+              );
             })
           ) : (
             <p></p>
