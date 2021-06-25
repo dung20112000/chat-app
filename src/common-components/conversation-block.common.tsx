@@ -51,8 +51,8 @@ export const ConversationBlock: React.FC<IConversationBlockCommon> = ({
         history.push(`/chat-page/conversations/${id}`)
     }
     return (
-        <Row
-            className={active ? "py-3 rounded-1rem align-items-stretch active conversation-block-common mb-2" : "py-3 mb-2 rounded-1rem align-items-stretch conversation-block-common"}
+        <Row style={{boxSizing:"border-box"}}
+            className={active ? "m-1 py-3 rounded-1rem align-items-stretch active conversation-block-common mb-2" : "m-1 py-3 mb-2 rounded-1rem align-items-stretch conversation-block-common"}
             onClick={onClickConversations}>
             <Col xs={3}>
                 <AvatarWithStatus status={status} avatarUrl={avatarUrl} alt={friendName} />
