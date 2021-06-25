@@ -2,7 +2,6 @@ import {useLocation} from "react-router-dom";
 import qs from "querystring";
 import {useEffect, useRef} from "react";
 import {onAnswerPeer, onCallPeer} from "../../server-interaction/peerjs/peer.services";
-import NewWindow from "react-new-window";
 const VideoAnswer  = ()=>{
     const {search} = useLocation();
     const localRef = useRef(null);
