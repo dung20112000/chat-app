@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import {
     ConversationBlockCommon,
     ConversationBlockGroup
@@ -16,8 +16,8 @@ import {
     onServerSendMessage
 } from "../../../../../server-interaction/socket-handle/socket-chat";
 
-import {useLocation} from "react-router-dom";
-import {toggleScrollbar} from "../../../../../helpers/functions/toggle-scrollbar";
+import { useLocation } from "react-router-dom";
+import { toggleScrollbar } from "../../../../../helpers/functions/toggle-scrollbar";
 
 interface IPropsShowConversations extends IResponseConversationsList {
     seenAction: (conversationId: string) => void;
@@ -49,6 +49,7 @@ const ShowConversations: React.FC<IPropsShowConversations> = (props) => {
         return <ConversationBlockGroup currentUserAvatarUrl={""}
             id={conversationsId}
             updateSeen={updateSeen}
+            lastMessageTime={updatedAt}
             seenAction={seenAction}
             groupName={roomName ? roomName : participantsNames()}
             lastMessage={{ sender: senderLastMessage, message }}
@@ -127,9 +128,9 @@ const LeftSideConversationList = () => {
     const allConversationsRef = useRef<any[]>([])
     const conversationItemRef = useRef(null);
 
-    useEffect(()=>{
+    useEffect(() => {
         toggleScrollbar(conversationItemRef.current);
-    } ,[])
+    }, [])
 
     useEffect(() => {
         (
@@ -211,13 +212,13 @@ const LeftSideConversationList = () => {
     }, [socketStateRedux, conversationsList, userInfosStateRedux?._id, updateDialogs]);
     return (
         <div>
-            <SearchConversation handleChange={handleSearch}/>
+            <SearchConversation handleChange={handleSearch} />
             <div className="conversation-area">
                 <div ref={conversationItemRef} className="conversation-item">
                     {
                         conversationsList && conversationsList.length > 0 ? conversationsList.map((conversation, index) => {
-                            const {_id} = conversation;
-                            return <ShowConversations seenAction={seenAction} {...conversation} key={_id}/>
+                            const { _id } = conversation;
+                            return <ShowConversations seenAction={seenAction} {...conversation} key={_id} />
                         }) : conversationsList && conversationsList.length === 0 ?
                             <p>You have no conversation</p> : <p>Loading</p>
                     }
