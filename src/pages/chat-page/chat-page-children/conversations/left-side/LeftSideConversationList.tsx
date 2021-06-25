@@ -130,7 +130,6 @@ const LeftSideConversationList = () => {
                 const response = await callApi("/conversations", "GET");
                 if (response && response.status === 200 && response.data && response.data.conversations) {
                     const { conversations } = response.data;
-                    console.log(response.data);
                     allConversationsRef.current = conversations
                     setConversationsList(conversations);
                 }

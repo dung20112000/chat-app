@@ -36,21 +36,21 @@ export const ModalCreateChatGroup = (props: any) => {
     const initialValues = itemFriend(userInfosStateRedux._id, userInfosStateRedux.personalInfos);
     const [listFriendsInGroup, setListFriendsInGroup] = useState<IAddFriend[]>([initialValues]);
     const [nameGroup, setNameGroup] = useState("");
+    const [errorNameGroup, setErrorNameGroup] = useState(false);
     const history = useHistory();
-    // const [disabledButton, setDisabledButton] = useState(false);
     const changeSearchFriend = (event: any) => {
 
     }
 
     const onChangeNameRoom = (event: any) => {
         const nameGroupInput = event.target.value;
-        if (nameGroupInput) {
-
-        }
+        setErrorNameGroup(false);
         setNameGroup(nameGroupInput);
     }
     const onCloseForm = () => {
         const { onHide } = props;
+        setErrorNameGroup(false);
+        setNameGroup("");
         setListFriendsInGroup([initialValues]);
         onHide();
     }
@@ -80,6 +80,8 @@ export const ModalCreateChatGroup = (props: any) => {
                     history.push(`/chat-page/conversations/${response.data.conversationsId}`);
                 }
             })
+        } else {
+            setErrorNameGroup(true);
         }
 
     }
@@ -104,13 +106,16 @@ export const ModalCreateChatGroup = (props: any) => {
                                     value={nameGroup}
                                     placeholder="Name Group" onChange={(e) => onChangeNameRoom(e)}
                                 />
+                                {
+                                    errorNameGroup && (<div className="text-danger">Name is required</div>)
+                                }
                             </Col>
                         </Row>
                         <Row className="mb-3">
                             <Col>
                                 <h6>Search Friend</h6>
                                 <input type="text" className="form-control"
-                                    placeholder="Search Friend" onChange={(e) => changeSearchFriend(e)}
+                                    placeholder="Search friend by name or phone number" onChange={(e) => changeSearchFriend(e)}
                                 />
                             </Col>
                         </Row>
@@ -135,7 +140,7 @@ export const ModalCreateChatGroup = (props: any) => {
                                 <h4>Friend List</h4>
                             </Col>
                             <Col xs={12}>
-                                <form className="overflow-auto friend-list-add">
+                                <form className="overflow-auto friend-list-create">
                                     {
                                         friendsList && friendsList.length > 0 && friendsList.map((friend: any) => {
                                             const { personalInfos, _id } = friend;

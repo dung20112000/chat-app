@@ -67,7 +67,11 @@ form {
         }
     }
 }
-
+.form-control {
+    height: 3rem !important;
+    resize: none;
+    width: 100%;
+}
 .box-friend-group {
     .item-friend-group {
         border-radius: 15px;
@@ -90,12 +94,11 @@ form {
         }
     }
 }
-
 .w-20 {
-    width: 20% !important;
+    width: 22%;
 }
-.friend-list-add {
-    height: 50vh;
+.friend-list-create {
+    height: 35vh;
     .friend-row-modal.hover:hover .button-setting {
         background: none;
         color: gray !important;
