@@ -12,29 +12,30 @@ interface ISlideShowFriendSuggest {
 
 const SlideShowFriendSuggest:React.FC<ISlideShowFriendSuggest> = ({firstName,lastName,avatarUrl}) => {
     return (
-        <Row className="text-center bg-white align-items-center rounded-1rem">
-            <Col xs={12} className="pt-3">
-                <div className="d-flex justify-content-center align-items-center w-25 mx-auto" >
-                    <Avatar avatarUrl={avatarUrl} alt={firstName}/>
-                </div>
-            </Col>
-            <Col xs={12} className="mb-2">
-                <div>
-                    <h3 className="mb-1 pt-2 text-truncate">{firstName} {lastName}</h3>
-                </div>
-            </Col>
-            <Col xs={12}>
-                <div className="text-muted" style={{fontSize: "1.2rem"}}>
-                    <p className="mb-0">From friend suggestion </p>
-                    <p>No mutual group</p>
-                </div>
-            </Col>
-            <Col xs={12} className="pb-4">
-                <button className="btn btn-primary">
-                    ADD FRIEND
-                </button>
-            </Col>
-        </Row>
+        <div>
+            <Row className="text-center bg-white align-items-center rounded-1rem">
+                <Col xs={12}>
+                    <div className="d-flex justify-content-center align-items-center w-25 mx-auto" >
+                        <Avatar avatarUrl={avatarUrl} alt={firstName}/>
+                    </div>
+                </Col>
+                <Col xs={12}>
+                    <div>
+                        <h3 className="pt-2 text-truncate">{firstName} {lastName}</h3>
+                    </div>
+                </Col>
+                <Col xs={12}>
+                    <div className="text-muted mb-2" style={{fontSize: "1.2rem"}}>
+                        <p className="mb-0">From friend suggestion </p>
+                    </div>
+                </Col>
+                <Col xs={12}>
+                    <button className="btn btn-primary mb-2">
+                        ADD FRIEND
+                    </button>
+                </Col>
+            </Row>
+        </div>
     )
 }
 const RightSideSlideShow = ()=> {

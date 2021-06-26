@@ -8,7 +8,7 @@ import ChatAreaMain from "./ChatAreaMain";
 const ChatAreaChatPage = () => {
 
     return (
-        <Container fluid className="bg-very-light-secondary rounded-1rem chat-area-chat-page">
+        <Container fluid className="bg-very-light-secondary rounded-1rem chat-area-chat-page position-relative">
           <Switch>
               <Route path="/chat-page/conversations" exact render={()=> <ChatAreaWelcomePage/>}/>
               <Route path="/chat-page/conversations/:conversationsId" exact render={()=> <ChatAreaMain/>}/>

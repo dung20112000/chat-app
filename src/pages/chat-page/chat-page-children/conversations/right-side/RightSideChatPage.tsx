@@ -7,14 +7,16 @@ import RightSideSlideShow from "./RightSideSlideShow";
 
 const RightSideChatPage = () => {
     return (
-        <Row className="vh-100">
-            <Col xs={12} className="pb-3">
-                <Switch>
-                    <Route exact path="/chat-page/conversations" component={RightSideSlideShow} />
-                    <Route path="/chat-page/conversations/:id" component={RightSideChatDetail} />
-                </Switch>
+        <Row>
+            <Col xs={12} className="pb-3 mb-5">
+                <div style={{maxHeight:"30vh"}}>
+                    <Switch>
+                        <Route exact path="/chat-page/conversations" component={RightSideSlideShow} />
+                        <Route path="/chat-page/conversations/:id" component={RightSideChatDetail} />
+                    </Switch>
+                </div>
             </Col>
-            <Col xs="12" className="h-45 vh-45">
+            <Col xs="12">
                 <RightSideOnlineFriendsList />
             </Col>
         </Row>
