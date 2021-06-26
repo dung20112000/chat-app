@@ -17,6 +17,7 @@ import {
   emitSeenMessage,
   onServerSendMessage,
 } from '../../../../../server-interaction/socket-handle/socket-chat';
+import SlideRequestAddFriendCommon from "../../../../../common-components/slide-request-add-friend.common";
 
 interface IPropsShowConversations extends IResponseConversationsList {
   seenAction: (conversationId: string) => void;
@@ -337,7 +338,11 @@ const LeftSideConversationList = () => {
               );
             })
           ) : conversationsList && conversationsList.length === 0 ? (
-            <p>You have no conversation</p>
+            <SlideRequestAddFriendCommon text="conversations"
+                                         imageUrl="media/welcome-slides/5231.jpg"
+                                         maxWidth="100%"
+                                         hidden={false}
+                                         description="Create a new conversation to say love to your friends"/>
           ) : (
             <p>Loading</p>
           )}
