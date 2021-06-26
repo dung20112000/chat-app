@@ -1,20 +1,18 @@
-import ChatAreaRoomName from './ChatAreaRoomName';
-import ChatAreaDialog from './ChatAreaDialog';
-import ChatAreaInput from './ChatAreaInput';
-import { IUserInfosReducer } from '../../../../../@types/redux';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { toggleScrollbar } from '../../../../../helpers/functions/toggle-scrollbar';
+import { changeConversationDetail } from '../../../../../redux/actions/Conversation.redux';
 import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { callApi } from '../../../../../server-interaction/apis/api.services';
 import {
   emitJoinRoom,
   onServerSendMessage,
 } from '../../../../../server-interaction/socket-handle/socket-chat';
-import { useParams } from 'react-router-dom';
-import { callApi } from '../../../../../server-interaction/apis/api.services';
+import ChatAreaDialog from './ChatAreaDialog';
+import ChatAreaInput from './ChatAreaInput';
+import ChatAreaRoomName from './ChatAreaRoomName';
 import './scss/chatbody.scss';
-import { changeConversationDetail } from '../../../../../redux/actions/Conversation.redux';
-import { toggleScrollbar } from '../../../../../helpers/functions/toggle-scrollbar';
-import React from 'react';
 interface IParams {
   conversationsId: string;
 }
@@ -32,7 +30,7 @@ const ChatAreaMain = () => {
   const socketStateRedux: any = useSelector((state: RootState) => {
     return state.socket;
   });
-
+  const friendsListRedux = useSelector((state: RootState) => state.friendsList);
   useEffect(() => {
     if (conversationsId) {
       callApi(`/conversations/${conversationsId}`, 'GET').then(
@@ -85,10 +83,16 @@ const ChatAreaMain = () => {
         socketStateRedux,
         conversationsId,
         members,
-        (response: any) => { }
+        (response: any) => {}
       );
     }
-  }, [conversationsId, socketStateRedux, userId, conversationsInfos]);
+  }, [
+    conversationsId,
+    socketStateRedux,
+    userId,
+    conversationsInfos,
+    friendsListRedux,
+  ]);
 
   useEffect(() => {
     if (socketStateRedux && conversationsId) {
@@ -154,7 +158,7 @@ const ChatAreaMain = () => {
   if (!conversationsInfos) {
     return null;
   }
-  console.log("chat main");
+  console.log('chat main');
   return (
     <div>
       <ChatAreaRoomName
