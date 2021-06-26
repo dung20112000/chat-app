@@ -1,6 +1,4 @@
 import Peer from 'peerjs';
-import store from '../../redux/store';
-import { addPeer } from '../../redux/actions/peer.actions.redux';
 
 export interface IOpenStreamConfigs {
   video: boolean;
