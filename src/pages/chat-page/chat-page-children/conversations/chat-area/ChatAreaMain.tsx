@@ -14,6 +14,7 @@ import { callApi } from '../../../../../server-interaction/apis/api.services';
 import './scss/chatbody.scss';
 import { changeConversationDetail } from '../../../../../redux/actions/Conversation.redux';
 import { toggleScrollbar } from '../../../../../helpers/functions/toggle-scrollbar';
+import React from 'react';
 interface IParams {
   conversationsId: string;
 }
@@ -27,11 +28,7 @@ const ChatAreaMain = () => {
   const firstRender = useRef(true);
   const chatItemsRef = useRef(null);
   const dialogsLength = useRef(dialogs.length);
-  const userInfosStateRedux: IUserInfosReducer = useSelector(
-    (state: RootState) => {
-      return state.userInfos;
-    }
-  );
+  const userId = useSelector((state: RootState) => state.userInfos?._id);
   const socketStateRedux: any = useSelector((state: RootState) => {
     return state.socket;
   });
@@ -40,9 +37,7 @@ const ChatAreaMain = () => {
     if (conversationsId) {
       callApi(`/conversations/${conversationsId}`, 'GET').then(
         (response: any) => {
-          console.log(response);
           if (response && response.data && response.data.conversationsInfo) {
-            console.log(response);
             const { room, _id } = response.data.conversationsInfo;
             const { dialogs, roomName, participants } = room;
             if (participants && participants.length < 2) {
@@ -80,17 +75,12 @@ const ChatAreaMain = () => {
   }, [conversationsId, dispatch]);
 
   useEffect(() => {
-    if (
-      userInfosStateRedux &&
-      socketStateRedux &&
-      conversationsInfos &&
-      conversationsId
-    ) {
+    if (socketStateRedux && conversationsInfos && conversationsId && userId) {
       const { participants } = conversationsInfos;
       const members: any = participants.map((participant: any) => ({
         userId: participant.userId._id,
       }));
-      members.push({ userId: userInfosStateRedux._id });
+      members.push({ userId: userId });
       emitJoinRoom(
         socketStateRedux,
         conversationsId,
@@ -98,12 +88,7 @@ const ChatAreaMain = () => {
         (response: any) => {}
       );
     }
-  }, [
-    conversationsId,
-    socketStateRedux,
-    userInfosStateRedux?._id,
-    conversationsInfos,
-  ]);
+  }, [conversationsId, socketStateRedux, userId, conversationsInfos]);
 
   useEffect(() => {
     if (socketStateRedux && conversationsId) {
@@ -111,15 +96,23 @@ const ChatAreaMain = () => {
         if (
           data &&
           conversationsId === data.conversationId &&
-          data.sender._id !== userInfosStateRedux._id
+          data.sender._id !== userId
         ) {
           const { conversationsId, ...rest } = data;
-          dialogs.push({ ...rest });
-          setDialogs([...dialogs]);
+          setDialogs((dialogs: any) => {
+            const clone = [...dialogs];
+            if (clone.length > 10) {
+              for (let i = 0; i < 2; i++) {
+                clone.shift();
+              }
+            }
+            clone.push({ ...rest });
+            return [...clone];
+          });
         }
       });
     }
-  }, [socketStateRedux, dialogs, conversationsId, userInfosStateRedux?._id]);
+  }, [socketStateRedux, conversationsId, userId]);
   useEffect(() => {
     if (
       endRef.current &&
@@ -131,7 +124,7 @@ const ChatAreaMain = () => {
       //@ts-ignore
       chatItemsRef.current.classList.remove('pr-0');
     }
-    dialogsLength.current = dialogs.length;
+    dialogsLength.current = dialogs.length > 2 ? dialogs.length - 2 : 0;
   }, [dialogs]);
 
   useEffect(() => {
@@ -144,13 +137,20 @@ const ChatAreaMain = () => {
     }
   }, []);
 
-  const pushOwnMessageDialogs = useCallback(
-    (data: any) => {
-      dialogs.push(data);
-      setDialogs([...dialogs]);
-    },
-    [dialogs]
-  );
+  const pushOwnMessageDialogs = useCallback((data: any) => {
+    if (data) {
+      setDialogs((dialogs: any) => {
+        const clone = [...dialogs];
+        if (clone.length > 10) {
+          for (let i = 0; i < 2; i++) {
+            clone.shift();
+          }
+        }
+        clone.push(data);
+        return [...clone];
+      });
+    }
+  }, []);
   if (!conversationsInfos) {
     return null;
   }
@@ -162,14 +162,14 @@ const ChatAreaMain = () => {
       />
       <div className="content__body">
         <div className="chat__items" ref={chatItemsRef}>
-          {userInfosStateRedux && conversationsInfos && dialogs.length > 0 ? (
+          {userId && conversationsInfos && dialogs.length > 0 ? (
             dialogs.map((dialog: any, index: number) => {
               const { _id } = dialog;
               const lastSenderId =
                 index > 0
                   ? dialogs[index - 1].sender._id === dialog.sender._id
                   : false;
-              if (dialog.sender._id === userInfosStateRedux._id) {
+              if (dialog.sender._id === userId) {
                 return (
                   <ChatAreaDialog
                     isLastSenderId={lastSenderId}

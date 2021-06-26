@@ -29,7 +29,7 @@ const VideoChat = () => {
     //@ts-ignore
     remoteRef.current.muted = 0;
     //@ts-ignore
-    remoteRef.current.volume = 1;
+    remoteRef.current.volume = 0.7;
     const appPeer = createPeer(callerId as string);
     if (search) {
       appPeer.on('open', (id) => {

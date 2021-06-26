@@ -8,7 +8,11 @@ export interface IOpenStreamConfigs {
 const myUrl = process.env.REACT_APP_LOCAL_URL as string;
 let callingUsers: any = {};
 export const openChatWindow = (querystring: string) => {
-  window.open(`${myUrl}/video-chat?${querystring}`, 'width=700,height=700');
+  window.open(
+    `${myUrl}/video-chat?${querystring}`,
+    'chatWindow',
+    'width=700,height=700'
+  );
 };
 export const closeChatWindow = () => {
   window.close();

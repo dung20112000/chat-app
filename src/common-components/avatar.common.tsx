@@ -33,7 +33,6 @@ const checkStatusClass = (status: EOnlineStatus | undefined) => {
   }
 };
 export const Avatar: React.FC<IAvatar> = ({ avatarUrl, _id, alt }) => {
-  console.log(alt);
   return (
     <div
       className="bg-secondary rounded-circle position-relative avatar avatar-with-status"

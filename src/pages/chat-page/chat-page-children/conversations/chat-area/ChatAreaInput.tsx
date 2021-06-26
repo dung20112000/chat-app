@@ -3,10 +3,12 @@ import { Row, Col } from 'react-bootstrap';
 import { FocusEvent, FormEvent, useRef } from 'react';
 import { emitMessage } from '../../../../../server-interaction/socket-handle/socket-chat';
 import { IUserInfosReducer } from '../../../../../@types/redux';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
 import { useParams } from 'react-router-dom';
 import shortid from 'shortid';
+import React from 'react';
+import { updateLastMessage } from '../../../../../redux/actions/last-message.actions.redux';
 interface IFormValues {
   message: string;
 }
@@ -17,6 +19,7 @@ interface IParams {
 
 const ChatAreaInput: React.FC<any> = ({ pushMessage }) => {
   const { conversationsId } = useParams<IParams>();
+  const dispatch = useDispatch();
   const userInfosStateRedux: IUserInfosReducer = useSelector(
     (state: RootState) => {
       return state.userInfos;
@@ -42,7 +45,7 @@ const ChatAreaInput: React.FC<any> = ({ pushMessage }) => {
       _id,
       personalInfos: { firstName, lastName, avatarUrl },
     };
-    const updatedAt = new Date().toLocaleDateString();
+    const updatedAt = new Date().toISOString();
     const createdAt = updatedAt;
     if (
       values.message &&
@@ -58,14 +61,16 @@ const ChatAreaInput: React.FC<any> = ({ pushMessage }) => {
         (response: any) => {}
       );
     }
-    pushMessage({
+    const pushObj = {
       _id: shortid.generate(),
       sender: sender,
       message: values.message,
       updatedAt,
       createdAt,
-    });
+    };
     action.resetForm();
+    pushMessage(pushObj);
+    dispatch(updateLastMessage({ ...pushObj, conversationsId }));
   };
 
   const formik = useFormik({ initialValues, onSubmit });
@@ -121,4 +126,4 @@ const ChatAreaInput: React.FC<any> = ({ pushMessage }) => {
     </Row>
   );
 };
-export default ChatAreaInput;
+export default React.memo(ChatAreaInput);

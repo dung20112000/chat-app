@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import {
   ConversationBlockCommon,
@@ -117,8 +123,7 @@ const ShowConversations: React.FC<IPropsShowConversations> = (props) => {
     />
   );
 };
-
-// const ShowConversationsMemo = React.memo(ShowConversations);
+const ShowConversationsMemo = React.memo(ShowConversations);
 interface IPropsSearch {
   handleChange: (searchValue: string) => void;
 }
@@ -156,11 +161,10 @@ const LeftSideConversationList = () => {
   const socketStateRedux: Socket = useSelector(
     (state: RootState) => state.socket
   );
-  const userInfosStateRedux: IUserInfosReducer = useSelector(
-    (state: RootState) => {
-      return state.userInfos;
-    }
-  );
+  const userId = useSelector((state: RootState) => {
+    return state.userInfos?._id;
+  });
+  const lastUserMessage = useSelector((state: RootState) => state.lastMessage);
   const allConversationsRef = useRef<any[]>([]);
   const conversationItemRef = useRef(null);
 
@@ -269,7 +273,7 @@ const LeftSideConversationList = () => {
     }
   };
   useEffect(() => {
-    if (socketStateRedux && conversationsList) {
+    if (socketStateRedux && conversationsList && userId) {
       onServerSendMessage(socketStateRedux, async (data: any) => {
         if (data) {
           const isConversationInList = allConversationsRef.current.find(
@@ -284,24 +288,48 @@ const LeftSideConversationList = () => {
               setConversationsList([...conversationsList]);
             }
           }
-          if (conversationsList) {
-            const newState = await updateDialogs(
-              userInfosStateRedux._id,
-              data,
-              conversationsList
-            );
-            if (newState) setConversationsList([...newState]);
+          if (isConversationInList) {
+            if (data.sender._id !== userId) {
+              const newState = await updateDialogs(
+                userId,
+                data,
+                conversationsList
+              );
+              if (newState) setConversationsList([...newState]);
+            }
           }
         }
       });
     }
   }, [
     socketStateRedux,
-    userInfosStateRedux?._id,
+    userId,
     updateDialogs,
     conversationsList,
     getNewConversation,
   ]);
+  useEffect(() => {
+    if (lastUserMessage) {
+      const { conversationsId, ...rest } = lastUserMessage;
+      setConversationsList((conversationsList) => {
+        if (!conversationsList) {
+          return conversationsList;
+        }
+        const indexModify = conversationsList.findIndex(
+          (conversation) => conversation._id === conversationsId
+        );
+        if (indexModify >= 0) {
+          conversationsList[indexModify].room.dialogs = [{ ...rest }];
+          const topPushing = conversationsList[indexModify];
+          conversationsList[indexModify].room.updateSeen = true;
+          conversationsList.splice(indexModify, 1);
+          conversationsList.unshift(topPushing);
+          return [...conversationsList];
+        }
+        return conversationsList;
+      });
+    }
+  }, [lastUserMessage]);
   return (
     <div>
       <SearchConversationMemo handleChange={handleSearch} />
@@ -311,7 +339,7 @@ const LeftSideConversationList = () => {
             conversationsList.map((conversation, index) => {
               const { _id } = conversation;
               return (
-                <ShowConversations
+                <ShowConversationsMemo
                   seenAction={seenAction}
                   {...conversation}
                   key={_id}

@@ -52,11 +52,7 @@ const ChatPage = () => {
   const closeModalComing = () => setComingCall(null);
   const { pathname } = useLocation();
   const history = useHistory();
-  const userInfosStateRedux: IUserInfosReducer = useSelector(
-    (state: RootState) => {
-      return state.userInfos;
-    }
-  );
+  const userId = useSelector((state: RootState) => state.userInfos?._id);
   const socketStateRedux: Socket = useSelector((state: RootState) => {
     return state.socket;
   });
@@ -70,17 +66,14 @@ const ChatPage = () => {
   }, []);
 
   useEffect(() => {
-    if (userInfosStateRedux) {
+    if (userId) {
       dispatch(addSocket(createSocket()));
-      notifySuccess(
-        `Welcome back , ${userInfosStateRedux.personalInfos.firstName}  ${userInfosStateRedux.personalInfos.lastName}`
-      );
     }
-  }, [dispatch, userInfosStateRedux?._id]);
+  }, [dispatch, userId]);
 
   useEffect(() => {
-    if (socketStateRedux && userInfosStateRedux && userInfosStateRedux._id) {
-      emitClientConnect(socketStateRedux, userInfosStateRedux._id);
+    if (socketStateRedux && userId) {
+      emitClientConnect(socketStateRedux, userId);
       onComingFriendsRequests(
         socketStateRedux,
         ({
@@ -101,7 +94,7 @@ const ChatPage = () => {
             },
             (isAcceptedId: string) => {
               const body = {
-                acceptorId: userInfosStateRedux._id,
+                acceptorId: userId,
                 isAcceptedId,
               };
               emitAcceptFriendsRequests(
@@ -142,7 +135,7 @@ const ChatPage = () => {
         openModalComing(callerInfos.callerInfos);
       });
     }
-  }, [dispatch ,socketStateRedux, userInfosStateRedux?._id]);
+  }, [dispatch, socketStateRedux, userId, history]);
   const chatPageRoutesJSX =
     chatPageRoutes && chatPageRoutes.length > 0
       ? chatPageRoutes.map((route, index) => {

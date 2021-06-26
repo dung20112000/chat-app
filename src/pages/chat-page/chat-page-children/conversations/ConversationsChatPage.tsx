@@ -1,19 +1,15 @@
 import { useSelector } from 'react-redux';
 import { Container, Row, Col } from 'react-bootstrap';
 import { RootState } from '../../../../redux/reducers/RootReducer.reducer.redux';
-
-import { IUserInfosReducer } from '../../../../@types/redux';
 import LeftSideChatPage from './left-side/LeftSideChatPage';
 import RightSideChatPage from './right-side/RightSideChatPage';
 import ChatAreaChatPage from './chat-area/ChatAreaChatPage';
 const ConversationsChatPage = () => {
-  const userInfosStateRedux: IUserInfosReducer = useSelector(
-    (state: RootState) => {
-      return state.userInfos;
-    }
-  );
+  const userId = useSelector((state: RootState) => {
+    return state.userInfos?._id;
+  });
 
-  if (!userInfosStateRedux) {
+  if (!userId) {
     return null;
   }
   return (

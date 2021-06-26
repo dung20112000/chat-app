@@ -1,6 +1,6 @@
 import { Row, Col } from 'react-bootstrap';
 import { AvatarGroup, AvatarWithStatus } from './avatar.common';
-import React from 'react';
+import React, { useEffect } from 'react';
 import './scss/conversation-block.common.scss';
 import { EOnlineStatus } from '../@types/enums';
 import { useHistory } from 'react-router-dom';
@@ -101,7 +101,12 @@ export const ConversationBlock: React.FC<IConversationBlockCommon> = ({
     </Row>
   );
 };
-export const ConversationBlockCommon = React.memo(ConversationBlock);
+export const ConversationBlockCommon = React.memo(
+  ConversationBlock,
+  (prevProps, nextProps) => {
+    return JSON.stringify(prevProps) === JSON.stringify(nextProps);
+  }
+);
 export const ConversationGroup: React.FC<IConversationsBlockGroup> = ({
   currentUserAvatarUrl,
   active,
@@ -150,4 +155,9 @@ export const ConversationGroup: React.FC<IConversationsBlockGroup> = ({
     </Row>
   );
 };
-export const ConversationBlockGroup = React.memo(ConversationGroup);
+export const ConversationBlockGroup = React.memo(
+  ConversationGroup,
+  (prevProps, nextProps) => {
+    return JSON.stringify(prevProps) === JSON.stringify(nextProps);
+  }
+);

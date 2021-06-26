@@ -1,6 +1,5 @@
 import { Row, Col } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-import { IUserInfosReducer } from '../../../../../@types/redux';
 import {
   AvatarGroup,
   AvatarWithStatus,
@@ -15,11 +14,12 @@ const ChatAreaRoomName = ({
   participants,
   roomName,
 }: IPropsChatAreaRoomName) => {
-  const userInfosStateRedux: IUserInfosReducer = useSelector(
-    (state: RootState) => {
-      return state.userInfos;
-    }
-  );
+  const personalInfos = useSelector((state: RootState) => {
+    return state.userInfos?.personalInfos;
+  });
+  if (!personalInfos) {
+    return null;
+  }
   const participantsNames = () => {
     if (!roomName) {
       return participants.length > 1
@@ -46,10 +46,8 @@ const ChatAreaRoomName = ({
   };
 
   const participantsAvatarGroup = () => {
-    if (userInfosStateRedux) {
-      const {
-        personalInfos: { firstName, lastName },
-      } = userInfosStateRedux;
+    if (personalInfos) {
+      const { firstName, lastName } = personalInfos;
       return `${firstName} ${lastName}`;
     }
     return '';
@@ -62,7 +60,7 @@ const ChatAreaRoomName = ({
           <Col xs={3}>
             {participants.length > 1 ? (
               <AvatarGroup
-                avatarUrl={userInfosStateRedux.personalInfos.avatarUrl}
+                avatarUrl={personalInfos.avatarUrl}
                 avatarUrlMember={participants[0].userId.personalInfos.avatarUrl}
                 members={participants.length}
                 alt={participantsAvatarGroup()}
@@ -88,4 +86,6 @@ const ChatAreaRoomName = ({
     </Row>
   );
 };
-export default React.memo(ChatAreaRoomName);
+export default React.memo(ChatAreaRoomName, (prevProps, nextProps) => {
+  return JSON.stringify(prevProps) === JSON.stringify(nextProps);
+});
