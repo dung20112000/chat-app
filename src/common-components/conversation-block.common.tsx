@@ -1,9 +1,9 @@
-import { Row, Col } from 'react-bootstrap';
-import { AvatarGroup, AvatarWithStatus } from './avatar.common';
-import React, { useEffect } from 'react';
-import './scss/conversation-block.common.scss';
-import { EOnlineStatus } from '../@types/enums';
+import React from 'react';
+import { Col, Row } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
+import { EOnlineStatus } from '../@types/enums';
+import { AvatarGroup, AvatarWithStatus } from './avatar.common';
+import './scss/conversation-block.common.scss';
 import TimeDistanceCommon from './time-distance.common';
 
 interface IConversationBlockCommon {

@@ -85,7 +85,7 @@ const ChatAreaMain = () => {
         socketStateRedux,
         conversationsId,
         members,
-        (response: any) => {}
+        (response: any) => { }
       );
     }
   }, [conversationsId, socketStateRedux, userId, conversationsInfos]);
@@ -154,6 +154,7 @@ const ChatAreaMain = () => {
   if (!conversationsInfos) {
     return null;
   }
+  console.log("chat main");
   return (
     <div>
       <ChatAreaRoomName

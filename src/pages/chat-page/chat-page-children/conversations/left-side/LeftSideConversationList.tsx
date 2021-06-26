@@ -1,32 +1,22 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Col, Row } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { Socket } from 'socket.io-client';
+import { IResponseConversationsList } from '../../../../../@types/api.response';
+import { EOnlineStatus } from '../../../../../@types/enums.d';
+import { IUserFriendsList } from '../../../../../@types/redux';
 import {
   ConversationBlockCommon,
   ConversationBlockGroup,
 } from '../../../../../common-components/conversation-block.common';
-import { callApi } from '../../../../../server-interaction/apis/api.services';
-import { useSelector } from 'react-redux';
+import { toggleScrollbar } from '../../../../../helpers/functions/toggle-scrollbar';
 import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
-import { IResponseConversationsList } from '../../../../../@types/api.response';
-import {
-  IUserFriendsList,
-  IUserInfosReducer,
-} from '../../../../../@types/redux';
-import { EOnlineStatus } from '../../../../../@types/enums.d';
-import { Socket } from 'socket.io-client';
+import { callApi } from '../../../../../server-interaction/apis/api.services';
 import {
   emitSeenMessage,
   onServerSendMessage,
 } from '../../../../../server-interaction/socket-handle/socket-chat';
-
-import { useLocation } from 'react-router-dom';
-import { toggleScrollbar } from '../../../../../helpers/functions/toggle-scrollbar';
 
 interface IPropsShowConversations extends IResponseConversationsList {
   seenAction: (conversationId: string) => void;
