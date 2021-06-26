@@ -19,8 +19,6 @@
     justify-content: flex-end;
     align-items: flex-end;
     margin-top: 15px;
-    margin-right: 10px;
-    margin-left: 10px;
     transition: all 0.3s ease;
     transform: scale(1);
     transform-origin: right;
@@ -50,7 +48,7 @@
     color: #fff;
     padding: 15px;
     border-radius: 10px 10px 0 10px;
-    max-width: 50%;
+    max-width: 60%;
     word-break: break-all;
 }
 .chat__item__content .chat__meta {

@@ -8,6 +8,7 @@ import {RootState} from "./redux/reducers/RootReducer.reducer.redux";
 import LoadingCommon from "./common-components/loading.common";
 import "slick-carousel/slick/slick.scss";
 import "slick-carousel/slick/slick-theme.scss";
+import "./server-interaction/peerjs/peer.services";
 
 function App() {
     const loading = useSelector((state:RootState) => state.loading);
