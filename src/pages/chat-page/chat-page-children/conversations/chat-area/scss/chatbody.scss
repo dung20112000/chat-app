@@ -1,8 +1,12 @@
 .content__body {
     //max-height: calc(100vh - calc(100vh / 3.2));
-    height: 75vh;
+    height: 77%;
+    position: absolute;
+    //top: 1rem;
+    left: 0;
+    width: 100%;
     overflow: hidden!important;
-    margin-bottom: 1rem;
+    //margin-bottom: 1rem;
 }
 .chat__items{
     box-sizing: content-box;

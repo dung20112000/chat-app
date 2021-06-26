@@ -6,7 +6,6 @@ import React, { useState } from 'react';
 import ComponentTitleCommon from '../../../../../common-components/component-title.common';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
-import RightSideChatFiles from './RightSideChatFiles';
 import RightSideChatDetailModal from './RightSideChatDetailModal';
 import { emitCall } from '../../../../../server-interaction/socket-handle/socket-peer.services';
 import { convertArrayPeerToObject } from '../../../../../helpers/functions/convertArrayToObject';
@@ -14,7 +13,6 @@ import {
   IOpenStreamConfigs,
   openChatWindow,
 } from '../../../../../server-interaction/peerjs/peer.services';
-import { useHistory } from 'react-router-dom';
 interface IChatDetailFriend {
   avatarUrl: string;
   friendName: string;
@@ -184,9 +182,6 @@ const RightSideChatDetail = () => {
           >
             <i className="fas fa-video" /> Video call
           </button>
-        </Col>
-        <Col xs="12" className="mt-5 h-25">
-          <RightSideChatFiles />
         </Col>
       </Row>
     </Container>

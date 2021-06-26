@@ -1,25 +1,22 @@
-import { Col, Container, Row, Button } from 'react-bootstrap';
-import { EOnlineStatus } from '../../../../../@types/enums.d';
-import React, { useEffect, useState } from 'react';
-import { AvatarWithStatus } from '../../../../../common-components/avatar.common';
+import {Button, ButtonGroup, Col, Container, Dropdown, Row} from 'react-bootstrap';
+import {EOnlineStatus} from '../../../../../@types/enums.d';
+import React, {useEffect, useState} from 'react';
+import {AvatarWithStatus} from '../../../../../common-components/avatar.common';
 import RightSideModal from './RightSideModal';
 import ComponentTitleCommon from '../../../../../common-components/component-title.common';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
-import { Dropdown, ButtonGroup } from 'react-bootstrap';
-import {
-  IComingRequests,
-  IUserInfosReducer,
-} from '../../../../../@types/redux';
-import { Avatar } from './../../../../../common-components/avatar.common';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../../../../redux/reducers/RootReducer.reducer.redux';
+import {IComingRequests, IUserInfosReducer,} from '../../../../../@types/redux';
+import {Avatar} from './../../../../../common-components/avatar.common';
 import {
   emitAcceptFriendsRequests,
   emitCancelFriendsRequests,
 } from '../../../../../server-interaction/socket-handle/socket-friends-requests';
-import { acceptFriendRequest } from '../../../../../redux/actions/FriendList.actions.redux';
-import { removeFriendsRequest } from '../../../../../redux/actions/FriendRequest.action.redux';
-import { emitJoinRoom } from '../../../../../server-interaction/socket-handle/socket-chat';
-import { useHistory } from 'react-router-dom';
+import {acceptFriendRequest} from '../../../../../redux/actions/FriendList.actions.redux';
+import {removeFriendsRequest} from '../../../../../redux/actions/FriendRequest.action.redux';
+import {emitJoinRoom} from '../../../../../server-interaction/socket-handle/socket-chat';
+import {useHistory} from 'react-router-dom';
+
 interface IPropsRowFriend {
   _id: string;
   avatarUrl: string;
@@ -285,6 +282,7 @@ const RightSideOnlineFriendsList = () => {
       <Row>
         <Col id="custom-scroll">
           <div className="list-friend">
+
             {userFriendsOnline.length > 0 &&
               userFriendsOnline &&
               userFriendsOnline.map((friend: any) => {
