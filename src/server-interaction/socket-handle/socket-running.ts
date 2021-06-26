@@ -66,7 +66,6 @@ function friendsListRedux() {
     });
 
     onStatusToOnlineFriends(socket, (response: any) => {
-      console.log(response);
       if (response) store.dispatch(updateFriendStatus(response));
     });
   }
