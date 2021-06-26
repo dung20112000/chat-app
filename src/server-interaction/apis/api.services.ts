@@ -38,7 +38,7 @@ export const callApi = (
   }
   if (
     isApiMatch(url, method, noLoadingApis) < 0 &&
-    !url.includes('/conversations/')
+    !url.includes('conversations')
   ) {
     tokenOnLoading = onLoadingInterceptors(axiosInstance);
     tokenOffLoading = offLoadingInterceptors(axiosInstance);

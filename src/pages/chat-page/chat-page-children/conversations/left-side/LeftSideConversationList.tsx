@@ -17,7 +17,7 @@ import {
   emitSeenMessage,
   onServerSendMessage,
 } from '../../../../../server-interaction/socket-handle/socket-chat';
-import SlideRequestAddFriendCommon from "../../../../../common-components/slide-request-add-friend.common";
+import SlideRequestAddFriendCommon from '../../../../../common-components/slide-request-add-friend.common';
 
 interface IPropsShowConversations extends IResponseConversationsList {
   seenAction: (conversationId: string) => void;
@@ -275,6 +275,9 @@ const LeftSideConversationList = () => {
               data.conversationId
             );
             if (newConversation) {
+              if (data.sender._id === userId) {
+                newConversation.room.updateSeen = true;
+              }
               conversationsList.unshift(newConversation);
               setConversationsList([...conversationsList]);
             }
@@ -337,14 +340,14 @@ const LeftSideConversationList = () => {
                 />
               );
             })
-          ) : conversationsList && conversationsList.length === 0 ? (
-            <SlideRequestAddFriendCommon text="conversations"
-                                         imageUrl="media/welcome-slides/5231.jpg"
-                                         maxWidth="100%"
-                                         hidden={false}
-                                         description="Create a new conversation to say love to your friends"/>
           ) : (
-            <p>Loading</p>
+            <SlideRequestAddFriendCommon
+              text="conversations"
+              imageUrl="media/welcome-slides/5231.jpg"
+              maxWidth="100%"
+              hidden={false}
+              description="Create a new conversation to say love to your friends"
+            />
           )}
         </div>
       </div>

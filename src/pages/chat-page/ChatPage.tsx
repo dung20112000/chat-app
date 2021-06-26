@@ -8,10 +8,8 @@ import {
   useLocation,
 } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
-import { IUserInfosReducer } from '../../@types/redux';
 import AppSideBarCommon from '../../common-components/app-side-bar.common';
 import ComingCallModalCommon from '../../common-components/coming-call-modal.common';
-import { notifySuccess } from '../../helpers/functions/notify.helper';
 import { fetchFriendRequest } from '../../redux/actions/FriendRequest.action.redux';
 import { addSocket } from '../../redux/actions/socket.actions.redux';
 import { fetchUserInfos } from '../../redux/actions/users.actions.redux';

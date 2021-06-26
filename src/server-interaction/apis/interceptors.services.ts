@@ -1,13 +1,11 @@
 import axios, { AxiosInstance } from 'axios';
-import store from '../../redux/store';
-import { notifyFailed } from '../../helpers/functions/notify.helper';
 import {
-  onLoading,
   offLoading,
+  onLoading,
 } from '../../redux/actions/loading.actions.redux';
+import store from '../../redux/store';
 
 let currentRequests = 0;
-let responseCount = 0;
 export const checkTokenInterceptors = (axiosInstance: AxiosInstance) => {
   return axiosInstance.interceptors.request.use(
     (config) => {
