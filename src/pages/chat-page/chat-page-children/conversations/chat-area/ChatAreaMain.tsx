@@ -60,13 +60,24 @@ const ChatAreaMain = () => {
                 })
               );
             } else {
+              const fullName = participants.reduce(
+                (allNames: string, participant: any) => {
+                  if (!participant || !participant.userId) return allNames;
+                  const { firstName, lastName } =
+                    participant.userId.personalInfos;
+                  allNames += `${firstName} ${lastName}, `;
+                  return allNames;
+                },
+                ''
+              );
+              const { avatarUrl } = participants[0].userId.personalInfos;
               dispatch(
                 changeConversationDetail({
                   _id: _id,
                   roomName: roomName,
-                  firstName: '',
+                  firstName: fullName,
                   lastName: '',
-                  avatarUrl: '',
+                  avatarUrl: avatarUrl,
                   members: participants,
                   roomType,
                 })
