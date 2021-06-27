@@ -200,41 +200,43 @@ const ChatAreaMain = () => {
     }
   }, [conversationDetailNewMembers, userId]);
   useEffect(() => {
+    const listener = (data: any) => {
+      const { conversationsId: responseId, newParticipantsInfos, addBy } = data;
+      if (
+        currentRoomType === ERoomType.private &&
+        currentRoomMembers.length < 2
+      ) {
+        dispatch(changeRoomType(ERoomType.group));
+        dispatch(
+          setConversationsIdChangeRoomType(currentRoomMembers[0].userId._id)
+        );
+      }
+      if (responseId === conversationsId) {
+        setDialogs((dialogs: any[]) => {
+          const newMembersInfos = newParticipantsInfos.map((member: any) => ({
+            notify: true,
+            newMember: member.personalInfos,
+            addBy,
+            sender: {
+              _id:
+                dialogs.length > 0
+                  ? dialogs[dialogs.length - 1].sender._id
+                  : userId,
+            },
+          }));
+          const clone = [...dialogs];
+          return [...clone, ...newMembersInfos];
+        });
+      }
+    };
     if (socketStateRedux && conversationsId && userId) {
-      onNotifyNewMembers(socketStateRedux, (data: any) => {
-        const {
-          conversationsId: responseId,
-          newParticipantsInfos,
-          addBy,
-        } = data;
-        if (
-          currentRoomType === ERoomType.private &&
-          currentRoomMembers.length < 2
-        ) {
-          dispatch(changeRoomType(ERoomType.group));
-          dispatch(
-            setConversationsIdChangeRoomType(currentRoomMembers[0].userId._id)
-          );
-        }
-        if (responseId === conversationsId) {
-          setDialogs((dialogs: any[]) => {
-            const newMembersInfos = newParticipantsInfos.map((member: any) => ({
-              notify: true,
-              newMember: member.personalInfos,
-              addBy,
-              sender: {
-                _id:
-                  dialogs.length > 0
-                    ? dialogs[dialogs.length - 1].sender._id
-                    : userId,
-              },
-            }));
-            const clone = [...dialogs];
-            return [...clone, ...newMembersInfos];
-          });
-        }
-      });
+      socketStateRedux.on('emitNotifyNewMembers', listener);
     }
+    return () => {
+      if (socketStateRedux) {
+        socketStateRedux.off('emitNotifyNewMembers', listener);
+      }
+    };
   }, [
     socketStateRedux,
     conversationsId,

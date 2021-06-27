@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
 import { IResponseConversationsList } from '../../../../../@types/api.response';
-import { EOnlineStatus } from '../../../../../@types/enums.d';
+import { EOnlineStatus, ERoomType } from '../../../../../@types/enums.d';
 import { IUserFriendsList } from '../../../../../@types/redux';
 import {
   ConversationBlockCommon,
@@ -13,10 +13,7 @@ import {
 import { toggleScrollbar } from '../../../../../helpers/functions/toggle-scrollbar';
 import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
 import { callApi } from '../../../../../server-interaction/apis/api.services';
-import {
-  emitSeenMessage,
-  onServerSendMessage,
-} from '../../../../../server-interaction/socket-handle/socket-chat';
+import { emitSeenMessage } from '../../../../../server-interaction/socket-handle/socket-chat';
 import SlideRequestAddFriendCommon from '../../../../../common-components/slide-request-add-friend.common';
 import { onAddedToConversation } from '../../../../../server-interaction/socket-handle/socket-conversations';
 import { participantsNames } from '../../../../../helpers/functions/function-common';
@@ -33,7 +30,7 @@ const ShowConversations: React.FC<IPropsShowConversations> = (props) => {
     (state: RootState) => state.friendsList
   );
   const { _id: conversationsId, seenAction } = props;
-  const { participants, roomName, dialogs, updateSeen } = props.room;
+  const { participants, roomName, dialogs, updateSeen, roomType } = props.room;
   if (!dialogs || dialogs.length === 0) return null;
 
   const {
@@ -46,7 +43,7 @@ const ShowConversations: React.FC<IPropsShowConversations> = (props) => {
 
   const senderLastMessage = senderFirstName + senderLastName;
   if (!friendsListStateRedux) return null;
-  if (participants.length > 1) {
+  if (roomType === ERoomType.group) {
     return (
       <ConversationBlockGroup
         lastMessageTime={updatedAt}
