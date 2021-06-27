@@ -2,7 +2,11 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { toggleScrollbar } from '../../../../../helpers/functions/toggle-scrollbar';
-import { changeConversationDetail } from '../../../../../redux/actions/Conversation.redux';
+import { setConversationsIdChangeRoomType } from '../../../../../redux/actions/FriendList.actions.redux';
+import {
+  changeConversationDetail,
+  changeRoomType,
+} from '../../../../../redux/actions/Conversation.redux';
 import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
 import { callApi } from '../../../../../server-interaction/apis/api.services';
 import {
@@ -14,6 +18,7 @@ import ChatAreaDialog from './ChatAreaDialog';
 import ChatAreaInput from './ChatAreaInput';
 import ChatAreaRoomName from './ChatAreaRoomName';
 import './scss/chatbody.scss';
+import { ERoomType } from '../../../../../@types/enums.d';
 
 interface IParams {
   conversationsId: string;
@@ -35,6 +40,12 @@ const ChatAreaMain = () => {
     return state.socket;
   });
   const friendsListRedux = useSelector((state: RootState) => state.friendsList);
+  const currentRoomType = useSelector(
+    (state: RootState) => state.conversationDetail?.roomType
+  );
+  const currentRoomMembers: any[] = useSelector(
+    (state: RootState) => state.conversationDetail?.members
+  );
   const conversationDetailNewMembers: any = useSelector(
     (state: RootState) => state.conversationDetail?.newMembers
   );
@@ -187,13 +198,22 @@ const ChatAreaMain = () => {
     }
   }, [conversationDetailNewMembers, userId]);
   useEffect(() => {
-    if (socketStateRedux && conversationsId) {
+    if (socketStateRedux && conversationsId && userId) {
       onNotifyNewMembers(socketStateRedux, (data: any) => {
         const {
           conversationsId: responseId,
           newParticipantsInfos,
           addBy,
         } = data;
+        if (
+          currentRoomType === ERoomType.private &&
+          currentRoomMembers.length < 2
+        ) {
+          dispatch(changeRoomType(ERoomType.group));
+          dispatch(
+            setConversationsIdChangeRoomType(currentRoomMembers[0].userId._id)
+          );
+        }
         if (responseId === conversationsId) {
           setDialogs((dialogs: any[]) => {
             const newMembersInfos = newParticipantsInfos.map((member: any) => ({
@@ -213,7 +233,7 @@ const ChatAreaMain = () => {
         }
       });
     }
-  }, [socketStateRedux, conversationsId, userId]);
+  }, [socketStateRedux, conversationsId, userId, dispatch]);
   useEffect(() => {
     if (roomNameRef.current && contentBodyRef.current) {
       // @ts-ignore
