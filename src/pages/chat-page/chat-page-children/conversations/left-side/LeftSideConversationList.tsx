@@ -44,14 +44,14 @@ const ShowConversations: React.FC<IPropsShowConversations> = (props) => {
   const participantsNames = () => {
     return participants.length > 1
       ? participants.reduce((allNames: string, member) => {
-          const {
-            userId: {
-              personalInfos: { firstName, lastName },
-            },
-          } = member;
-          allNames += `${firstName} ${lastName}, `;
-          return allNames;
-        }, '')
+        const {
+          userId: {
+            personalInfos: { firstName, lastName },
+          },
+        } = member;
+        allNames += `${firstName} ${lastName}, `;
+        return allNames;
+      }, '')
       : `${participants[0].userId.personalInfos.firstName} ${participants[0].userId.personalInfos.lastName}`;
   };
   if (!friendsListStateRedux) return null;
@@ -128,18 +128,19 @@ const SearchConversation = (props: IPropsSearch) => {
   return (
     <Row className="mb-3">
       <Col xs={12}>
-        <form>
-          <div>
-            <input
-              id="searchValues"
-              name="searchValues"
-              type="text"
-              onChange={onSearchChange}
-              placeholder="Search Conversation"
-              className="form-control"
-            />
-          </div>
-        </form>
+        <div className="form__div">
+          <input
+            id="searchValues"
+            name="searchValues"
+            type="text"
+            onChange={onSearchChange}
+            placeholder=" "
+            className="form__input"
+          />
+          <label htmlFor="" className="form__label">
+            Search Conversation
+          </label>
+        </div>
       </Col>
     </Row>
   );
@@ -339,10 +340,10 @@ const LeftSideConversationList = () => {
             })
           ) : conversationsList && conversationsList.length === 0 ? (
             <SlideRequestAddFriendCommon text="conversations"
-                                         imageUrl="media/welcome-slides/5231.jpg"
-                                         maxWidth="100%"
-                                         hidden={false}
-                                         description="Create a new conversation to say love to your friends"/>
+              imageUrl="media/welcome-slides/5231.jpg"
+              maxWidth="100%"
+              hidden={false}
+              description="Create a new conversation to say love to your friends" />
           ) : (
             <p>Loading</p>
           )}

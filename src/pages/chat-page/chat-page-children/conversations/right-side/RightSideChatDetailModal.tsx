@@ -93,14 +93,17 @@ const Search = (props: IPropsSearch) => {
     return (
         <Col xs={12}>
             <form>
-                <div className="py-2 rounded-1rem search-input">
+                <div className="form__div">
                     <input
                         name="searchValues"
                         type="text"
                         onChange={onSearchChange}
-                        placeholder="Search friend by name or phone number"
-                        className="form-control"
+                        placeholder=" "
+                        className="form__input"
                     />
+                    <label htmlFor="" className="form__label">
+                        Search friend by name or phone number
+                    </label>
                 </div>
             </form>
         </Col>
@@ -148,8 +151,8 @@ const RightSideChatDetailModal = ({ show, handleClose, members }: ILeftSideDelet
                 </Modal.Header>
                 <Modal.Body className="pt-0" style={{ height: "75vh" }}
                 >
-                    <Row>
-                        <Col xs={12} className="pt-4">
+                    <Row className="pt-4 pb-3">
+                        <Col xs={12}>
                             <h4>Invited friends to thís chat conversation ({members + 1} members)</h4>
                         </Col>
                     </Row>
@@ -162,7 +165,11 @@ const RightSideChatDetailModal = ({ show, handleClose, members }: ILeftSideDelet
                     </Row>
                     <Row>
                         <Col xs={12} className="pt-2">
-                            <h4>Friend List</h4>
+                            {
+                                friendsListRedux && friendsListRedux.length > 0 ? (
+                                    <h4>Friend List {`(${friendsListRedux.length}/50)`}</h4>
+                                ) : <h4>Friend List {`(0/50)`}</h4>
+                            }
                         </Col>
                         <Col xs={12}>
                             <form className="overflow-auto friend-list-add">
