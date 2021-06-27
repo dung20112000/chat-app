@@ -34,13 +34,16 @@ const ChatAreaMain = () => {
     return state.socket;
   });
   const friendsListRedux = useSelector((state: RootState) => state.friendsList);
+  const conversationDetailNewMembers: any = useSelector(
+    (state: RootState) => state.conversationDetail?.newMembers
+  );
   useEffect(() => {
     if (conversationsId) {
       callApi(`/conversations/${conversationsId}`, 'GET').then(
         (response: any) => {
           if (response && response.data && response.data.conversationsInfo) {
             const { room, _id } = response.data.conversationsInfo;
-            const { dialogs, roomName, participants } = room;
+            const { dialogs, roomName, participants, roomType } = room;
             if (participants && participants.length < 2) {
               const { firstName, lastName, avatarUrl } =
                 participants[0].userId.personalInfos;
@@ -52,6 +55,7 @@ const ChatAreaMain = () => {
                   lastName: lastName,
                   avatarUrl: avatarUrl,
                   members: participants,
+                  roomType,
                 })
               );
             } else {
@@ -63,6 +67,7 @@ const ChatAreaMain = () => {
                   lastName: '',
                   avatarUrl: '',
                   members: participants,
+                  roomType,
                 })
               );
             }
@@ -142,6 +147,42 @@ const ChatAreaMain = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (
+      conversationDetailNewMembers &&
+      conversationDetailNewMembers.members &&
+      conversationDetailNewMembers.members.length > 0 &&
+      chatItemsRef.current &&
+      endRef.current
+    ) {
+      const { members, addBy } = conversationDetailNewMembers;
+
+      setDialogs((dialogs: any) => {
+        const newMembersInfos = members.map((member: any) => ({
+          notify: true,
+          newMember: member.personalInfos,
+          addBy,
+          sender: {
+            _id:
+              dialogs.length > 0
+                ? dialogs[dialogs.length - 1].sender._id
+                : userId,
+          },
+        }));
+        const clone = [...dialogs];
+        return [...clone, ...newMembersInfos];
+      });
+    }
+  }, [conversationDetailNewMembers, userId]);
+  useEffect(() => {
+    if (roomNameRef.current && contentBodyRef.current) {
+      // @ts-ignore
+      const roomNameHeight = roomNameRef.current.offsetHeight;
+      // @ts-ignore
+
+      contentBodyRef.current.style.top = roomNameHeight;
+    }
+  }, []);
   const pushOwnMessageDialogs = useCallback((data: any) => {
     if (data) {
       setDialogs((dialogs: any) => {
@@ -154,18 +195,10 @@ const ChatAreaMain = () => {
       });
     }
   }, []);
-  useEffect(() => {
-    if (roomNameRef.current && contentBodyRef.current) {
-      // @ts-ignore
-      const roomNameHeight = roomNameRef.current.offsetHeight;
-      // @ts-ignore
-
-      contentBodyRef.current.style.top = roomNameHeight;
-    }
-  }, []);
   if (!conversationsInfos) {
     return null;
   }
+
   return (
     <div>
       <div ref={roomNameRef}>
@@ -180,6 +213,19 @@ const ChatAreaMain = () => {
         <div className="chat__items" ref={chatItemsRef}>
           {userId && conversationsInfos && dialogs.length > 0 ? (
             dialogs.map((dialog: any, index: number) => {
+              if (dialog.notify) {
+                const {
+                  newMember: { firstName, lastName },
+                  addBy,
+                } = dialog;
+                return (
+                  <h6 className="mt-3 w-75 mx-auto text-center">
+                    <strong>{`${firstName} ${lastName}`} </strong>
+                    was added by
+                    <strong> {addBy}</strong>
+                  </h6>
+                );
+              }
               const { _id } = dialog;
               const lastSenderId =
                 index > 0

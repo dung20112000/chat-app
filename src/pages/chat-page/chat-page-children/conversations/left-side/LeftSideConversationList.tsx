@@ -18,6 +18,7 @@ import {
   onServerSendMessage,
 } from '../../../../../server-interaction/socket-handle/socket-chat';
 import SlideRequestAddFriendCommon from '../../../../../common-components/slide-request-add-friend.common';
+import { onAddedToConversation } from '../../../../../server-interaction/socket-handle/socket-conversations';
 
 interface IPropsShowConversations extends IResponseConversationsList {
   seenAction: (conversationId: string) => void;
@@ -42,8 +43,10 @@ const ShowConversations: React.FC<IPropsShowConversations> = (props) => {
   } = dialogs[0];
   const senderLastMessage = senderFirstName + senderLastName;
   const participantsNames = () => {
-    return participants.length > 1
+    // debugger;
+    return participants && participants.length > 1
       ? participants.reduce((allNames: string, member) => {
+          if (!member || !member.userId) return allNames;
           const {
             userId: {
               personalInfos: { firstName, lastName },
@@ -302,6 +305,41 @@ const LeftSideConversationList = () => {
     conversationsList,
     getNewConversation,
   ]);
+  useEffect(() => {
+    if (socketStateRedux && conversationsList) {
+      onAddedToConversation(
+        socketStateRedux,
+        async ({
+          conversationsId,
+          addBy,
+        }: {
+          conversationsId: string;
+          addBy: string;
+        }) => {
+          const response = await callApi(
+            `/conversations/${conversationsId}`,
+            'GET'
+          );
+          if (response && response.status === 200) {
+            const newConversation = { ...response.data.conversationsInfo };
+            newConversation.room.dialogs[0] = {
+              ...newConversation.room.dialogs[0],
+              message: `You was added by ${addBy}`,
+              sender: {
+                personalInfos: {
+                  firstName: '',
+                  lastName: '',
+                },
+              },
+            };
+            newConversation.room.updateSeen = false;
+            conversationsList.unshift(newConversation);
+            setConversationsList([...conversationsList]);
+          }
+        }
+      );
+    }
+  }, [socketStateRedux, conversationsList]);
   useEffect(() => {
     if (lastUserMessage) {
       const { conversationsId, ...rest } = lastUserMessage;
