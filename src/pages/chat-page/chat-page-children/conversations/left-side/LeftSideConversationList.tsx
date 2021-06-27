@@ -259,43 +259,49 @@ const LeftSideConversationList = () => {
     }
   };
   useEffect(() => {
-    if (socketStateRedux && userId) {
-      onServerSendMessage(socketStateRedux, async (data: any) => {
-        console.log('message');
-        if (data) {
-          const isConversationInList = allConversationsRef.current.find(
-            (conversation) => conversation._id === data.conversationId
-          );
-          if (!isConversationInList) {
-            const newConversation = await getNewConversation(
-              data.conversationId
-            );
-            if (newConversation) {
-              if (data.sender._id === userId) {
-                newConversation.room.updateSeen = true;
-              }
-              setConversationsList((conversationsList: any) => {
-                if (!conversationsList) return conversationsList;
-                const clone = [...conversationsList];
-                return [newConversation, ...clone];
-              });
+    const listener = async (data: any) => {
+      if (data) {
+        const isConversationInList = allConversationsRef.current.find(
+          (conversation) => conversation._id === data.conversationId
+        );
+        if (!isConversationInList) {
+          const newConversation = await getNewConversation(data.conversationId);
+          if (newConversation) {
+            if (data.sender._id === userId) {
+              newConversation.room.updateSeen = true;
             }
-          }
-          if (isConversationInList) {
-            if (data.sender._id !== userId) {
-              setConversationsList((conversationsList: any) => {
-                if (!conversationsList) return conversationsList;
-                const newState = updateDialogs(userId, data, conversationsList);
-                if (newState) {
-                  return [...newState];
-                }
-                return conversationsList;
-              });
-            }
+            setConversationsList((conversationsList: any) => {
+              if (!conversationsList) return conversationsList;
+              const clone = [...conversationsList];
+              const newList = [newConversation, ...clone];
+              allConversationsRef.current = newList;
+              return newList;
+            });
           }
         }
-      });
+        if (isConversationInList) {
+          if (data.sender._id !== userId) {
+            setConversationsList((conversationsList: any) => {
+              if (!conversationsList) return conversationsList;
+              const newState = updateDialogs(userId, data, conversationsList);
+              if (newState) {
+                allConversationsRef.current = [...newState];
+                return [...newState];
+              }
+              return conversationsList;
+            });
+          }
+        }
+      }
+    };
+    if (socketStateRedux && userId) {
+      socketStateRedux.on('emitServerSendMessage', listener);
     }
+    return () => {
+      if (socketStateRedux) {
+        socketStateRedux.off('emitServerSendMessage', listener);
+      }
+    };
   }, [socketStateRedux, userId, updateDialogs, getNewConversation]);
   useEffect(() => {
     if (socketStateRedux) {
@@ -328,7 +334,9 @@ const LeftSideConversationList = () => {
             setConversationsList((conversationsList: any) => {
               if (!conversationsList) return conversationsList;
               const clone = [...conversationsList];
-              return [newConversation, ...clone];
+              const newList = [newConversation, ...clone];
+              allConversationsRef.current = newList;
+              return newList;
             });
           }
         }

@@ -9,10 +9,7 @@ import {
 } from '../../../../../redux/actions/Conversation.redux';
 import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
 import { callApi } from '../../../../../server-interaction/apis/api.services';
-import {
-  emitJoinRoom,
-  onServerSendMessage,
-} from '../../../../../server-interaction/socket-handle/socket-chat';
+import { emitJoinRoom } from '../../../../../server-interaction/socket-handle/socket-chat';
 import { onNotifyNewMembers } from '../../../../../server-interaction/socket-handle/socket-conversations';
 import ChatAreaDialog from './ChatAreaDialog';
 import ChatAreaInput from './ChatAreaInput';
@@ -126,24 +123,30 @@ const ChatAreaMain = () => {
   ]);
 
   useEffect(() => {
-    if (socketStateRedux && conversationsId) {
-      onServerSendMessage(socketStateRedux, (data: any) => {
-        if (
-          data &&
-          conversationsId === data.conversationId &&
-          data.sender._id !== userId
-        ) {
-          const { conversationsId, ...rest } = data;
-          setDialogs((dialogs: any) => {
-            let clone = [...dialogs];
-            if (clone.length > 1000) {
-              clone = [];
-            }
-            return [...clone, { ...rest }];
-          });
-        }
-      });
+    const listener = (data: any) => {
+      if (
+        data &&
+        conversationsId === data.conversationId &&
+        data.sender._id !== userId
+      ) {
+        const { conversationId, ...rest } = data;
+        setDialogs((dialogs: any) => {
+          let clone = [...dialogs];
+          if (clone.length > 1000) {
+            clone = [];
+          }
+          return [...clone, { ...rest }];
+        });
+      }
+    };
+    if (socketStateRedux && conversationsId && userId) {
+      socketStateRedux.on('emitServerSendMessage', listener);
     }
+    return () => {
+      if (socketStateRedux) {
+        socketStateRedux.off('emitServerSendMessage', listener);
+      }
+    };
   }, [socketStateRedux, conversationsId, userId]);
   useEffect(() => {
     if (
@@ -232,7 +235,14 @@ const ChatAreaMain = () => {
         }
       });
     }
-  }, [socketStateRedux, conversationsId, userId, dispatch]);
+  }, [
+    socketStateRedux,
+    conversationsId,
+    userId,
+    dispatch,
+    currentRoomType,
+    currentRoomMembers,
+  ]);
   useEffect(() => {
     if (roomNameRef.current && contentBodyRef.current) {
       // @ts-ignore
