@@ -23,21 +23,27 @@
     justify-content: flex-end;
     align-items: flex-end;
     margin-top: 15px;
+    margin-right:31px;
+    margin-left:31px;
     transition: all 0.3s ease;
     transform: scale(1);
     transform-origin: right;
-    // animation-name: showIn;
-    // animation-duration: 0.2s; /* or: Xms */
-    // animation-iteration-count: 1;
-    // animation-direction: normal; /* or: normal */
-    // animation-timing-function: cubic-bezier(
-    //     0.88,
-    //     0.19,
-    //     0.37,
-    //     1.11
-    // ); /* or: ease, ease-in, ease-in-out, linear, cubic-bezier(x1, y1, x2, y2) */
-    // animation-fill-mode: both; /* or: backwards, both, none */
-    // animation-delay: 0.2s; /* or: Xms */
+    //animation-name: showIn;
+    //animation-duration: 0.2s;
+    /*or:;
+    Xms*///animation-iteration-count: 1;
+    //animation-direction: normal;
+    /*or:;
+    normal*///animation-timing-function: cubic-bezier(    //     0.88,    //     0.19,    //     0.37,    //     1.11    // );
+    /*or:;
+    ease,ease-in,ease-in-out,linear,cubic-bezier(x1,y1,x2,y2)*///animation-fill-mode: both;
+    /*or:;
+    backwards,both,none*///animation-delay: 0.2s;
+    /*or: Xms */;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
 }
 @keyframes showIn {
     0% {

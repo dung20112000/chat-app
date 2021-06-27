@@ -54,7 +54,10 @@ const ChatAreaRoomName = ({
   };
 
   return (
-    <Row style={{zIndex:3}} className="px-3 py-3 align-items-center border-bottom bg-light-secondary chat-area-room-name">
+    <Row
+      style={{ zIndex: 3 }}
+      className="px-3 py-3 align-items-center border-bottom bg-light-secondary chat-area-room-name"
+    >
       <Col xs={6}>
         <Row className="d-flex align-items-center">
           <Col xs={3}>

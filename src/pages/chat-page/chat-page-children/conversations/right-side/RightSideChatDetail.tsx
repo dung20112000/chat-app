@@ -127,7 +127,7 @@ const RightSideChatDetail = () => {
     <Container>
       <Row className="align-items-center">
         <Col xs={10}>
-          <ComponentTitleCommon title="Chat Detail" />
+          <ComponentTitleCommon title="Details" />
         </Col>
         <Col xs={2}>
           <div

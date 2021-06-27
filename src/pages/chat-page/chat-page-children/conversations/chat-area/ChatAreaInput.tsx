@@ -1,133 +1,98 @@
-import {FormikHelpers, useFormik} from 'formik';
-import {Row, Col} from 'react-bootstrap';
-import {FocusEvent, FormEvent, useRef} from 'react';
-import {emitMessage} from '../../../../../server-interaction/socket-handle/socket-chat';
-import {IUserInfosReducer} from '../../../../../@types/redux';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../../../../redux/reducers/RootReducer.reducer.redux';
-import {useParams} from 'react-router-dom';
+import React, { FormEvent, useState } from 'react';
+import { Button, Col, Row } from 'react-bootstrap';
+//@ts-ignore
+import InputEmoji from 'react-input-emoji';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import shortid from 'shortid';
-import React from 'react';
-import {updateLastMessage} from '../../../../../redux/actions/last-message.actions.redux';
-
-interface IFormValues {
-    message: string;
-}
+import { IUserInfosReducer } from '../../../../../@types/redux';
+import { updateLastMessage } from '../../../../../redux/actions/last-message.actions.redux';
+import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
+import { emitMessage } from '../../../../../server-interaction/socket-handle/socket-chat';
 
 interface IParams {
-    conversationsId: string;
+  conversationsId: string;
 }
 
-const ChatAreaInput: React.FC<any> = ({pushMessage}) => {
-    const {conversationsId} = useParams<IParams>();
-    const dispatch = useDispatch();
-    const userInfosStateRedux: IUserInfosReducer = useSelector(
-        (state: RootState) => {
-            return state.userInfos;
-        }
-    );
-    const socketStateRedux: any = useSelector((state: RootState) => {
-        return state.socket;
-    });
-    const {
-        _id,
-        personalInfos: {firstName, lastName, avatarUrl},
-    } = userInfosStateRedux;
-    const messageInputRef = useRef(null);
-    const textAreaRef = useRef(null);
-    const initialValues = {
-        message: '',
-    };
-    const onSubmit = (
-        values: IFormValues,
-        action: FormikHelpers<IFormValues>
-    ) => {
-        const sender = {
-            _id,
-            personalInfos: {firstName, lastName, avatarUrl},
-        };
-        const updatedAt = new Date().toISOString();
-        const createdAt = updatedAt;
-        if (
-            values.message &&
-            socketStateRedux &&
-            userInfosStateRedux &&
-            conversationsId
-        ) {
-            emitMessage(
-                socketStateRedux,
-                conversationsId,
-                sender,
-                values.message,
-                (response: any) => {
-                }
-            );
-        }
-        const pushObj = {
-            _id: shortid.generate(),
-            sender: sender,
-            message: values.message,
-            updatedAt,
-            createdAt,
-        };
-        action.resetForm();
-        pushMessage(pushObj);
-        dispatch(updateLastMessage({...pushObj, conversationsId}));
-    };
+const ChatAreaInput: React.FC<any> = ({ pushMessage }) => {
+  const { conversationsId } = useParams<IParams>();
+  const [text, setText] = useState('');
+  const dispatch = useDispatch();
+  const userInfosStateRedux: IUserInfosReducer = useSelector(
+    (state: RootState) => {
+      return state.userInfos;
+    }
+  );
+  const socketStateRedux: any = useSelector((state: RootState) => {
+    return state.socket;
+  });
+  const {
+    _id,
+    personalInfos: { firstName, lastName, avatarUrl },
+  } = userInfosStateRedux;
 
-    const formik = useFormik({initialValues, onSubmit});
-    const {values, handleSubmit, handleChange, handleBlur} = formik;
-    const onFocus = (event: FocusEvent) => {
-        // @ts-ignore
-        messageInputRef.current.classList.add('border-blue');
+  const onEnter = (text: string) => {
+    const sender = {
+      _id,
+      personalInfos: { firstName, lastName, avatarUrl },
     };
-    const onBlur = (event: FocusEvent) => {
-        handleBlur(event);
-        // @ts-ignore
-        messageInputRef.current.classList.remove('border-blue');
-    };
-    const onInput = (event: FormEvent<HTMLInputElement>) => {
-        // @ts-ignore
-        event.currentTarget.style.height = 'auto';
-        // @ts-ignore
-        event.currentTarget.style.height = event.currentTarget.scrollHeight + 'px';
-    };
-    return (
-        <Row className="chat-area-input">
-            <Col xs={12}>
-                <form
-                    onSubmit={handleSubmit}
-                    className="d-flex align-items-center justify-content-between"
-                >
-                    <div
-                        className="message-input pl-3 rounded-1rem d-flex justify-content-between"
-                        ref={messageInputRef}
-                    >
-                        <div className="w-100 mt-2 pt-1">
-                            <input
-                                autoComplete="off"
-                                ref={textAreaRef}
-                                name="message"
-                                value={values.message}
-                                onChange={handleChange}
-                                onBlur={onBlur}
-                                onInput={onInput}
-                                onFocus={onFocus}
-                                placeholder="Enter your message here"
-                            />
-                        </div>
-                        <div className="message-button pr-3">
-                            <button
-                                type="submit"
-                                className="btn btn-lg rounded-circle"
-                            >
-                                <i style={{color: "#76c00d"}} className="fas fa-paper-plane"/>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </Col>
-        </Row>
-    );
+    const updatedAt = new Date().toISOString();
+    const createdAt = updatedAt;
+    if (text && socketStateRedux && userInfosStateRedux && conversationsId) {
+      emitMessage(
+        socketStateRedux,
+        conversationsId,
+        sender,
+        text,
+        (response: any) => {}
+      );
+      const pushObj = {
+        _id: shortid.generate(),
+        sender: sender,
+        message: text,
+        updatedAt,
+        createdAt,
+      };
+      pushMessage(pushObj);
+      dispatch(updateLastMessage({ ...pushObj, conversationsId }));
+    }
+  };
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    onEnter(text);
+  };
+
+  return (
+    <Row className="chat-area-input">
+      <Col xs={12}>
+        <form
+          onSubmit={onSubmit}
+          className="d-flex align-items-center justify-content-between"
+        >
+          <div className="w-100">
+            <InputEmoji
+              autoComplete="off"
+              name="message"
+              value={text}
+              onChange={setText}
+              onEnter={onEnter}
+              cleanOnEnter
+              placeholder="Enter your message here"
+            />
+          </div>
+          <div className="message-button pr-3">
+            <Button
+              type="submit"
+              variant="primary rounded-circle"
+              className="text-white d-flex justify-content-center align-content-center"
+              style={{ width: '2rem', height: '2rem' }}
+            >
+              <i style={{ fontSize: '1rem' }} className="fas fa-paper-plane" />
+            </Button>
+          </div>
+        </form>
+      </Col>
+    </Row>
+  );
 };
 export default React.memo(ChatAreaInput);
