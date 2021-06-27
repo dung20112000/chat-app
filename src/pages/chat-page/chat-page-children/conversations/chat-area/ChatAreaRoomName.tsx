@@ -6,6 +6,10 @@ import {
 } from '../../../../../common-components/avatar.common';
 import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
 import React from 'react';
+import {
+  participantsAvatarGroup,
+  participantsNames,
+} from '../../../../../helpers/functions/function-common';
 interface IPropsChatAreaRoomName {
   participants: any[];
   roomName: string;
@@ -20,37 +24,11 @@ const ChatAreaRoomName = ({
   if (!personalInfos) {
     return null;
   }
-  const participantsNames = () => {
-    if (!roomName) {
-      return participants.length > 1
-        ? participants.reduce((allNames: string, member) => {
-            const {
-              userId: {
-                personalInfos: { firstName, lastName },
-              },
-            } = member;
-            if (firstName && lastName) {
-              allNames += `${firstName} ${lastName},`;
-            }
-            return allNames;
-          }, '')
-        : `${participants[0].userId.personalInfos.firstName} ${participants[0].userId.personalInfos.lastName}`;
-    } else {
-      return roomName;
-    }
-  };
+
   const participantsAvatar = () => {
     return participants.length === 1
       ? `${participants[0].userId.personalInfos.avatarUrl}`
       : '';
-  };
-
-  const participantsAvatarGroup = () => {
-    if (personalInfos) {
-      const { firstName, lastName } = personalInfos;
-      return `${firstName} ${lastName}`;
-    }
-    return '';
   };
 
   return (
@@ -66,18 +44,18 @@ const ChatAreaRoomName = ({
                 avatarUrl={personalInfos.avatarUrl}
                 avatarUrlMember={participants[0].userId.personalInfos.avatarUrl}
                 members={participants.length}
-                alt={participantsAvatarGroup()}
+                alt={participantsAvatarGroup(personalInfos)}
                 altMembers={participants[0].userId.personalInfos.firstName}
               />
             ) : (
               <AvatarWithStatus
                 avatarUrl={participantsAvatar()}
-                alt={participantsNames()}
+                alt={participantsNames(participants, roomName)}
               />
             )}
           </Col>
           <Col className="pl-0">
-            <h4>{participantsNames()}</h4>
+            <h4>{participantsNames(participants, roomName)}</h4>
           </Col>
         </Row>
       </Col>

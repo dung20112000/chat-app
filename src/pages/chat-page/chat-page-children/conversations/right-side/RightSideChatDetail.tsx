@@ -1,6 +1,6 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import qs from 'querystring';
-import { Avatar } from '../../../../../common-components/avatar.common';
+import { Avatar, AvatarGroup } from '../../../../../common-components/avatar.common';
 import React, { useState } from 'react';
 
 import ComponentTitleCommon from '../../../../../common-components/component-title.common';
@@ -13,32 +13,54 @@ import {
   IOpenStreamConfigs,
   openChatWindow,
 } from '../../../../../server-interaction/peerjs/peer.services';
+import { participantsAvatarGroup } from '../../../../../helpers/functions/function-common';
 interface IChatDetailFriend {
-  avatarUrl: string;
-  friendName: string;
-  friendQuantity: number;
-  lastMessage?: string;
+  avatarUrlRoom: string;
+  participants: any[];
+  roomName: string;
 }
 
 const ChatDetailFriend: React.FC<IChatDetailFriend> = ({
-  avatarUrl,
-  friendName,
-  friendQuantity,
-  lastMessage,
+  avatarUrlRoom,
+  roomName,
+  participants
 }) => {
   const [showAddMembers, setShowAddMembers] = useState(false);
   const handleCloseAddMembers = () => setShowAddMembers(false);
   const handleShowAddMembers = () => setShowAddMembers(true);
+  const personalInfos = useSelector((state: RootState) => {
+    return state.userInfos?.personalInfos;
+  });
+  const { userId: { personalInfos: { firstName, lastName, avatarUrl } } } = participants[0];
   return (
     <Row className="pt-3">
       <Col xs={3} className="align-items-center">
-        <Avatar avatarUrl={avatarUrl} alt={friendName} />
+        {
+          roomName !== "" ? (
+            <AvatarGroup
+              avatarUrl={personalInfos.avatarUrl}
+              avatarUrlMember={avatarUrl}
+              members={participants.length}
+              alt={participantsAvatarGroup(personalInfos)}
+              altMembers={firstName}
+            />
+          ) : (
+            <Avatar avatarUrl={avatarUrl}
+              alt={firstName} />
+          )
+        }
       </Col>
       <Col xs={6} className=" pl-0 align-items-center">
         <div>
-          <h5 className="mb-1 pt-2 text-truncate">{friendName}</h5>
+          {
+            roomName !== "" ? (
+              <h5 className="mb-1 pt-2 text-truncate">{roomName}</h5>
+            ) : (
+              <h5 className="mb-1 pt-2 text-truncate">{`${firstName} ${lastName}`}</h5>
+            )
+          }
           <p className="m-0 text-truncate text-muted">
-            {friendQuantity + 1} members
+            {participants.length + 1} members
           </p>
         </div>
       </Col>
@@ -56,7 +78,7 @@ const ChatDetailFriend: React.FC<IChatDetailFriend> = ({
         <RightSideChatDetailModal
           show={showAddMembers}
           handleClose={handleCloseAddMembers}
-          members={friendQuantity}
+          members={participants.length}
         />
       </Col>
     </Row>
@@ -102,8 +124,8 @@ const RightSideChatDetail = () => {
       </Container>
     );
   }
-  const { firstName, lastName, avatarUrl, _id, roomName, members } =
-    conversationDetailRedux;
+  const { avatarUrl, _id, roomName, members } = conversationDetailRedux;
+
   const onVideoChat = ({ video, audio }: IOpenStreamConfigs) => {
     if (socketStateRedux && userIdRedux) {
       const infosIds = {
@@ -153,19 +175,11 @@ const RightSideChatDetail = () => {
           </div>
         </Col>
       </Row>
-      {roomName === '' ? (
-        <ChatDetailFriend
-          friendName={`${firstName} ${lastName}`}
-          friendQuantity={members.length}
-          avatarUrl={avatarUrl}
-        />
-      ) : (
-        <ChatDetailFriend
-          friendName={roomName}
-          friendQuantity={members.length}
-          avatarUrl={avatarUrl}
-        />
-      )}
+      <ChatDetailFriend
+        roomName={roomName}
+        avatarUrlRoom={avatarUrl}
+        participants={members}
+      />
       <Row className="align-items-center pt-3">
         <Col xs={6} className="pr-1">
           <button
