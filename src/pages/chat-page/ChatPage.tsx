@@ -52,19 +52,28 @@ const ChatPage = () => {
   }, [dispatch, userId]);
 
   useEffect(() => {
+    const logoutListener = () => {
+      socketStateRedux.disconnect();
+      dispatch({ type: 'USER_LOGOUT' });
+      localStorage.removeItem('authToken');
+      history.push('/');
+    };
+    const comingCallListener = (callerInfos: any) => {
+      openModalComing(callerInfos.callerInfos);
+    };
     if (socketStateRedux && userId) {
       emitClientConnect(socketStateRedux, userId);
-      onLogout(socketStateRedux, () => {
-        socketStateRedux.disconnect();
-        dispatch({ type: 'USER_LOGOUT' });
-        localStorage.removeItem('authToken');
-        history.push('/');
-      });
-      onComingCall(socketStateRedux, (callerInfos: any) => {
-        openModalComing(callerInfos.callerInfos);
-      });
+      socketStateRedux.on('emitLogout', logoutListener);
+      socketStateRedux.on('emitComingCall', comingCallListener);
     }
+    return () => {
+      if (socketStateRedux) {
+        socketStateRedux.off('emitLogout', logoutListener);
+        socketStateRedux.off('emitComingCall', comingCallListener);
+      }
+    };
   }, [dispatch, history, socketStateRedux, userId]);
+
   const chatPageRoutesJSX =
     chatPageRoutes && chatPageRoutes.length > 0
       ? chatPageRoutes.map((route, index) => {
