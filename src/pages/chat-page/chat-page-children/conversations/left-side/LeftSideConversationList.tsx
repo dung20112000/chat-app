@@ -259,8 +259,9 @@ const LeftSideConversationList = () => {
     }
   };
   useEffect(() => {
-    if (socketStateRedux && conversationsList && userId) {
+    if (socketStateRedux && userId) {
       onServerSendMessage(socketStateRedux, async (data: any) => {
+        console.log('message');
         if (data) {
           const isConversationInList = allConversationsRef.current.find(
             (conversation) => conversation._id === data.conversationId
@@ -273,32 +274,31 @@ const LeftSideConversationList = () => {
               if (data.sender._id === userId) {
                 newConversation.room.updateSeen = true;
               }
-              conversationsList.unshift(newConversation);
-              setConversationsList([...conversationsList]);
+              setConversationsList((conversationsList: any) => {
+                if (!conversationsList) return conversationsList;
+                const clone = [...conversationsList];
+                return [newConversation, ...clone];
+              });
             }
           }
           if (isConversationInList) {
             if (data.sender._id !== userId) {
-              const newState = await updateDialogs(
-                userId,
-                data,
-                conversationsList
-              );
-              if (newState) setConversationsList([...newState]);
+              setConversationsList((conversationsList: any) => {
+                if (!conversationsList) return conversationsList;
+                const newState = updateDialogs(userId, data, conversationsList);
+                if (newState) {
+                  return [...newState];
+                }
+                return conversationsList;
+              });
             }
           }
         }
       });
     }
-  }, [
-    socketStateRedux,
-    userId,
-    updateDialogs,
-    conversationsList,
-    getNewConversation,
-  ]);
+  }, [socketStateRedux, userId, updateDialogs, getNewConversation]);
   useEffect(() => {
-    if (socketStateRedux && conversationsList) {
+    if (socketStateRedux) {
       onAddedToConversation(
         socketStateRedux,
         async ({
@@ -325,13 +325,16 @@ const LeftSideConversationList = () => {
               },
             };
             newConversation.room.updateSeen = false;
-            conversationsList.unshift(newConversation);
-            setConversationsList([...conversationsList]);
+            setConversationsList((conversationsList: any) => {
+              if (!conversationsList) return conversationsList;
+              const clone = [...conversationsList];
+              return [newConversation, ...clone];
+            });
           }
         }
       );
     }
-  }, [socketStateRedux, conversationsList]);
+  }, [socketStateRedux]);
   useEffect(() => {
     if (lastUserMessage) {
       const { conversationsId, ...rest } = lastUserMessage;

@@ -135,12 +135,11 @@ const ChatAreaMain = () => {
         ) {
           const { conversationsId, ...rest } = data;
           setDialogs((dialogs: any) => {
-            const clone = [...dialogs];
-            if (clone.length > 10) {
-              //   clone.shift();
+            let clone = [...dialogs];
+            if (clone.length > 1000) {
+              clone = [];
             }
-            clone.push({ ...rest });
-            return [...clone];
+            return [...clone, { ...rest }];
           });
         }
       });
@@ -246,12 +245,11 @@ const ChatAreaMain = () => {
   const pushOwnMessageDialogs = useCallback((data: any) => {
     if (data) {
       setDialogs((dialogs: any) => {
-        const clone = [...dialogs];
-        if (clone.length > 10) {
-          //   clone.shift();
+        let clone = [...dialogs];
+        if (clone.length > 1000) {
+          clone = [];
         }
-        clone.push(data);
-        return [...clone];
+        return [...clone, data];
       });
     }
   }, []);
