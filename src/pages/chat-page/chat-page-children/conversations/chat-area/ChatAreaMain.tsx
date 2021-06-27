@@ -2,17 +2,23 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { toggleScrollbar } from '../../../../../helpers/functions/toggle-scrollbar';
-import { changeConversationDetail } from '../../../../../redux/actions/Conversation.redux';
+import { setConversationsIdChangeRoomType } from '../../../../../redux/actions/FriendList.actions.redux';
+import {
+  changeConversationDetail,
+  changeRoomType,
+} from '../../../../../redux/actions/Conversation.redux';
 import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
 import { callApi } from '../../../../../server-interaction/apis/api.services';
 import {
   emitJoinRoom,
   onServerSendMessage,
 } from '../../../../../server-interaction/socket-handle/socket-chat';
+import { onNotifyNewMembers } from '../../../../../server-interaction/socket-handle/socket-conversations';
 import ChatAreaDialog from './ChatAreaDialog';
 import ChatAreaInput from './ChatAreaInput';
 import ChatAreaRoomName from './ChatAreaRoomName';
 import './scss/chatbody.scss';
+import { ERoomType } from '../../../../../@types/enums.d';
 
 interface IParams {
   conversationsId: string;
@@ -34,13 +40,22 @@ const ChatAreaMain = () => {
     return state.socket;
   });
   const friendsListRedux = useSelector((state: RootState) => state.friendsList);
+  const currentRoomType = useSelector(
+    (state: RootState) => state.conversationDetail?.roomType
+  );
+  const currentRoomMembers: any[] = useSelector(
+    (state: RootState) => state.conversationDetail?.members
+  );
+  const conversationDetailNewMembers: any = useSelector(
+    (state: RootState) => state.conversationDetail?.newMembers
+  );
   useEffect(() => {
     if (conversationsId) {
       callApi(`/conversations/${conversationsId}`, 'GET').then(
         (response: any) => {
           if (response && response.data && response.data.conversationsInfo) {
             const { room, _id } = response.data.conversationsInfo;
-            const { dialogs, roomName, participants } = room;
+            const { dialogs, roomName, participants, roomType } = room;
             if (participants && participants.length < 2) {
               const { firstName, lastName, avatarUrl } =
                 participants[0].userId.personalInfos;
@@ -52,17 +67,30 @@ const ChatAreaMain = () => {
                   lastName: lastName,
                   avatarUrl: avatarUrl,
                   members: participants,
+                  roomType,
                 })
               );
             } else {
+              const fullName = participants.reduce(
+                (allNames: string, participant: any) => {
+                  if (!participant || !participant.userId) return allNames;
+                  const { firstName, lastName } =
+                    participant.userId.personalInfos;
+                  allNames += `${firstName} ${lastName}, `;
+                  return allNames;
+                },
+                ''
+              );
+              const { avatarUrl } = participants[0].userId.personalInfos;
               dispatch(
                 changeConversationDetail({
                   _id: _id,
                   roomName: roomName,
-                  firstName: '',
+                  firstName: fullName,
                   lastName: '',
-                  avatarUrl: '',
+                  avatarUrl: avatarUrl,
                   members: participants,
+                  roomType,
                 })
               );
             }
@@ -142,6 +170,79 @@ const ChatAreaMain = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (
+      conversationDetailNewMembers &&
+      conversationDetailNewMembers.members &&
+      conversationDetailNewMembers.members.length > 0 &&
+      chatItemsRef.current &&
+      endRef.current
+    ) {
+      const { members, addBy } = conversationDetailNewMembers;
+
+      setDialogs((dialogs: any) => {
+        const newMembersInfos = members.map((member: any) => ({
+          notify: true,
+          newMember: member.personalInfos,
+          addBy,
+          sender: {
+            _id:
+              dialogs.length > 0
+                ? dialogs[dialogs.length - 1].sender._id
+                : userId,
+          },
+        }));
+        const clone = [...dialogs];
+        return [...clone, ...newMembersInfos];
+      });
+    }
+  }, [conversationDetailNewMembers, userId]);
+  useEffect(() => {
+    if (socketStateRedux && conversationsId && userId) {
+      onNotifyNewMembers(socketStateRedux, (data: any) => {
+        const {
+          conversationsId: responseId,
+          newParticipantsInfos,
+          addBy,
+        } = data;
+        if (
+          currentRoomType === ERoomType.private &&
+          currentRoomMembers.length < 2
+        ) {
+          dispatch(changeRoomType(ERoomType.group));
+          dispatch(
+            setConversationsIdChangeRoomType(currentRoomMembers[0].userId._id)
+          );
+        }
+        if (responseId === conversationsId) {
+          setDialogs((dialogs: any[]) => {
+            const newMembersInfos = newParticipantsInfos.map((member: any) => ({
+              notify: true,
+              newMember: member.personalInfos,
+              addBy,
+              sender: {
+                _id:
+                  dialogs.length > 0
+                    ? dialogs[dialogs.length - 1].sender._id
+                    : userId,
+              },
+            }));
+            const clone = [...dialogs];
+            return [...clone, ...newMembersInfos];
+          });
+        }
+      });
+    }
+  }, [socketStateRedux, conversationsId, userId, dispatch]);
+  useEffect(() => {
+    if (roomNameRef.current && contentBodyRef.current) {
+      // @ts-ignore
+      const roomNameHeight = roomNameRef.current.offsetHeight;
+      // @ts-ignore
+
+      contentBodyRef.current.style.top = roomNameHeight;
+    }
+  }, []);
   const pushOwnMessageDialogs = useCallback((data: any) => {
     if (data) {
       setDialogs((dialogs: any) => {
@@ -154,18 +255,10 @@ const ChatAreaMain = () => {
       });
     }
   }, []);
-  useEffect(() => {
-    if (roomNameRef.current && contentBodyRef.current) {
-      // @ts-ignore
-      const roomNameHeight = roomNameRef.current.offsetHeight;
-      // @ts-ignore
-
-      contentBodyRef.current.style.top = roomNameHeight;
-    }
-  }, []);
   if (!conversationsInfos) {
     return null;
   }
+
   return (
     <div>
       <div ref={roomNameRef}>
@@ -180,6 +273,19 @@ const ChatAreaMain = () => {
         <div className="chat__items" ref={chatItemsRef}>
           {userId && conversationsInfos && dialogs.length > 0 ? (
             dialogs.map((dialog: any, index: number) => {
+              if (dialog.notify) {
+                const {
+                  newMember: { firstName, lastName },
+                  addBy,
+                } = dialog;
+                return (
+                  <h6 className="mt-3 w-75 mx-auto text-center">
+                    <strong>{`${firstName} ${lastName}`} </strong>
+                    was added by
+                    <strong> {addBy}</strong>
+                  </h6>
+                );
+              }
               const { _id } = dialog;
               const lastSenderId =
                 index > 0

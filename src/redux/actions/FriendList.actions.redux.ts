@@ -8,6 +8,7 @@ import {
 } from "../types/FriendList.types.redux";
 import { Action, ActionCreator } from "redux";
 import { IUserFriendsList, IUserFriendsListAction } from "../../@types/redux";
+import { SET_CONVERSATIONS_ID_AFTER_CHANGE_ROOM_TYPE } from '../types/FriendList.types.redux';
 
 export const fetchUserFriendList: ActionCreator<Action> = () => ({
   type: FETCH_USER_FRIEND_LIST,
@@ -48,7 +49,12 @@ export const updateConversationIdOfFriends: ActionCreator<Action> = (
     payload,
   };
 };
-
+export const setConversationsIdChangeRoomType: ActionCreator<any> = (payload) => {
+  return {
+    type: SET_CONVERSATIONS_ID_AFTER_CHANGE_ROOM_TYPE,
+    payload
+  }
+}
 export const deleteFriend: ActionCreator<Action> = (payload) => {
   return {
     type: DELETE_FRIEND,

@@ -117,13 +117,17 @@ export const ModalCreateChatGroup = (props: any) => {
                 </Modal.Header>
                 <Modal.Body className="px-0">
                     <Container>
-                        <Row className="mb-3">
+                        <Row className="mb-4">
                             <Col>
-                                <h6>Name Group</h6>
-                                <input type="text" className="form-control"
-                                    value={nameGroup}
-                                    placeholder="Name Group" onChange={(e) => onChangeNameRoom(e)}
-                                />
+                                <div className="form__div">
+                                    <input type="text" className="form__input"
+                                        value={nameGroup}
+                                        placeholder=" " onChange={(e) => onChangeNameRoom(e)}
+                                    />
+                                    <label htmlFor="" className="form__label">
+                                        Name Group
+                                    </label>
+                                </div>
                                 {
                                     errorNameGroup && (<div className="text-danger">Name is required</div>)
                                 }
@@ -131,10 +135,15 @@ export const ModalCreateChatGroup = (props: any) => {
                         </Row>
                         <Row className="mb-3">
                             <Col>
-                                <h6>Search Friend</h6>
-                                <input type="text" className="form-control"
-                                    placeholder="Search friend by name or phone number" onChange={(e) => changeSearchFriend(e)}
-                                />
+                                <div className="form__div">
+                                    <input type="text" className="form__input"
+                                        placeholder=" " onChange={(e) => changeSearchFriend(e)}
+                                    />
+                                    <label htmlFor="" className="form__label">
+                                        Search friend by name or phone number
+                                    </label>
+                                </div>
+
                             </Col>
                         </Row>
                         {
@@ -155,7 +164,11 @@ export const ModalCreateChatGroup = (props: any) => {
                         }
                         <Row>
                             <Col xs={12} className="pt-2">
-                                <h4>Friend List</h4>
+                                {
+                                    friendsListRedux && friendsListRedux.length > 0 ? (
+                                        <h4>Friend List {`(${friendsListRedux.length}/50)`}</h4>
+                                    ) : <h4>Friend List {`(0/50)`}</h4>
+                                }
                             </Col>
                             <Col xs={12}>
                                 <form className="overflow-auto friend-list-create">

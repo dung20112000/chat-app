@@ -1,10 +1,12 @@
+import { SET_CONVERSATIONS_ID_AFTER_CHANGE_ROOM_TYPE } from '../types/FriendList.types.redux';
 import {
   UPDATE_FRIEND_STATUS,
   FETCH_USER_FRIEND_LIST_SUCCESS,
   FETCH_USER_FRIEND_LIST_FAILED,
   ACCEPT_FRIEND_REQUEST,
-  UPDATE_CONVERSATION_ID, DELETE_FRIEND,
-} from "../types/FriendList.types.redux";
+  UPDATE_CONVERSATION_ID,
+  DELETE_FRIEND,
+} from '../types/FriendList.types.redux';
 
 const initialState: any | null = [];
 const UsersFriendsListReducer = (state = initialState, action: any) => {
@@ -38,11 +40,20 @@ const UsersFriendsListReducer = (state = initialState, action: any) => {
       });
       return [...state];
     }
+    case SET_CONVERSATIONS_ID_AFTER_CHANGE_ROOM_TYPE:
+      if (payload) {
+        const index = findFriendById(payload, state);
+        if (index >= 0) {
+          state[index].conversationsId = null;
+        }
+        return [...state];
+      }
+      return state;
     case DELETE_FRIEND: {
-      const friendIndex = findFriendById(payload,state)
+      const friendIndex = findFriendById(payload, state);
       if (friendIndex || friendIndex === 0) {
-        const friendList = [...state]
-        friendList.splice(friendIndex,1)
+        const friendList = [...state];
+        friendList.splice(friendIndex, 1);
         return friendList;
       }
       return state;

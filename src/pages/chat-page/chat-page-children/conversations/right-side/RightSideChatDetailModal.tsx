@@ -1,5 +1,4 @@
 import { Col, Modal, Row } from 'react-bootstrap';
-import { useFormik } from 'formik';
 import React, {
   ChangeEvent,
   MouseEvent,
@@ -9,44 +8,42 @@ import React, {
   useState,
 } from 'react';
 import { IUserFriendsList } from '../../../../../@types/redux';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
 import { Avatar } from '../../../../../common-components/avatar.common';
 import './scss/rightsidechatpage.scss';
 import { emitAddFriendConversation } from '../../../../../server-interaction/socket-handle/socket-conversations';
+import {
+  addMembers,
+  changeRoomType,
+} from '../../../../../redux/actions/Conversation.redux';
+import { ERoomType } from '../../../../../@types/enums.d';
+import { setConversationsIdChangeRoomType } from '../../../../../redux/actions/FriendList.actions.redux';
 
 interface IConversationBlockCommon {
   avatarUrl: string;
   friendName: string;
   active?: boolean;
-  _id: string;
-  conversationsId: string | null;
-  currentConversationsId: string;
+  participantsId: string;
   checked: boolean;
   addParticipant: (participantsId: string) => void;
   removeParticipant: (participantsId: string) => void;
 }
 
 const ContactsCommon: React.FC<IConversationBlockCommon> = ({
-  conversationsId,
   avatarUrl,
   friendName,
-  _id,
+  participantsId,
   checked,
   addParticipant,
   removeParticipant,
-  currentConversationsId,
 }) => {
+  const conversationDetail = useSelector(
+    (state: RootState) => state.conversationDetail
+  );
   const areaRef = useRef(null);
-
-  const formik = useFormik({
-    initialValues: {
-      check: false,
-    },
-    onSubmit: (values) => {},
-  });
-
-  const { handleChange } = formik;
+  if (!conversationDetail) return null;
+  const { members } = conversationDetail;
   const onMouseOverArea = (event: MouseEvent) => {
     if (areaRef.current) {
       //@ts-ignore
@@ -64,14 +61,13 @@ const ContactsCommon: React.FC<IConversationBlockCommon> = ({
     }
   };
   const onHandleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    handleChange(event);
     const target = event.target;
     const checked = target.checked;
     if (checked) {
-      addParticipant(_id);
+      addParticipant(participantsId);
     }
     if (!checked) {
-      removeParticipant(_id);
+      removeParticipant(participantsId);
     }
   };
   return (
@@ -83,7 +79,11 @@ const ContactsCommon: React.FC<IConversationBlockCommon> = ({
         className="d-flex friend-row-modal pl-5 py-3 rounded-1rem align-items-center w-100"
       >
         <div className="checkbox-input text-center mr-4">
-          {conversationsId === currentConversationsId ? (
+          {members &&
+          members.length > 0 &&
+          members.find(
+            (member: any) => member.userId._id === participantsId
+          ) ? (
             <input name="firstName" type="checkbox" checked disabled />
           ) : (
             <input
@@ -147,6 +147,7 @@ const RightSideChatDetailModal = ({
   handleClose,
   members,
 }: ILeftSideDeleteFriendModal) => {
+  const dispatch = useDispatch();
   const socketStateRedux = useSelector((state: RootState) => state.socket);
   const friendsListRedux: IUserFriendsList[] = useSelector(
     (state: RootState) => state.friendsList
@@ -154,12 +155,18 @@ const RightSideChatDetailModal = ({
   const currentConversationsId = useSelector(
     (state: RootState) => state.conversationDetail?._id
   );
+  const currentRoomType = useSelector(
+    (state: RootState) => state.conversationDetail?.roomType
+  );
+  const currentRoomMembers: any[] = useSelector(
+    (state: RootState) => state.conversationDetail?.members
+  );
   const userFullName = useSelector((state: RootState) => {
     if (state.userInfos) {
       const {
         personalInfos: { firstName, lastName },
       } = state.userInfos;
-      return firstName + lastName;
+      return firstName + ' ' + lastName;
     }
     return '';
   });
@@ -198,7 +205,6 @@ const RightSideChatDetailModal = ({
         newParticipantsIds.push(participantsId);
         setNewParticipantsIds([...newParticipantsIds]);
       }
-      console.log(newParticipantsIds);
     },
     [newParticipantsIds]
   );
@@ -218,6 +224,8 @@ const RightSideChatDetailModal = ({
     if (
       socketStateRedux &&
       currentConversationsId &&
+      currentRoomType &&
+      currentRoomMembers.length > 0 &&
       userFullName &&
       newParticipantsIds &&
       newParticipantsIds.length > 0
@@ -228,17 +236,44 @@ const RightSideChatDetailModal = ({
         newParticipantsIds,
         userFullName,
         (response: any) => {
-          console.log(response);
+          if (
+            response.status &&
+            response.newParticipants &&
+            response.newParticipants.length > 0
+          ) {
+            dispatch(
+              addMembers({
+                newMembers: response.newParticipants,
+                addBy: response.addBy,
+              })
+            );
+            if (
+              currentRoomType === ERoomType.private &&
+              currentRoomMembers.length < 2
+            ) {
+              dispatch(changeRoomType(ERoomType.group));
+              dispatch(
+                setConversationsIdChangeRoomType(
+                  currentRoomMembers[0].userId._id
+                )
+              );
+            }
+          }
         }
       );
     }
+    setNewParticipantsIds([]);
+    handleClose();
+  };
+  const onClose = () => {
+    setNewParticipantsIds([]);
     handleClose();
   };
   return (
     <div>
       <Modal
         show={show}
-        onHide={handleClose}
+        onHide={onClose}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
@@ -275,7 +310,6 @@ const RightSideChatDetailModal = ({
                 {showListFriend && showListFriend.length > 0
                   ? showListFriend.map((item, index: number) => {
                       const {
-                        conversationsId,
                         personalInfos: { firstName, lastName, avatarUrl },
                         _id,
                       } = item;
@@ -286,9 +320,7 @@ const RightSideChatDetailModal = ({
                           checked={newParticipantsIds.indexOf(_id) >= 0}
                           key={_id}
                           friendName={`${firstName} ${lastName}`}
-                          _id={_id}
-                          conversationsId={conversationsId}
-                          currentConversationsId={currentConversationsId}
+                          participantsId={_id}
                           avatarUrl={avatarUrl}
                         />
                       );
@@ -299,7 +331,7 @@ const RightSideChatDetailModal = ({
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <button className="btn btn-danger" onClick={handleClose}>
+          <button className="btn btn-danger" onClick={onClose}>
             Cancel
           </button>
           <button
