@@ -18,6 +18,7 @@ import {
   onServerSendMessage,
 } from '../../../../../server-interaction/socket-handle/socket-chat';
 import SlideRequestAddFriendCommon from '../../../../../common-components/slide-request-add-friend.common';
+import { participantsNames } from '../../../../../helpers/functions/function-common';
 
 interface IPropsShowConversations extends IResponseConversationsList {
   seenAction: (conversationId: string) => void;
@@ -33,6 +34,7 @@ const ShowConversations: React.FC<IPropsShowConversations> = (props) => {
   const { _id: conversationsId, seenAction } = props;
   const { participants, roomName, dialogs, updateSeen } = props.room;
   if (!dialogs || dialogs.length === 0) return null;
+
   const {
     sender: {
       personalInfos: { firstName: senderFirstName, lastName: senderLastName },
@@ -40,29 +42,21 @@ const ShowConversations: React.FC<IPropsShowConversations> = (props) => {
     message,
     updatedAt,
   } = dialogs[0];
+
   const senderLastMessage = senderFirstName + senderLastName;
-  const participantsNames = () => {
-    return participants.length > 1
-      ? participants.reduce((allNames: string, member) => {
-          const {
-            userId: {
-              personalInfos: { firstName, lastName },
-            },
-          } = member;
-          allNames += `${firstName} ${lastName}, `;
-          return allNames;
-        }, '')
-      : `${participants[0].userId.personalInfos.firstName} ${participants[0].userId.personalInfos.lastName}`;
-  };
+
   if (!friendsListStateRedux) return null;
   if (participants.length > 1) {
     return (
       <ConversationBlockGroup
-        currentUserAvatarUrl={''}
+        lastMessageTime={updatedAt}
+        participants={participants}
         id={conversationsId}
         updateSeen={updateSeen}
         seenAction={seenAction}
-        groupName={roomName ? roomName : participantsNames()}
+        groupName={
+          roomName ? roomName : participantsNames(participants, roomName)
+        }
         lastMessage={{ sender: senderLastMessage, message }}
         members={participants.length + 1}
         active={urlConversationsId === conversationsId}
@@ -128,18 +122,19 @@ const SearchConversation = (props: IPropsSearch) => {
   return (
     <Row className="mb-3">
       <Col xs={12}>
-        <form>
-          <div>
-            <input
-              id="searchValues"
-              name="searchValues"
-              type="text"
-              onChange={onSearchChange}
-              placeholder="Search Conversation"
-              className="form-control"
-            />
-          </div>
-        </form>
+        <div className="form__div">
+          <input
+            id="searchValues"
+            name="searchValues"
+            type="text"
+            onChange={onSearchChange}
+            placeholder=" "
+            className="form__input"
+          />
+          <label htmlFor="" className="form__label">
+            Search Conversation
+          </label>
+        </div>
       </Col>
     </Row>
   );

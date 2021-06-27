@@ -1,7 +1,10 @@
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { EOnlineStatus } from '../@types/enums';
+import { participantsAvatarGroup } from '../helpers/functions/function-common';
+import { RootState } from '../redux/reducers/RootReducer.reducer.redux';
 import { AvatarGroup, AvatarWithStatus } from './avatar.common';
 import './scss/conversation-block.common.scss';
 import TimeDistanceCommon from './time-distance.common';
@@ -19,7 +22,7 @@ interface IConversationBlockCommon {
 }
 
 interface IConversationsBlockGroup {
-  currentUserAvatarUrl: string;
+  participants: any[];
   groupName: string;
   lastMessage: {
     sender: string;
@@ -29,8 +32,16 @@ interface IConversationsBlockGroup {
   active?: boolean;
   members: number;
   updateSeen: boolean;
+  lastMessageTime: any;
   seenAction: (conversationsId: string) => void;
 }
+
+const dotSeen = (
+  <div
+    className="rounded-circle bg-primary"
+    style={{ width: '0.75rem', height: '0.75rem' }}
+  />
+);
 
 export const ConversationBlock: React.FC<IConversationBlockCommon> = ({
   lastMessageTime,
@@ -44,12 +55,7 @@ export const ConversationBlock: React.FC<IConversationBlockCommon> = ({
   seenAction,
 }) => {
   const history = useHistory();
-  const dotSeen = (
-    <div
-      className="rounded-circle bg-primary"
-      style={{ width: '0.75rem', height: '0.75rem' }}
-    />
-  );
+
   const onClickConversations = () => {
     seenAction(id);
     history.push(`/chat-page/conversations/${id}`);
@@ -74,16 +80,14 @@ export const ConversationBlock: React.FC<IConversationBlockCommon> = ({
       <Col xs={6} className="pt-2 pl-0">
         <div>
           <h5
-            className={`mb-1 text-truncate ${
-              !updateSeen ? 'font-weight-bold' : ''
-            }`}
+            className={`mb-1 text-truncate ${!updateSeen ? 'font-weight-bold' : ''
+              }`}
           >
             {friendName}{' '}
           </h5>
           <p
-            className={`m-0 text-truncate  ${
-              !updateSeen ? 'font-weight-bold text-dark' : 'text-muted'
-            }`}
+            className={`m-0 text-truncate  ${!updateSeen ? 'font-weight-bold text-dark' : 'text-muted'
+              }`}
           >
             {lastMessage}{' '}
           </p>
@@ -108,15 +112,20 @@ export const ConversationBlockCommon = React.memo(
   }
 );
 export const ConversationGroup: React.FC<IConversationsBlockGroup> = ({
-  currentUserAvatarUrl,
+  participants,
+  updateSeen,
   active,
-  members,
   id,
   groupName,
   lastMessage,
+  lastMessageTime,
   seenAction,
 }) => {
+  const personalInfos = useSelector((state: RootState) => {
+    return state.userInfos?.personalInfos;
+  });
   const history = useHistory();
+
   const onClickConversations = () => {
     seenAction(id);
     history.push(`/chat-page/conversations/${id}`);
@@ -133,25 +142,31 @@ export const ConversationGroup: React.FC<IConversationsBlockGroup> = ({
     >
       <Col xs={3}>
         <AvatarGroup
-          avatarUrl={currentUserAvatarUrl}
-          alt={'Huy'}
-          altMembers={'Huy'}
-          members={members}
+          avatarUrl={personalInfos.avatarUrl}
+          avatarUrlMember={participants[0].userId.personalInfos.avatarUrl}
+          members={participants.length}
+          alt={participantsAvatarGroup(personalInfos)}
+          altMembers={participants[0].userId.personalInfos.firstName}
         />
       </Col>
       <Col xs={6} className="pt-2 pl-0">
         <div>
-          <h5 className="mb-1 text-truncate">{groupName}</h5>
-          <p className="m-0 text-truncate text-muted">
+          <h5 className={`mb-1 text-truncate ${!updateSeen ? 'font-weight-bold' : ''}`}>{groupName}</h5>
+          <p className={`m-0 text-truncate  ${!updateSeen ? 'font-weight-bold text-dark' : 'text-muted'
+            }`}>
             {lastMessage.sender} : {lastMessage.message}
           </p>
         </div>
       </Col>
-      <Col xs={3} className="text-right pt-2 pl-0">
-        <div className="h-100">
-          <span className="text-muted">1 hour</span>
-        </div>
-      </Col>
+      {!updateSeen ? (
+        <Col>
+          <div className="d-flex align-items-center justify-content-end h-100">
+            {dotSeen}
+          </div>
+        </Col>
+      ) : (
+        <TimeDistanceCommon lastMessageTime={lastMessageTime} />
+      )}
     </Row>
   );
 };
