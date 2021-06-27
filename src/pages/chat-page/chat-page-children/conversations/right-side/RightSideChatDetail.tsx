@@ -1,6 +1,9 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import qs from 'querystring';
-import { Avatar, AvatarGroup } from '../../../../../common-components/avatar.common';
+import {
+  Avatar,
+  AvatarGroup,
+} from '../../../../../common-components/avatar.common';
 import React, { useState } from 'react';
 
 import ComponentTitleCommon from '../../../../../common-components/component-title.common';
@@ -23,7 +26,7 @@ interface IChatDetailFriend {
 const ChatDetailFriend: React.FC<IChatDetailFriend> = ({
   avatarUrlRoom,
   roomName,
-  participants
+  participants,
 }) => {
   const [showAddMembers, setShowAddMembers] = useState(false);
   const handleCloseAddMembers = () => setShowAddMembers(false);
@@ -31,34 +34,38 @@ const ChatDetailFriend: React.FC<IChatDetailFriend> = ({
   const personalInfos = useSelector((state: RootState) => {
     return state.userInfos?.personalInfos;
   });
-  const { userId: { personalInfos: { firstName, lastName, avatarUrl } } } = participants[0];
+  const fullRoomName = useSelector((state: RootState) => {
+    return (
+      state.conversationDetail?.firstName +
+      ' ' +
+      state.conversationDetail?.lastName
+    );
+  });
+  const avatarUrl = useSelector(
+    (state: RootState) => state.conversationDetail?.avatarUrl
+  );
   return (
     <Row className="pt-3">
       <Col xs={3} className="align-items-center">
-        {
-          roomName !== "" ? (
-            <AvatarGroup
-              avatarUrl={personalInfos.avatarUrl}
-              avatarUrlMember={avatarUrl}
-              members={participants.length}
-              alt={participantsAvatarGroup(personalInfos)}
-              altMembers={firstName}
-            />
-          ) : (
-            <Avatar avatarUrl={avatarUrl}
-              alt={firstName} />
-          )
-        }
+        {roomName !== '' ? (
+          <AvatarGroup
+            avatarUrl={personalInfos.avatarUrl}
+            avatarUrlMember={avatarUrl}
+            members={participants.length}
+            alt={participantsAvatarGroup(personalInfos)}
+            altMembers={fullRoomName}
+          />
+        ) : (
+          <Avatar avatarUrl={avatarUrl} alt={fullRoomName} />
+        )}
       </Col>
       <Col xs={6} className=" pl-0 align-items-center">
         <div>
-          {
-            roomName !== "" ? (
-              <h5 className="mb-1 pt-2 text-truncate">{roomName}</h5>
-            ) : (
-              <h5 className="mb-1 pt-2 text-truncate">{`${firstName} ${lastName}`}</h5>
-            )
-          }
+          {roomName ? (
+            <h5 className="mb-1 pt-2 text-truncate">{roomName}</h5>
+          ) : (
+            <h5 className="mb-1 pt-2 text-truncate">{fullRoomName}</h5>
+          )}
           <p className="m-0 text-truncate text-muted">
             {participants.length + 1} members
           </p>
