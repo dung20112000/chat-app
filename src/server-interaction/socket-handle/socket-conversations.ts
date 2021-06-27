@@ -24,3 +24,12 @@ export const onAddedToConversation = (socketInstance: Socket, action: any) => {
     action({ conversationsId, addBy });
   });
 };
+
+export const onNotifyNewMembers = (socketInstance: Socket, action: any) => {
+  socketInstance.on(
+    'emitNotifyNewMembers',
+    ({ conversationsId, newParticipantsInfos, addBy }: any) => {
+      action({ conversationsId, newParticipantsInfos, addBy });
+    }
+  );
+};

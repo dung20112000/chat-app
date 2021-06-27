@@ -9,6 +9,7 @@ import {
   emitJoinRoom,
   onServerSendMessage,
 } from '../../../../../server-interaction/socket-handle/socket-chat';
+import { onNotifyNewMembers } from '../../../../../server-interaction/socket-handle/socket-conversations';
 import ChatAreaDialog from './ChatAreaDialog';
 import ChatAreaInput from './ChatAreaInput';
 import ChatAreaRoomName from './ChatAreaRoomName';
@@ -174,6 +175,34 @@ const ChatAreaMain = () => {
       });
     }
   }, [conversationDetailNewMembers, userId]);
+  useEffect(() => {
+    if (socketStateRedux && conversationsId) {
+      onNotifyNewMembers(socketStateRedux, (data: any) => {
+        const {
+          conversationsId: responseId,
+          newParticipantsInfos,
+          addBy,
+        } = data;
+        if (responseId === conversationsId) {
+          setDialogs((dialogs: any[]) => {
+            const newMembersInfos = newParticipantsInfos.map((member: any) => ({
+              notify: true,
+              newMember: member.personalInfos,
+              addBy,
+              sender: {
+                _id:
+                  dialogs.length > 0
+                    ? dialogs[dialogs.length - 1].sender._id
+                    : userId,
+              },
+            }));
+            const clone = [...dialogs];
+            return [...clone, ...newMembersInfos];
+          });
+        }
+      });
+    }
+  }, [socketStateRedux, conversationsId, userId]);
   useEffect(() => {
     if (roomNameRef.current && contentBodyRef.current) {
       // @ts-ignore
