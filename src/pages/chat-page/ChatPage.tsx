@@ -16,7 +16,7 @@ import { fetchUserInfos } from '../../redux/actions/user-infos.actions.redux';
 import { RootState } from '../../redux/reducers/root.reducer.redux';
 import chatPageRoutes from '../../routes/chat-page.routes';
 import { onComingCall } from '../../server-interaction/socket-handle/socket-peer.services';
-import '../../server-interaction/socket-handle/socket-running';
+import '../../server-interaction/socket-handle/socket-running.services';
 import {
   createSocket,
   emitClientConnect,

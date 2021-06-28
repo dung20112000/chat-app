@@ -7,7 +7,7 @@ import { Avatar } from './../../../../../common-components/avatar.common';
 import { callApi } from '../../../../../server-interaction/apis/api.services';
 import { FormikHelpers } from 'formik';
 import querystring from 'query-string';
-import { emitCancelFriendsRequests, emitFriendsRequests } from "../../../../../server-interaction/socket-handle/socket-friends-requests";
+import { emitCancelFriendsRequests, emitFriendsRequests } from "../../../../../server-interaction/socket-handle/socket-friends-requests.services";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/reducers/root.reducer.redux";
 import { IUserInfosReducer } from "../../../../../@types/redux";

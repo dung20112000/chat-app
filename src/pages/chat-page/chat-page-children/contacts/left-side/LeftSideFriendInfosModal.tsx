@@ -4,7 +4,7 @@ import {Avatar} from "../../../../../common-components/avatar.common";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/reducers/root.reducer.redux";
 import {useHistory} from "react-router-dom";
-import {emitJoinRoom} from "../../../../../server-interaction/socket-handle/socket-chat";
+import {emitJoinRoom} from "../../../../../server-interaction/socket-handle/socket-chat.services";
 import {IUserInfosReducer} from "../../../../../@types/redux";
 
 interface ILeftSideUserInfoModal {

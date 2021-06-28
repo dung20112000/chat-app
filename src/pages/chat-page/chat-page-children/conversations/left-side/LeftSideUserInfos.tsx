@@ -6,7 +6,7 @@ import {useState} from 'react';
 import "./scss/leftsidechatpage.scss";
 import LeftSideUserInfoModal from "./LeftSideUserInfoModal";
 import LeftSideSecurityModal from "./LeftSideSecurityModal";
-import {emitChangeStatus} from "../../../../../server-interaction/socket-handle/socket-change-status";
+import {emitChangeStatus} from "../../../../../server-interaction/socket-handle/socket-change-status.services";
 import { updateUserStatus} from "../../../../../redux/actions/user-infos.actions.redux";
 import {emitClientLogout} from '../../../../../server-interaction/socket-handle/socket.services';
 import {Socket} from "socket.io-client";

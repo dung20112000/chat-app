@@ -21,10 +21,10 @@ import { Avatar } from './../../../../../common-components/avatar.common';
 import {
   emitAcceptFriendsRequests,
   emitCancelFriendsRequests,
-} from '../../../../../server-interaction/socket-handle/socket-friends-requests';
+} from '../../../../../server-interaction/socket-handle/socket-friends-requests.services';
 import { acceptFriendRequest } from '../../../../../redux/actions/friends-list.actions.redux';
 import { removeFriendsRequest } from '../../../../../redux/actions/friends-requests.action.redux';
-import { emitJoinRoom } from '../../../../../server-interaction/socket-handle/socket-chat';
+import { emitJoinRoom } from '../../../../../server-interaction/socket-handle/socket-chat.services';
 import { useHistory } from 'react-router-dom';
 import SlideRequestAddFriendCommon from '../../../../../common-components/slide-request-add-friend.common';
 

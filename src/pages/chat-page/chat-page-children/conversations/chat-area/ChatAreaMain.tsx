@@ -10,7 +10,7 @@ import {
 import { setConversationsIdChangeRoomType } from '../../../../../redux/actions/friends-list.actions.redux';
 import { RootState } from '../../../../../redux/reducers/root.reducer.redux';
 import { callApi } from '../../../../../server-interaction/apis/api.services';
-import { emitJoinRoom } from '../../../../../server-interaction/socket-handle/socket-chat';
+import { emitJoinRoom } from '../../../../../server-interaction/socket-handle/socket-chat.services';
 import ChatAreaDialog from './ChatAreaDialog';
 import ChatAreaInput from './ChatAreaInput';
 import ChatAreaRoomName from './ChatAreaRoomName';

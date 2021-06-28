@@ -12,7 +12,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../../../redux/reducers/root.reducer.redux';
 import { Avatar } from '../../../../../common-components/avatar.common';
 import './scss/rightsidechatpage.scss';
-import { emitAddFriendConversation } from '../../../../../server-interaction/socket-handle/socket-conversations';
+import { emitAddFriendConversation } from '../../../../../server-interaction/socket-handle/socket-conversations.services';
 import {
   addMembers,
   changeRoomType,
