@@ -24,6 +24,7 @@
 .add-friend {
     color: var(--primary);
     cursor: pointer;
+    width: 100%;
     span {
         i {
             color: var(--primary);
@@ -138,7 +139,7 @@ button {
     }
 }
 .search-area-input {
-   .search-input {
+    .search-input {
         width: 100%;
         input {
             height: 3rem;
@@ -149,9 +150,9 @@ button {
 }
 .friend-list-add {
     height: 50vh;
-    .friend-row-modal.hover:hover  .button-setting {
+    .friend-row-modal.hover:hover .button-setting {
         background: none;
-        color: gray!important;
+        color: gray !important;
     }
     .friend-row-modal {
         cursor: pointer;
