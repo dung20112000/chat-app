@@ -1,5 +1,5 @@
 import { takeLatest, put, call } from "redux-saga/effects";
-import * as types from "../types/users.types.redux";
+import * as types from "../types/user-infos.types.redux";
 import { callApi } from "../../server-interaction/apis/api.services";
 import { IResponseGenerator } from "../../@types/redux-saga";
 import {

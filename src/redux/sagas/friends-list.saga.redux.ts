@@ -1,5 +1,5 @@
 import { takeLatest, put, call } from "redux-saga/effects";
-import * as types from "../types/FriendList.types.redux";
+import * as types from "../types/friends-list.types.redux";
 import { callApi } from "../../server-interaction/apis/api.services";
 
 import {

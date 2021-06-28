@@ -1,9 +1,9 @@
 import {
   ADD_NEW_MEMBERS,
   CHANGE_ROOM_TYPE,
-} from './../types/Conversations.types.redux';
+} from '../types/conversation.types.redux';
 import { ActionCreator } from 'redux';
-import { CHANGE_CONVERSATION_DETAIL } from '../types/Conversations.types.redux';
+import { CHANGE_CONVERSATION_DETAIL } from '../types/conversation.types.redux';
 
 export const changeConversationDetail: ActionCreator<any> = (payload) => {
   return {

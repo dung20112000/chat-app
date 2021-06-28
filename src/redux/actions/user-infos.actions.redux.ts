@@ -6,7 +6,7 @@ import {
   UPDATE_USER_SECURITY_INFOS,
   UPDATE_USER_STATUS,
   UPDATE_AVATAR_USER,
-} from "../types/users.types.redux";
+} from "../types/user-infos.types.redux";
 import { Action, ActionCreator } from "redux";
 import {
   IUpdatePersonalInfos,
