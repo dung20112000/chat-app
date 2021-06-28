@@ -57,6 +57,7 @@ const ChatAreaMain = () => {
   const conversationDetailNewMembers: any = useSelector(
     (state: RootState) => state.conversationDetail?.newMembers
   );
+  const lastMessageRedux = useSelector((state: RootState) => state.lastMessage);
   useEffect(() => {
     if (conversationsId) {
       callApi(`/conversations/${conversationsId}`, 'GET').then(
@@ -271,8 +272,18 @@ const ChatAreaMain = () => {
       contentBodyRef.current.style.top = roomNameHeight;
     }
   }, []);
+  useEffect(() => {
+    if (lastMessageRedux && endRef.current) {
+      //@ts-ignore
+      endRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [lastMessageRedux]);
   const pushOwnMessageDialogs = useCallback((data: any) => {
     if (data) {
+      if (endRef.current) {
+        //@ts-ignore
+        endRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
       setDialogs((dialogs: any) => {
         let clone = [...dialogs];
         if (clone.length > 1000) {
@@ -300,10 +311,10 @@ const ChatAreaMain = () => {
             const {
               room: { dialogs: oldDialogs },
             } = response.data;
-            console.log(oldDialogs);
             msgCheckPointRef.current = oldDialogs[0]?._id;
 
             setScrollLoading(false);
+
             setDialogs((dialogs: any) => {
               const clone = [...oldDialogs, ...dialogs];
               return clone;
