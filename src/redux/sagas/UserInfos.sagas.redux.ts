@@ -5,7 +5,7 @@ import { IResponseGenerator } from "../../@types/redux-saga";
 import {
   fetchUserInfosSuccess,
   fetchUserInfosFailed,
-} from "./../actions/users.actions.redux";
+} from "../actions/user-infos.actions.redux";
 
 const USER = "/users";
 

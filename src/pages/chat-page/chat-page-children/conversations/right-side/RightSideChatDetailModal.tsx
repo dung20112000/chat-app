@@ -9,16 +9,16 @@ import React, {
 } from 'react';
 import { IUserFriendsList } from '../../../../../@types/redux';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
+import { RootState } from '../../../../../redux/reducers/root.reducer.redux';
 import { Avatar } from '../../../../../common-components/avatar.common';
 import './scss/rightsidechatpage.scss';
 import { emitAddFriendConversation } from '../../../../../server-interaction/socket-handle/socket-conversations';
 import {
   addMembers,
   changeRoomType,
-} from '../../../../../redux/actions/Conversation.redux';
+} from '../../../../../redux/actions/conversation.actions.redux';
 import { ERoomType } from '../../../../../@types/enums.d';
-import { setConversationsIdChangeRoomType } from '../../../../../redux/actions/FriendList.actions.redux';
+import { setConversationsIdChangeRoomType } from '../../../../../redux/actions/friends-list.actions.redux';
 
 interface IConversationBlockCommon {
   avatarUrl: string;

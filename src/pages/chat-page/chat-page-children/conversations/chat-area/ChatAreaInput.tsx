@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom';
 import shortid from 'shortid';
 import { IUserInfosReducer } from '../../../../../@types/redux';
 import { updateLastMessage } from '../../../../../redux/actions/last-message.actions.redux';
-import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
+import { RootState } from '../../../../../redux/reducers/root.reducer.redux';
 import { emitMessage } from '../../../../../server-interaction/socket-handle/socket-chat';
 
 interface IParams {

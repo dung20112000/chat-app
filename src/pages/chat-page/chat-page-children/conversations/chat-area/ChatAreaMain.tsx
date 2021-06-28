@@ -6,9 +6,9 @@ import { toggleScrollbar } from '../../../../../helpers/functions/toggle-scrollb
 import {
   changeConversationDetail,
   changeRoomType,
-} from '../../../../../redux/actions/Conversation.redux';
-import { setConversationsIdChangeRoomType } from '../../../../../redux/actions/FriendList.actions.redux';
-import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
+} from '../../../../../redux/actions/conversation.actions.redux';
+import { setConversationsIdChangeRoomType } from '../../../../../redux/actions/friends-list.actions.redux';
+import { RootState } from '../../../../../redux/reducers/root.reducer.redux';
 import { callApi } from '../../../../../server-interaction/apis/api.services';
 import { emitJoinRoom } from '../../../../../server-interaction/socket-handle/socket-chat';
 import ChatAreaDialog from './ChatAreaDialog';

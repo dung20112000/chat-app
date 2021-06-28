@@ -5,7 +5,7 @@ import { callApi } from '../../server-interaction/apis/api.services';
 import {
   fetchFriendRequestSuccess,
   fetchFriendRequestFailed,
-} from './../actions/FriendRequest.action.redux';
+} from '../actions/friends-requests.action.redux';
 import { IResponseGenerator } from '../../@types/redux-saga';
 
 const USER_FRIENDS = '/users/friends-requests';

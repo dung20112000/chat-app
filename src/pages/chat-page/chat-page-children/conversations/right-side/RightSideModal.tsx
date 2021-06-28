@@ -9,9 +9,9 @@ import { FormikHelpers } from 'formik';
 import querystring from 'query-string';
 import { emitCancelFriendsRequests, emitFriendsRequests } from "../../../../../server-interaction/socket-handle/socket-friends-requests";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../../redux/reducers/RootReducer.reducer.redux";
+import { RootState } from "../../../../../redux/reducers/root.reducer.redux";
 import { IUserInfosReducer } from "../../../../../@types/redux";
-import { fetchFriendRequest } from '../../../../../redux/actions/FriendRequest.action.redux';
+import { fetchFriendRequest } from '../../../../../redux/actions/friends-requests.action.redux';
 
 enum EFriends {
     sendRequests = "sendRequests",

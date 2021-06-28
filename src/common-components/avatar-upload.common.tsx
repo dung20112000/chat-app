@@ -1,7 +1,7 @@
 import { Avatar, AvatarWithStatus, IAvatar } from './avatar.common';
 import React, { useRef, useState } from 'react';
 import { callApi } from '../server-interaction/apis/api.services';
-import { updateAvatarUser } from '../redux/actions/users.actions.redux';
+import { updateAvatarUser } from '../redux/actions/user-infos.actions.redux';
 import { useDispatch } from 'react-redux';
 import { axiosCloudinary } from '../server-interaction/apis/api-cloudinary.services';
 import { Button, Dropdown } from 'react-bootstrap';

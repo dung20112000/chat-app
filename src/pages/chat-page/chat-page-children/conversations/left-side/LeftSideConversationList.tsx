@@ -11,7 +11,7 @@ import {
   ConversationBlockGroup,
 } from '../../../../../common-components/conversation-block.common';
 import { toggleScrollbar } from '../../../../../helpers/functions/toggle-scrollbar';
-import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
+import { RootState } from '../../../../../redux/reducers/root.reducer.redux';
 import { callApi } from '../../../../../server-interaction/apis/api.services';
 import { emitSeenMessage } from '../../../../../server-interaction/socket-handle/socket-chat';
 import SlideRequestAddFriendCommon from '../../../../../common-components/slide-request-add-friend.common';

@@ -3,7 +3,7 @@ import { Modal, Button, Row, Col, Container } from 'react-bootstrap';
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { IUserFriendsList, IUserInfosReducer } from "../../../../../../@types/redux";
-import { RootState } from "../../../../../../redux/reducers/RootReducer.reducer.redux";
+import { RootState } from "../../../../../../redux/reducers/root.reducer.redux";
 import { callApi } from "../../../../../../server-interaction/apis/api.services";
 import { ModalItemFriend } from "./ModalItemFriend";
 import { ModalItemFriendInGroup } from "./ModalItemFriendInGroup";

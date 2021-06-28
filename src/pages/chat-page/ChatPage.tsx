@@ -10,10 +10,10 @@ import {
 import { Socket } from 'socket.io-client';
 import AppSideBarCommon from '../../common-components/app-side-bar.common';
 import ComingCallModalCommon from '../../common-components/coming-call-modal.common';
-import { fetchFriendRequest } from '../../redux/actions/FriendRequest.action.redux';
+import { fetchFriendRequest } from '../../redux/actions/friends-requests.action.redux';
 import { addSocket } from '../../redux/actions/socket.actions.redux';
-import { fetchUserInfos } from '../../redux/actions/users.actions.redux';
-import { RootState } from '../../redux/reducers/RootReducer.reducer.redux';
+import { fetchUserInfos } from '../../redux/actions/user-infos.actions.redux';
+import { RootState } from '../../redux/reducers/root.reducer.redux';
 import chatPageRoutes from '../../routes/chat-page.routes';
 import { onComingCall } from '../../server-interaction/socket-handle/socket-peer.services';
 import '../../server-interaction/socket-handle/socket-running';
@@ -22,7 +22,7 @@ import {
   emitClientConnect,
   onLogout,
 } from '../../server-interaction/socket-handle/socket.services';
-import { fetchUserFriendList } from './../../redux/actions/FriendList.actions.redux';
+import { fetchUserFriendList } from '../../redux/actions/friends-list.actions.redux';
 
 const ChatPage = () => {
   const [comingCall, setComingCall] = useState<any>(null);
