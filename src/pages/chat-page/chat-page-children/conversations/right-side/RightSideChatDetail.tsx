@@ -104,29 +104,6 @@ const RightSideChatDetail = () => {
           <Col xs={10}>
             <ComponentTitleCommon title="Chat Detail" />
           </Col>
-          <Col xs={2}>
-            <div
-              className="rounded-circle w-100 position-relative bg-light-secondary"
-              style={{ paddingTop: '100%' }}
-            >
-              <div
-                className="position-absolute"
-                style={{
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%,-50%)',
-                }}
-              >
-                <button
-                  style={{ fontSize: '1.4rem' }}
-                  className="btn p-0"
-                  type="button"
-                >
-                  <i className="fas fa-arrow-right" />
-                </button>
-              </div>
-            </div>
-          </Col>
         </Row>
       </Container>
     );
@@ -157,29 +134,6 @@ const RightSideChatDetail = () => {
       <Row className="align-items-center">
         <Col xs={10}>
           <ComponentTitleCommon title="Details" />
-        </Col>
-        <Col xs={2}>
-          <div
-            className="rounded-circle w-100 position-relative bg-light-secondary"
-            style={{ paddingTop: '100%' }}
-          >
-            <div
-              className="position-absolute"
-              style={{
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%,-50%)',
-              }}
-            >
-              <button
-                style={{ fontSize: '1.4rem' }}
-                className="btn p-0"
-                type="button"
-              >
-                <i className="fas fa-arrow-right" />
-              </button>
-            </div>
-          </div>
         </Col>
       </Row>
       <ChatDetailFriend

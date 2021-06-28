@@ -52,14 +52,20 @@ interface IConversationBlockCommon {
 
 const ContactsCommon: React.FC<IConversationBlockCommon> = ({ avatarUrl, friendName, _id }) => {
     const areaRef = useRef(null)
-
+    const friendListInfosRedux: any = useSelector((state: RootState) => state.friendsList);
     const [showFriendInfos, setShowFriendInfos] = useState(false);
+    const [itemFriend, setItemFriend] = useState(null);
     const handleCloseFriendInfos = () => setShowFriendInfos(false);
-    const handleShowFriendInfos = () => setShowFriendInfos(true);
 
     const [showDeleteFriend, setShowDeleteFriend] = useState(false);
     const handleCloseDeleteFriend = () => setShowDeleteFriend(false);
     const handleShowDeleteFriend = () => setShowDeleteFriend(true);
+
+    const handleShowFriendInfos = () => {
+        const itemFriend = friendListInfosRedux.find((friend: any) => friend._id === _id);
+        setItemFriend(itemFriend);
+        setShowFriendInfos(true)
+    };
 
     const onMouseOverArea = (event: MouseEvent) => {
         if (areaRef.current) {
@@ -99,7 +105,8 @@ const ContactsCommon: React.FC<IConversationBlockCommon> = ({ avatarUrl, friendN
                     </Dropdown.Menu>
                 </Dropdown>
                 <LeftSideDeleteFriendModal show={showDeleteFriend} handleClose={handleCloseDeleteFriend} id={_id} />
-                <LeftSideFriendInfosModal show={showFriendInfos} handleClose={handleCloseFriendInfos} _id={_id} />
+                <LeftSideFriendInfosModal show={showFriendInfos} handleClose={handleCloseFriendInfos} _id={_id}
+                    itemFriend={itemFriend} />
             </Col>
         </Row>
     )

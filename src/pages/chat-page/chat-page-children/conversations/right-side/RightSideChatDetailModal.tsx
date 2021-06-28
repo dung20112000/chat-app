@@ -19,6 +19,7 @@ import {
 } from '../../../../../redux/actions/Conversation.redux';
 import { ERoomType } from '../../../../../@types/enums.d';
 import { setConversationsIdChangeRoomType } from '../../../../../redux/actions/FriendList.actions.redux';
+import { searchName } from '../../../../../helpers/functions/function-common';
 
 interface IConversationBlockCommon {
   avatarUrl: string;
@@ -80,10 +81,10 @@ const ContactsCommon: React.FC<IConversationBlockCommon> = ({
       >
         <div className="checkbox-input text-center mr-4">
           {members &&
-          members.length > 0 &&
-          members.find(
-            (member: any) => member.userId._id === participantsId
-          ) ? (
+            members.length > 0 &&
+            members.find(
+              (member: any) => member.userId._id === participantsId
+            ) ? (
             <input name="firstName" type="checkbox" checked disabled />
           ) : (
             <input
@@ -172,28 +173,13 @@ const RightSideChatDetailModal = ({
   });
   const [showListFriend, setShowListFriend] = useState<IUserFriendsList[]>([]);
   const [newParticipantsIds, setNewParticipantsIds] = useState<string[]>([]);
-  //   const newParticipantsIds = useRef<string[]>([]);
+
   useEffect(() => {
     setShowListFriend(friendsListRedux);
   }, [friendsListRedux]);
 
   const handleSearch = (searchValues: string) => {
-    if (!searchValues) {
-      setShowListFriend(friendsListRedux);
-    }
-    const result = friendsListRedux.filter((friend) => {
-      const {
-        email,
-        personalInfos: { firstName, lastName },
-      } = friend;
-      const fullName = `${firstName} ${lastName}`;
-      return (
-        email.includes(searchValues) ||
-        firstName.includes(searchValues) ||
-        lastName.includes(searchValues) ||
-        fullName.includes(searchValues)
-      );
-    });
+    const result = searchName(friendsListRedux, searchValues);
     setShowListFriend(result);
   };
   const addParticipant = useCallback(
@@ -309,22 +295,22 @@ const RightSideChatDetailModal = ({
               <form className="overflow-auto friend-list-add">
                 {showListFriend && showListFriend.length > 0
                   ? showListFriend.map((item, index: number) => {
-                      const {
-                        personalInfos: { firstName, lastName, avatarUrl },
-                        _id,
-                      } = item;
-                      return (
-                        <ContactsCommon
-                          addParticipant={addParticipant}
-                          removeParticipant={removeParticipant}
-                          checked={newParticipantsIds.indexOf(_id) >= 0}
-                          key={_id}
-                          friendName={`${firstName} ${lastName}`}
-                          participantsId={_id}
-                          avatarUrl={avatarUrl}
-                        />
-                      );
-                    })
+                    const {
+                      personalInfos: { firstName, lastName, avatarUrl },
+                      _id,
+                    } = item;
+                    return (
+                      <ContactsCommon
+                        addParticipant={addParticipant}
+                        removeParticipant={removeParticipant}
+                        checked={newParticipantsIds.indexOf(_id) >= 0}
+                        key={_id}
+                        friendName={`${firstName} ${lastName}`}
+                        participantsId={_id}
+                        avatarUrl={avatarUrl}
+                      />
+                    );
+                  })
                   : null}
               </form>
             </Col>
