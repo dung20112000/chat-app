@@ -12,7 +12,7 @@ import { AvatarWithStatus } from '../../../../../common-components/avatar.common
 import RightSideModal from './RightSideModal';
 import ComponentTitleCommon from '../../../../../common-components/component-title.common';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
+import { RootState } from '../../../../../redux/reducers/root.reducer.redux';
 import {
   IComingRequests,
   IUserInfosReducer,
@@ -21,12 +21,13 @@ import { Avatar } from './../../../../../common-components/avatar.common';
 import {
   emitAcceptFriendsRequests,
   emitCancelFriendsRequests,
-} from '../../../../../server-interaction/socket-handle/socket-friends-requests';
-import { acceptFriendRequest } from '../../../../../redux/actions/FriendList.actions.redux';
-import { removeFriendsRequest } from '../../../../../redux/actions/FriendRequest.action.redux';
-import { emitJoinRoom } from '../../../../../server-interaction/socket-handle/socket-chat';
+} from '../../../../../server-interaction/socket-handle/socket-friends-requests.services';
+import { acceptFriendRequest } from '../../../../../redux/actions/friends-list.actions.redux';
+import { removeFriendsRequest } from '../../../../../redux/actions/friends-requests.action.redux';
+import { emitJoinRoom } from '../../../../../server-interaction/socket-handle/socket-chat.services';
 import { useHistory } from 'react-router-dom';
 import SlideRequestAddFriendCommon from '../../../../../common-components/slide-request-add-friend.common';
+import { searchName } from '../../../../../helpers/functions/function-common';
 
 interface IPropsRowFriend {
   _id: string;
@@ -217,7 +218,7 @@ const FriendsRequests = () => {
 
 const RightSideOnlineFriendsList = () => {
   const [modalShow, setModalShow] = useState(false);
-  const [userFriendsOnline, setUserFriendsOnline] = useState([]);
+  const [userFriendsOnline, setUserFriendsOnline] = useState<any[]>([]);
   const friendsListStateRedux = useSelector((state: RootState) => {
     return state.friendsList;
   });
@@ -232,23 +233,14 @@ const RightSideOnlineFriendsList = () => {
   }, [friendsListStateRedux]);
 
   const changeSearchFriend = (event: any) => {
-    const textInput = event.target.value.toUpperCase();
+    const textInput = event.target.value;
     if (textInput === '') {
       const userFriendsOnline = friendsListStateRedux.filter((friend: any) => {
         return friend.onlineStatus !== EOnlineStatus.offline;
       });
       setUserFriendsOnline(userFriendsOnline);
     } else {
-      // eslint-disable-next-line array-callback-return
-      const searchFriends = friendsListStateRedux.filter((friend: any) => {
-        const { personalInfos } = friend;
-        if (
-          personalInfos.firstName.toUpperCase().includes(textInput) ||
-          personalInfos.lastName.toUpperCase().includes(textInput)
-        ) {
-          return friend;
-        }
-      });
+      const searchFriends: any[] = searchName(friendsListStateRedux, textInput);
       setUserFriendsOnline(searchFriends);
     }
   };
@@ -267,8 +259,8 @@ const RightSideOnlineFriendsList = () => {
           </div>
         </Col>
         <Col xs="6" className="text-right">
-          <div className="add-friend" onClick={onModalShow}>
-            <button className="btn text-primary d-flex align-items-center justify-content-end w-100">
+          <div className="add-friend d-flex  justify-content-end" onClick={onModalShow}>
+            <button className="btn text-primary d-flex align-items-center justify-content-end">
               <i className="fas fa-plus-square mr-1"></i> Add friends
             </button>
           </div>

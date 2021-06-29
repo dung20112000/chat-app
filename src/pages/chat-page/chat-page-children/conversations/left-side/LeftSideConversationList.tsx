@@ -4,21 +4,18 @@ import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
 import { IResponseConversationsList } from '../../../../../@types/api.response';
-import { EOnlineStatus } from '../../../../../@types/enums.d';
+import { EOnlineStatus, ERoomType } from '../../../../../@types/enums.d';
 import { IUserFriendsList } from '../../../../../@types/redux';
 import {
   ConversationBlockCommon,
   ConversationBlockGroup,
 } from '../../../../../common-components/conversation-block.common';
 import { toggleScrollbar } from '../../../../../helpers/functions/toggle-scrollbar';
-import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
+import { RootState } from '../../../../../redux/reducers/root.reducer.redux';
 import { callApi } from '../../../../../server-interaction/apis/api.services';
-import {
-  emitSeenMessage,
-  onServerSendMessage,
-} from '../../../../../server-interaction/socket-handle/socket-chat';
+import { emitSeenMessage } from '../../../../../server-interaction/socket-handle/socket-chat.services';
 import SlideRequestAddFriendCommon from '../../../../../common-components/slide-request-add-friend.common';
-import { onAddedToConversation } from '../../../../../server-interaction/socket-handle/socket-conversations';
+import { onAddedToConversation } from '../../../../../server-interaction/socket-handle/socket-conversations.services';
 import { participantsNames } from '../../../../../helpers/functions/function-common';
 
 interface IPropsShowConversations extends IResponseConversationsList {
@@ -33,7 +30,7 @@ const ShowConversations: React.FC<IPropsShowConversations> = (props) => {
     (state: RootState) => state.friendsList
   );
   const { _id: conversationsId, seenAction } = props;
-  const { participants, roomName, dialogs, updateSeen } = props.room;
+  const { participants, roomName, dialogs, updateSeen, roomType } = props.room;
   if (!dialogs || dialogs.length === 0) return null;
 
   const {
@@ -46,7 +43,7 @@ const ShowConversations: React.FC<IPropsShowConversations> = (props) => {
 
   const senderLastMessage = senderFirstName + senderLastName;
   if (!friendsListStateRedux) return null;
-  if (participants.length > 1) {
+  if (roomType === ERoomType.group) {
     return (
       <ConversationBlockGroup
         lastMessageTime={updatedAt}
@@ -259,43 +256,49 @@ const LeftSideConversationList = () => {
     }
   };
   useEffect(() => {
-    if (socketStateRedux && userId) {
-      onServerSendMessage(socketStateRedux, async (data: any) => {
-        console.log('message');
-        if (data) {
-          const isConversationInList = allConversationsRef.current.find(
-            (conversation) => conversation._id === data.conversationId
-          );
-          if (!isConversationInList) {
-            const newConversation = await getNewConversation(
-              data.conversationId
-            );
-            if (newConversation) {
-              if (data.sender._id === userId) {
-                newConversation.room.updateSeen = true;
-              }
-              setConversationsList((conversationsList: any) => {
-                if (!conversationsList) return conversationsList;
-                const clone = [...conversationsList];
-                return [newConversation, ...clone];
-              });
+    const listener = async (data: any) => {
+      if (data) {
+        const isConversationInList = allConversationsRef.current.find(
+          (conversation) => conversation._id === data.conversationId
+        );
+        if (!isConversationInList) {
+          const newConversation = await getNewConversation(data.conversationId);
+          if (newConversation) {
+            if (data.sender._id === userId) {
+              newConversation.room.updateSeen = true;
             }
-          }
-          if (isConversationInList) {
-            if (data.sender._id !== userId) {
-              setConversationsList((conversationsList: any) => {
-                if (!conversationsList) return conversationsList;
-                const newState = updateDialogs(userId, data, conversationsList);
-                if (newState) {
-                  return [...newState];
-                }
-                return conversationsList;
-              });
-            }
+            setConversationsList((conversationsList: any) => {
+              if (!conversationsList) return conversationsList;
+              const clone = [...conversationsList];
+              const newList = [newConversation, ...clone];
+              allConversationsRef.current = newList;
+              return newList;
+            });
           }
         }
-      });
+        if (isConversationInList) {
+          if (data.sender._id !== userId) {
+            setConversationsList((conversationsList: any) => {
+              if (!conversationsList) return conversationsList;
+              const newState = updateDialogs(userId, data, conversationsList);
+              if (newState) {
+                allConversationsRef.current = [...newState];
+                return [...newState];
+              }
+              return conversationsList;
+            });
+          }
+        }
+      }
+    };
+    if (socketStateRedux && userId) {
+      socketStateRedux.on('emitServerSendMessage', listener);
     }
+    return () => {
+      if (socketStateRedux) {
+        socketStateRedux.off('emitServerSendMessage', listener);
+      }
+    };
   }, [socketStateRedux, userId, updateDialogs, getNewConversation]);
   useEffect(() => {
     if (socketStateRedux) {
@@ -328,7 +331,9 @@ const LeftSideConversationList = () => {
             setConversationsList((conversationsList: any) => {
               if (!conversationsList) return conversationsList;
               const clone = [...conversationsList];
-              return [newConversation, ...clone];
+              const newList = [newConversation, ...clone];
+              allConversationsRef.current = newList;
+              return newList;
             });
           }
         }

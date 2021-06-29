@@ -1,7 +1,7 @@
 import {Col, Modal, Row} from "react-bootstrap";
 import React from "react";
 import {useDispatch} from "react-redux";
-import {deleteFriend} from "../../../../../redux/actions/FriendList.actions.redux";
+import {deleteFriend} from "../../../../../redux/actions/friends-list.actions.redux";
 import {callApi} from "../../../../../server-interaction/apis/api.services";
 
 

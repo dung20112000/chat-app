@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { EOnlineStatus } from '../@types/enums';
 import { participantsAvatarGroup } from '../helpers/functions/function-common';
-import { RootState } from '../redux/reducers/RootReducer.reducer.redux';
+import { RootState } from '../redux/reducers/root.reducer.redux';
 import { AvatarGroup, AvatarWithStatus } from './avatar.common';
 import './scss/conversation-block.common.scss';
 import TimeDistanceCommon from './time-distance.common';

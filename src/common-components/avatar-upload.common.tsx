@@ -1,14 +1,14 @@
 import { Avatar, AvatarWithStatus, IAvatar } from './avatar.common';
 import React, { useRef, useState } from 'react';
 import { callApi } from '../server-interaction/apis/api.services';
-import { updateAvatarUser } from '../redux/actions/users.actions.redux';
+import { updateAvatarUser } from '../redux/actions/user-infos.actions.redux';
 import { useDispatch } from 'react-redux';
 import { axiosCloudinary } from '../server-interaction/apis/api-cloudinary.services';
 import { Button, Dropdown } from 'react-bootstrap';
 import './scss/avatar-upload.common.scss';
 import { Modal } from 'react-bootstrap';
 
-interface IPropsAvatarUploadCommon extends IAvatar {}
+interface IPropsAvatarUploadCommon extends IAvatar { }
 const AvatarUploadCommon: React.FC<IPropsAvatarUploadCommon> = ({
   avatarUrl,
   status,
@@ -90,7 +90,8 @@ const AvatarUploadCommon: React.FC<IPropsAvatarUploadCommon> = ({
                 className="input-change-avatar d-none"
                 onChange={(event) => uploadFile(event.target.files)}
               />
-              Upload Avatar
+              <i className="fas fa-cloud-upload-alt"></i>
+              <span className="ml-2">Upload</span>
             </Dropdown.Item>
             {!avatarUrl ? null : (
               <Dropdown.Item
@@ -98,7 +99,8 @@ const AvatarUploadCommon: React.FC<IPropsAvatarUploadCommon> = ({
                 className="bg-danger text-white"
                 onClick={onOpenDeleteModal}
               >
-                Remove avatar
+                <i className="fas fa-trash"></i>
+                <span className="ml-2">Remove</span>
               </Dropdown.Item>
             )}
           </Dropdown.Menu>
@@ -106,7 +108,7 @@ const AvatarUploadCommon: React.FC<IPropsAvatarUploadCommon> = ({
       </div>
       <Modal show={showDelete} onHide={onCloseDeleteModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Remove avatar</Modal.Title>
+          <Modal.Title>Remove</Modal.Title>
         </Modal.Header>
         <Modal.Body>Do you want to remove avatar</Modal.Body>
         <Modal.Footer>
@@ -114,7 +116,7 @@ const AvatarUploadCommon: React.FC<IPropsAvatarUploadCommon> = ({
             Close
           </Button>
           <Button variant="danger" onClick={removeAvatar}>
-            remove
+            Remove
           </Button>
         </Modal.Footer>
       </Modal>

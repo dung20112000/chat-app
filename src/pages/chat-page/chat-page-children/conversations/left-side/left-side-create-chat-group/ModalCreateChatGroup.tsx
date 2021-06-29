@@ -3,7 +3,8 @@ import { Modal, Button, Row, Col, Container } from 'react-bootstrap';
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { IUserFriendsList, IUserInfosReducer } from "../../../../../../@types/redux";
-import { RootState } from "../../../../../../redux/reducers/RootReducer.reducer.redux";
+import { searchName } from "../../../../../../helpers/functions/function-common";
+import { RootState } from "../../../../../../redux/reducers/root.reducer.redux";
 import { callApi } from "../../../../../../server-interaction/apis/api.services";
 import { ModalItemFriend } from "./ModalItemFriend";
 import { ModalItemFriendInGroup } from "./ModalItemFriendInGroup";
@@ -42,18 +43,8 @@ export const ModalCreateChatGroup = (props: any) => {
     const history = useHistory();
     const changeSearchFriend = (event: any) => {
         const searchValues = event.target.value;
-        if (!searchValues) {
-            setShowListFriend(friendsListRedux)
-        }
-        const result = friendsListRedux.filter((friend: IUserFriendsList) => {
-            const { email, personalInfos: { firstName, lastName } } = friend;
-            const fullName = `${firstName} ${lastName}`;
-            return email.includes(searchValues) ||
-                firstName.includes(searchValues) ||
-                lastName.includes(searchValues) ||
-                fullName.includes(searchValues)
-        })
-        setShowListFriend(result)
+        const result = searchName(friendsListRedux, searchValues);
+        setShowListFriend(result);
     }
 
     const onChangeNameRoom = (event: any) => {
@@ -164,11 +155,7 @@ export const ModalCreateChatGroup = (props: any) => {
                         }
                         <Row>
                             <Col xs={12} className="pt-2">
-                                {
-                                    friendsListRedux && friendsListRedux.length > 0 ? (
-                                        <h4>Friend List {`(${friendsListRedux.length}/50)`}</h4>
-                                    ) : <h4>Friend List {`(0/50)`}</h4>
-                                }
+                                <h4>Friend List</h4>
                             </Col>
                             <Col xs={12}>
                                 <form className="overflow-auto friend-list-create">

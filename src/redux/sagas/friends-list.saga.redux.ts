@@ -1,11 +1,11 @@
 import { takeLatest, put, call } from "redux-saga/effects";
-import * as types from "../types/FriendList.types.redux";
+import * as types from "../types/friends-list.types.redux";
 import { callApi } from "../../server-interaction/apis/api.services";
 
 import {
   fetchUserFriendListSuccess,
   fetchUserFriendListFailed,
-} from "./../actions/FriendList.actions.redux";
+} from "../actions/friends-list.actions.redux";
 import { IResponseGenerator } from "../../@types/redux-saga";
 
 const USER_FRIENDS_LIST = "/users/friends-list";

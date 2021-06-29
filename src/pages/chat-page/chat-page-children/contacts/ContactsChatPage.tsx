@@ -1,6 +1,6 @@
 import {IUserInfosReducer} from "../../../../@types/redux";
 import {useSelector} from "react-redux";
-import {RootState} from "../../../../redux/reducers/RootReducer.reducer.redux";
+import {RootState} from "../../../../redux/reducers/root.reducer.redux";
 import {Col, Container, Row} from "react-bootstrap";
 import LeftSideFriendListContacts from "./left-side/LeftSideFriendListContacts";
 import FriendsSuggestion from "./right-side/RightSideFriendsSuggestion";

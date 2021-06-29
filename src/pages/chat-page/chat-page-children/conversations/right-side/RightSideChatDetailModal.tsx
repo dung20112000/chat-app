@@ -9,16 +9,17 @@ import React, {
 } from 'react';
 import { IUserFriendsList } from '../../../../../@types/redux';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
+import { RootState } from '../../../../../redux/reducers/root.reducer.redux';
 import { Avatar } from '../../../../../common-components/avatar.common';
 import './scss/rightsidechatpage.scss';
-import { emitAddFriendConversation } from '../../../../../server-interaction/socket-handle/socket-conversations';
+import { emitAddFriendConversation } from '../../../../../server-interaction/socket-handle/socket-conversations.services';
 import {
   addMembers,
   changeRoomType,
-} from '../../../../../redux/actions/Conversation.redux';
+} from '../../../../../redux/actions/conversation.actions.redux';
 import { ERoomType } from '../../../../../@types/enums.d';
-import { setConversationsIdChangeRoomType } from '../../../../../redux/actions/FriendList.actions.redux';
+import { setConversationsIdChangeRoomType } from '../../../../../redux/actions/friends-list.actions.redux';
+import { searchName } from '../../../../../helpers/functions/function-common';
 
 interface IConversationBlockCommon {
   avatarUrl: string;
@@ -172,28 +173,13 @@ const RightSideChatDetailModal = ({
   });
   const [showListFriend, setShowListFriend] = useState<IUserFriendsList[]>([]);
   const [newParticipantsIds, setNewParticipantsIds] = useState<string[]>([]);
-  //   const newParticipantsIds = useRef<string[]>([]);
+
   useEffect(() => {
     setShowListFriend(friendsListRedux);
   }, [friendsListRedux]);
 
   const handleSearch = (searchValues: string) => {
-    if (!searchValues) {
-      setShowListFriend(friendsListRedux);
-    }
-    const result = friendsListRedux.filter((friend) => {
-      const {
-        email,
-        personalInfos: { firstName, lastName },
-      } = friend;
-      const fullName = `${firstName} ${lastName}`;
-      return (
-        email.includes(searchValues) ||
-        firstName.includes(searchValues) ||
-        lastName.includes(searchValues) ||
-        fullName.includes(searchValues)
-      );
-    });
+    const result = searchName(friendsListRedux, searchValues);
     setShowListFriend(result);
   };
   const addParticipant = useCallback(

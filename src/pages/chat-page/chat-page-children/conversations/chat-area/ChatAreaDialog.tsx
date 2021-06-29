@@ -12,10 +12,6 @@ const ChatAreaDialog = (props: any) => {
     <div className={`chat__item d-flex align-items-end ${me ? 'me' : 'other'}`}>
       <div className="chat__item__content">
         <div className="chat__msg">{message}</div>
-        {/* <div className="chat__meta">
-                    <span>16 mins ago</span>
-                    <span>Seen 1.03PM</span>
-                </div> */}
       </div>
       <div
         className={!isLastSenderId && me ? 'ml-2' : 'mr-2'}

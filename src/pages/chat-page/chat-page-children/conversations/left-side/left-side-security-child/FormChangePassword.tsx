@@ -3,7 +3,7 @@ import {Button, Col, Row} from "react-bootstrap";
 import React from "react";
 import * as Yup from "yup";
 import {callApi} from "../../../../../../server-interaction/apis/api.services";
-import {updateUserSecurityInfos} from "../../../../../../redux/actions/users.actions.redux";
+import {updateUserSecurityInfos} from "../../../../../../redux/actions/user-infos.actions.redux";
 import {useDispatch} from "react-redux";
 import {checkFormErrorsHelper} from "../../../../../../helpers/functions/check-form-errors.helper";
 import {notifySuccess} from "../../../../../../helpers/functions/notify.helper";
