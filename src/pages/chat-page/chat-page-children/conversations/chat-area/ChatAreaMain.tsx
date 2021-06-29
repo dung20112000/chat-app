@@ -299,7 +299,9 @@ const ChatAreaMain = () => {
   }
   const onScrollLoading = (event: any) => {
     const target = event.target;
-
+    if (endRef.current && isInViewport(endRef.current)) {
+      setNewMessageNotify(0);
+    }
     if (target.scrollTop === 0 && dialogs.length < dialogsSizeRef.current) {
       setScrollLoading(true);
       callApi(
@@ -406,10 +408,11 @@ const ChatAreaMain = () => {
       {newMessageNotify > 0 ? (
         <div
           onClick={onScrollBottom}
-          className="position-absolute text-center w-25 btn btn-outline-primary mx-auto rounded-pill"
+          className="position-absolute text-center w-25 btn btn-outline-primary mx-auto rounded-pill shake-vertical"
           style={{ bottom: '6rem', right: '1rem', left: '1rem' }}
         >
           {newMessageNotify} new messages
+          <i className="fas fa-angle-double-down ml-3"></i>
         </div>
       ) : null}
       <div
