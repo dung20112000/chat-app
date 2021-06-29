@@ -45,15 +45,16 @@ const RegisterForm = () => {
 
     const onsubmit = async (values: FormValues, action: FormikHelpers<FormValues>) => {
         // POST
-        const {firstName, lastName, email, password, confirmPassword} = values;
-        if (firstName && lastName && email && password && confirmPassword) {
+        const {firstName, lastName, email, password, confirmPassword, gender} = values;
+        if (firstName && lastName && email && password && confirmPassword && gender) {
             try {
                 const response = await callApi(`/register`, "post", {
                     firstName,
                     lastName,
                     email,
                     password,
-                    confirmPassword
+                    confirmPassword,
+                    gender
                 });
                 if (response && response.status === 200) {
                     notifySuccess(`Welcome ${firstName} ${lastName}! You are ready now to login....`)
@@ -137,19 +138,21 @@ const RegisterForm = () => {
                                     </ErrorMessage>
                                 </Col>
                             </Row>
-                            <Row>
-                                <Col>
-                                    <div role="group" aria-labelledby="my-radio-group">
-                                        <label>
-                                            <Field type="radio" name="gender" value="male" />
+                            <Row className="mb-3">
+                                <Col xs lg="12">
+                                    <div role="group" aria-labelledby="my-radio-group"
+                                         className="d-flex justify-content-start align-items-center">
+                                        <h5 className="mr-5">Gender</h5>
+                                        <label className="mr-5">
+                                            <Field type="radio" name="gender" value="male" className="mr-1"/>
                                             Male
                                         </label>
-                                        <label>
-                                            <Field type="radio" name="gender" value="female" />
+                                        <label className="mr-5">
+                                            <Field type="radio" name="gender" value="female" className="mr-1"/>
                                             Female
                                         </label>
                                         <label>
-                                            <Field type="radio" name="gender" value="other" />
+                                            <Field type="radio" name="gender" value="other" className="mr-1"/>
                                             Other
                                         </label>
                                     </div>
