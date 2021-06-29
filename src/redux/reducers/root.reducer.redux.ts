@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
-import UsersFriendsListReducer from './FriendList.reducer.redux';
-import UsersFriendsReducer from './FriendRequest.reducer.redux';
-import SocketReducer from './SocketReducer.reducer.redux';
-import UsersInfosReducer from './UserInfos.reducer.redux';
+import UsersFriendsListReducer from './friends-list.reducer.redux';
+import UsersFriendsReducer from './friends-requests.reducer.redux';
+import SocketReducer from './socket.reducer.redux';
+import UsersInfosReducer from './user-infos.reducer.redux';
 import LoadingReducer from './loading.reducer.redux';
-import ConversationDetailReducer from './Conversation.reducer.redux';
-import LastMessageReducer from './LastMessage.reducer.redux';
+import ConversationDetailReducer from './conversation.reducer.redux';
+import LastMessageReducer from './lastMessage.reducer.redux';
 const appReducer = combineReducers({
   socket: SocketReducer,
   userInfos: UsersInfosReducer,

@@ -4,7 +4,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import appRoutes from './routes/app.routes';
 import { ToastContainer } from 'react-toastify';
 import { useSelector } from 'react-redux';
-import { RootState } from './redux/reducers/RootReducer.reducer.redux';
+import { RootState } from './redux/reducers/root.reducer.redux';
 import LoadingCommon from './common-components/loading.common';
 import 'slick-carousel/slick/slick.scss';
 import 'slick-carousel/slick/slick-theme.scss';

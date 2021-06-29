@@ -1,8 +1,8 @@
-import { CHANGE_ROOM_TYPE } from '../types/Conversations.types.redux';
+import { CHANGE_ROOM_TYPE } from '../types/conversation.types.redux';
 import {
   CHANGE_CONVERSATION_DETAIL,
   ADD_NEW_MEMBERS,
-} from '../types/Conversations.types.redux';
+} from '../types/conversation.types.redux';
 
 const initialState: any | null = null;
 const ConversationDetailReducer = (state = initialState, action: any) => {

@@ -4,19 +4,19 @@ import {
   acceptFriendRequest,
   updateConversationIdOfFriends,
   updateFriendStatus,
-} from '../../redux/actions/FriendList.actions.redux';
+} from '../../redux/actions/friends-list.actions.redux';
 import {
   fetchFriendRequest,
   removeFriendsRequest,
-} from '../../redux/actions/FriendRequest.action.redux';
+} from '../../redux/actions/friends-requests.action.redux';
 import store from '../../redux/store';
-import { onStatusToOnlineFriends } from './socket-change-status';
-import { onCreateConversations } from './socket-chat';
+import { onStatusToOnlineFriends } from './socket-change-status.services';
+import { onCreateConversations } from './socket-chat.services';
 import {
   emitAcceptFriendsRequests,
   onAcceptInfosToSender,
   onComingFriendsRequests,
-} from './socket-friends-requests';
+} from './socket-friends-requests.services';
 
 let socket: Socket;
 let userId: string;

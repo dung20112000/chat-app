@@ -4,7 +4,7 @@ import {
   Avatar,
   AvatarGroup
 } from '../../../../../common-components/avatar.common';
-import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
+import { RootState } from '../../../../../redux/reducers/root.reducer.redux';
 import React from 'react';
 import {
   participantsAvatarGroup,

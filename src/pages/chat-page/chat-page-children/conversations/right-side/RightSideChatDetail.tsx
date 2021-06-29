@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 
 import ComponentTitleCommon from '../../../../../common-components/component-title.common';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
+import { RootState } from '../../../../../redux/reducers/root.reducer.redux';
 import RightSideChatDetailModal from './RightSideChatDetailModal';
 import { emitCall } from '../../../../../server-interaction/socket-handle/socket-peer.services';
 import { convertArrayPeerToObject } from '../../../../../helpers/functions/convertArrayToObject';

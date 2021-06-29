@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { Container, Row, Col } from 'react-bootstrap';
-import { RootState } from '../../../../redux/reducers/RootReducer.reducer.redux';
+import { RootState } from '../../../../redux/reducers/root.reducer.redux';
 import LeftSideChatPage from './left-side/LeftSideChatPage';
 import RightSideChatPage from './right-side/RightSideChatPage';
 import ChatAreaChatPage from './chat-area/ChatAreaChatPage';
