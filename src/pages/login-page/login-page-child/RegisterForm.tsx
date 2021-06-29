@@ -6,6 +6,7 @@ import {Row, Col, Button} from "react-bootstrap"
 import {callApi} from "../../../server-interaction/apis/api.services";
 import {checkFormErrorsHelper} from "../../../helpers/functions/check-form-errors.helper";
 import {notifySuccess} from "../../../helpers/functions/notify.helper";
+import {EGender} from "../../../@types/enums.d";
 
 
 interface FormValues {
@@ -14,6 +15,7 @@ interface FormValues {
     email: string,
     password: string,
     confirmPassword: string,
+    gender: EGender;
 }
 
 const RegisterForm = () => {
@@ -24,6 +26,7 @@ const RegisterForm = () => {
         email: "",
         password: "",
         confirmPassword: "",
+        gender: EGender.male,
     }
     const validationSchema = Yup.object({
         firstName: Yup.string()
@@ -132,6 +135,24 @@ const RegisterForm = () => {
                                             return <div className="d-block invalid-feedback">{msg}</div>
                                         }}
                                     </ErrorMessage>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <div role="group" aria-labelledby="my-radio-group">
+                                        <label>
+                                            <Field type="radio" name="gender" value="male" />
+                                            Male
+                                        </label>
+                                        <label>
+                                            <Field type="radio" name="gender" value="female" />
+                                            Female
+                                        </label>
+                                        <label>
+                                            <Field type="radio" name="gender" value="other" />
+                                            Other
+                                        </label>
+                                    </div>
                                 </Col>
                             </Row>
                             <Row className="form-bottom mb-3">
