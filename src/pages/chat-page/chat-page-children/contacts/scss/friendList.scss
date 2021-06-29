@@ -2,18 +2,25 @@
   .button-setting {
     background: none;
     .icon-dropdown {
-      font-size:1.7rem;
+      font-size: 1.7rem;
       color: inherit;
     }
   }
-  .friend-row.hover:hover  .button-setting {
+  .friend-row.hover:hover .button-setting {
     background: none;
-    color: gray!important;
+    color: gray !important;
   }
   .friend-row {
     cursor: pointer;
   }
   .bg-contact-item {
     background: rgba(219, 229, 237, 0.4);
+  }
+}
+.infomation {
+  border-bottom: 1px solid rgb(216, 216, 216);
+  padding: 8px 0;
+  span {
+    font-size: 1.5rem;
   }
 }

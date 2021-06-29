@@ -1,8 +1,8 @@
 import { Row, Col } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import {
-  AvatarGroup,
-  AvatarWithStatus,
+  Avatar,
+  AvatarGroup
 } from '../../../../../common-components/avatar.common';
 import { RootState } from '../../../../../redux/reducers/root.reducer.redux';
 import React from 'react';
@@ -48,7 +48,7 @@ const ChatAreaRoomName = ({
                 altMembers={participants[0].userId.personalInfos.firstName}
               />
             ) : (
-              <AvatarWithStatus
+              <Avatar
                 avatarUrl={participantsAvatar()}
                 alt={participantsNames(participants, roomName)}
               />
@@ -58,11 +58,6 @@ const ChatAreaRoomName = ({
             <h4>{participantsNames(participants, roomName)}</h4>
           </Col>
         </Row>
-      </Col>
-      <Col className="text-right">
-        <div>
-          <i className="fas fa-ellipsis-v" />
-        </div>
       </Col>
     </Row>
   );

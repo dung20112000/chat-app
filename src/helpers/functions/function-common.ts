@@ -1,3 +1,5 @@
+import { IUserFriendsList } from "../../@types/redux";
+
 export const participantsAvatarGroup = (personalInfos: any) => {
   if (personalInfos) {
     const { firstName, lastName } = personalInfos;
@@ -34,4 +36,21 @@ export const participantsNames = (participants: any, roomName: string) => {
   }
 };
 
-export const searchFriends = () => {};
+export const searchName = (listName: any[], value: string) => {
+  if (!value) return listName;
+
+  const result = listName.filter((friend: IUserFriendsList) => {
+    const {
+      email,
+      personalInfos: { firstName, lastName },
+    } = friend;
+    const fullName = `${firstName} ${lastName}`;
+    return (
+      email.toLowerCase().includes(value.toLowerCase()) ||
+      firstName.toLowerCase().includes(value.toLowerCase()) ||
+      lastName.toLowerCase().includes(value.toLowerCase()) ||
+      fullName.toLowerCase().includes(value.toLowerCase())
+    );
+  });
+  return result;
+};
