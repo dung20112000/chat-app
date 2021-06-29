@@ -1,7 +1,7 @@
 import React from "react";
 import {Button, Modal} from "react-bootstrap";
 import qs from "querystring";
-import {RootState} from "../redux/reducers/RootReducer.reducer.redux";
+import {RootState} from "../redux/reducers/root.reducer.redux";
 import {useSelector} from "react-redux";
 import {openChatWindow} from "../server-interaction/peerjs/peer.services";
 

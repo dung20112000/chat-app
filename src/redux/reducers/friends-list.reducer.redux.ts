@@ -1,4 +1,4 @@
-import { SET_CONVERSATIONS_ID_AFTER_CHANGE_ROOM_TYPE } from '../types/FriendList.types.redux';
+import { SET_CONVERSATIONS_ID_AFTER_CHANGE_ROOM_TYPE } from '../types/friends-list.types.redux';
 import {
   UPDATE_FRIEND_STATUS,
   FETCH_USER_FRIEND_LIST_SUCCESS,
@@ -6,7 +6,7 @@ import {
   ACCEPT_FRIEND_REQUEST,
   UPDATE_CONVERSATION_ID,
   DELETE_FRIEND,
-} from '../types/FriendList.types.redux';
+} from '../types/friends-list.types.redux';
 
 const initialState: any | null = [];
 const UsersFriendsListReducer = (state = initialState, action: any) => {

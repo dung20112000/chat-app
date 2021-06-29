@@ -32,10 +32,12 @@ export const callApi = (
   let tokenOnLoading: number | undefined;
   let tokenOffLoading: number | undefined;
   let tokenCheckResponse: number | undefined;
+
   if (isApiMatch(url, method, notRequiredTokenApis) < 0) {
     tokenInterceptors = checkTokenInterceptors(axiosInstance);
     tokenCheckResponse = checkTokenOnResponse(axiosInstance);
   }
+
   if (
     isApiMatch(url, method, noLoadingApis) < 0 &&
     !url.includes('conversations')
@@ -43,6 +45,7 @@ export const callApi = (
     tokenOnLoading = onLoadingInterceptors(axiosInstance);
     tokenOffLoading = offLoadingInterceptors(axiosInstance);
   }
+
   return axiosInstance
     .request({
       url,

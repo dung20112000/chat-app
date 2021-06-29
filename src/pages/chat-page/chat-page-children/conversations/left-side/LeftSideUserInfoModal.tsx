@@ -3,11 +3,11 @@ import {Button, Col, Modal, Row} from "react-bootstrap";
 import {ErrorMessage, Field, Form, Formik, FormikHelpers, FormikProps} from "formik";
 import * as Yup from "yup";
 import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../../../../../redux/reducers/RootReducer.reducer.redux";
+import {RootState} from "../../../../../redux/reducers/root.reducer.redux";
 import {IUserInfosReducer} from "../../../../../@types/redux";
 import {EGender} from "../../../../../@types/enums.d";
 import {callApi} from "../../../../../server-interaction/apis/api.services";
-import {updateUserPersonalInfos} from "../../../../../redux/actions/users.actions.redux";
+import {updateUserPersonalInfos} from "../../../../../redux/actions/user-infos.actions.redux";
 
 interface ILeftSideUserInfoModal {
     show: boolean,

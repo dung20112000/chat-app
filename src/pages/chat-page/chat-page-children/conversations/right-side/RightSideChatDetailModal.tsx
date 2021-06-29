@@ -9,16 +9,16 @@ import React, {
 } from 'react';
 import { IUserFriendsList } from '../../../../../@types/redux';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
+import { RootState } from '../../../../../redux/reducers/root.reducer.redux';
 import { Avatar } from '../../../../../common-components/avatar.common';
 import './scss/rightsidechatpage.scss';
-import { emitAddFriendConversation } from '../../../../../server-interaction/socket-handle/socket-conversations';
+import { emitAddFriendConversation } from '../../../../../server-interaction/socket-handle/socket-conversations.services';
 import {
   addMembers,
   changeRoomType,
-} from '../../../../../redux/actions/Conversation.redux';
+} from '../../../../../redux/actions/conversation.actions.redux';
 import { ERoomType } from '../../../../../@types/enums.d';
-import { setConversationsIdChangeRoomType } from '../../../../../redux/actions/FriendList.actions.redux';
+import { setConversationsIdChangeRoomType } from '../../../../../redux/actions/friends-list.actions.redux';
 import { searchName } from '../../../../../helpers/functions/function-common';
 
 interface IConversationBlockCommon {
@@ -81,10 +81,10 @@ const ContactsCommon: React.FC<IConversationBlockCommon> = ({
       >
         <div className="checkbox-input text-center mr-4">
           {members &&
-            members.length > 0 &&
-            members.find(
-              (member: any) => member.userId._id === participantsId
-            ) ? (
+          members.length > 0 &&
+          members.find(
+            (member: any) => member.userId._id === participantsId
+          ) ? (
             <input name="firstName" type="checkbox" checked disabled />
           ) : (
             <input
@@ -295,22 +295,22 @@ const RightSideChatDetailModal = ({
               <form className="overflow-auto friend-list-add">
                 {showListFriend && showListFriend.length > 0
                   ? showListFriend.map((item, index: number) => {
-                    const {
-                      personalInfos: { firstName, lastName, avatarUrl },
-                      _id,
-                    } = item;
-                    return (
-                      <ContactsCommon
-                        addParticipant={addParticipant}
-                        removeParticipant={removeParticipant}
-                        checked={newParticipantsIds.indexOf(_id) >= 0}
-                        key={_id}
-                        friendName={`${firstName} ${lastName}`}
-                        participantsId={_id}
-                        avatarUrl={avatarUrl}
-                      />
-                    );
-                  })
+                      const {
+                        personalInfos: { firstName, lastName, avatarUrl },
+                        _id,
+                      } = item;
+                      return (
+                        <ContactsCommon
+                          addParticipant={addParticipant}
+                          removeParticipant={removeParticipant}
+                          checked={newParticipantsIds.indexOf(_id) >= 0}
+                          key={_id}
+                          friendName={`${firstName} ${lastName}`}
+                          participantsId={_id}
+                          avatarUrl={avatarUrl}
+                        />
+                      );
+                    })
                   : null}
               </form>
             </Col>

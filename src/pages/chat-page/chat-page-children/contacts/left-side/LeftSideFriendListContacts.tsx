@@ -3,7 +3,7 @@ import { ButtonGroup, Col, Dropdown, Row } from "react-bootstrap";
 import { Avatar } from "../../../../../common-components/avatar.common";
 import { IUserFriendsList } from "../../../../../@types/redux";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../../../redux/reducers/RootReducer.reducer.redux";
+import { RootState } from "../../../../../redux/reducers/root.reducer.redux";
 import "../scss/friendList.scss"
 import LeftSideFriendInfosModal from "./LeftSideFriendInfosModal";
 import LeftSideDeleteFriendModal from "./LeftSideDEleteFriendModal";

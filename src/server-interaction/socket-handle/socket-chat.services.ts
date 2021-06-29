@@ -36,6 +36,7 @@ export const onServerSendMessage = (socket: Socket, action: any) => {
     action(data);
   });
 };
+
 export const onServerMessageChatMain = (socket: Socket, action: any) => {
   return socket.on('emitServerSendMessage', (data) => {
     action(data);

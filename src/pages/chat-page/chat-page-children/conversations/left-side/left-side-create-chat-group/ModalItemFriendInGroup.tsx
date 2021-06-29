@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { IUserInfosReducer } from "../../../../../../@types/redux";
 import { Avatar } from "../../../../../../common-components/avatar.common";
-import { RootState } from "../../../../../../redux/reducers/RootReducer.reducer.redux";
+import { RootState } from "../../../../../../redux/reducers/root.reducer.redux";
 
 export const ModalItemFriendInGroup = (props: any) => {
     const { info: { id, personalInfos: { firstName, lastName, avatarUrl } }, onChooseFriend } = props;

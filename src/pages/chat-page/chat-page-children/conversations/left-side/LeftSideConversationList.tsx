@@ -11,11 +11,11 @@ import {
   ConversationBlockGroup,
 } from '../../../../../common-components/conversation-block.common';
 import { toggleScrollbar } from '../../../../../helpers/functions/toggle-scrollbar';
-import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
+import { RootState } from '../../../../../redux/reducers/root.reducer.redux';
 import { callApi } from '../../../../../server-interaction/apis/api.services';
-import { emitSeenMessage } from '../../../../../server-interaction/socket-handle/socket-chat';
+import { emitSeenMessage } from '../../../../../server-interaction/socket-handle/socket-chat.services';
 import SlideRequestAddFriendCommon from '../../../../../common-components/slide-request-add-friend.common';
-import { onAddedToConversation } from '../../../../../server-interaction/socket-handle/socket-conversations';
+import { onAddedToConversation } from '../../../../../server-interaction/socket-handle/socket-conversations.services';
 import { participantsNames } from '../../../../../helpers/functions/function-common';
 
 interface IPropsShowConversations extends IResponseConversationsList {

@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { IUserFriendsList, IUserInfosReducer } from "../../../../../../@types/redux";
 import { searchName } from "../../../../../../helpers/functions/function-common";
-import { RootState } from "../../../../../../redux/reducers/RootReducer.reducer.redux";
+import { RootState } from "../../../../../../redux/reducers/root.reducer.redux";
 import { callApi } from "../../../../../../server-interaction/apis/api.services";
 import { ModalItemFriend } from "./ModalItemFriend";
 import { ModalItemFriendInGroup } from "./ModalItemFriendInGroup";

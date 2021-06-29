@@ -6,11 +6,11 @@ import { toggleScrollbar } from '../../../../../helpers/functions/toggle-scrollb
 import {
   changeConversationDetail,
   changeRoomType,
-} from '../../../../../redux/actions/Conversation.redux';
-import { setConversationsIdChangeRoomType } from '../../../../../redux/actions/FriendList.actions.redux';
-import { RootState } from '../../../../../redux/reducers/RootReducer.reducer.redux';
+} from '../../../../../redux/actions/conversation.actions.redux';
+import { setConversationsIdChangeRoomType } from '../../../../../redux/actions/friends-list.actions.redux';
+import { RootState } from '../../../../../redux/reducers/root.reducer.redux';
 import { callApi } from '../../../../../server-interaction/apis/api.services';
-import { emitJoinRoom } from '../../../../../server-interaction/socket-handle/socket-chat';
+import { emitJoinRoom } from '../../../../../server-interaction/socket-handle/socket-chat.services';
 import ChatAreaDialog from './ChatAreaDialog';
 import ChatAreaInput from './ChatAreaInput';
 import ChatAreaRoomName from './ChatAreaRoomName';
@@ -299,7 +299,9 @@ const ChatAreaMain = () => {
   }
   const onScrollLoading = (event: any) => {
     const target = event.target;
-
+    if (endRef.current && isInViewport(endRef.current)) {
+      setNewMessageNotify(0);
+    }
     if (target.scrollTop === 0 && dialogs.length < dialogsSizeRef.current) {
       setScrollLoading(true);
       callApi(
@@ -406,10 +408,11 @@ const ChatAreaMain = () => {
       {newMessageNotify > 0 ? (
         <div
           onClick={onScrollBottom}
-          className="position-absolute text-center w-25 btn btn-outline-primary mx-auto rounded-pill"
+          className="position-absolute text-center w-25 btn btn-outline-primary mx-auto rounded-pill shake-vertical"
           style={{ bottom: '6rem', right: '1rem', left: '1rem' }}
         >
           {newMessageNotify} new messages
+          <i className="fas fa-angle-double-down ml-3"></i>
         </div>
       ) : null}
       <div
