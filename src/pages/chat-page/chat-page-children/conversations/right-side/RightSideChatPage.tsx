@@ -3,7 +3,6 @@ import RightSideOnlineFriendsList from "./RightSideOnlineFriendsList";
 import "./scss/rightsidechatpage.scss";
 import {Switch, Route} from "react-router-dom"
 import RightSideChatDetail from "./RightSideChatDetail";
-import RightSideSlideShow from "./RightSideSlideShow";
 
 const RightSideChatPage = () => {
     return (
@@ -11,7 +10,6 @@ const RightSideChatPage = () => {
             <Col xs={12} className="pb-3 mb-5">
                 <div style={{maxHeight:"30vh"}}>
                     <Switch>
-                        <Route exact path="/chat-page/conversations" component={RightSideSlideShow} />
                         <Route path="/chat-page/conversations/:id" component={RightSideChatDetail} />
                     </Switch>
                 </div>

@@ -6,6 +6,7 @@ import {Row, Col, Button} from "react-bootstrap"
 import {callApi} from "../../../server-interaction/apis/api.services";
 import {checkFormErrorsHelper} from "../../../helpers/functions/check-form-errors.helper";
 import {notifySuccess} from "../../../helpers/functions/notify.helper";
+import {EGender} from "../../../@types/enums.d";
 
 
 interface FormValues {
@@ -14,6 +15,7 @@ interface FormValues {
     email: string,
     password: string,
     confirmPassword: string,
+    gender: EGender;
 }
 
 const RegisterForm = () => {
@@ -24,6 +26,7 @@ const RegisterForm = () => {
         email: "",
         password: "",
         confirmPassword: "",
+        gender: EGender.male,
     }
     const validationSchema = Yup.object({
         firstName: Yup.string()
@@ -42,15 +45,16 @@ const RegisterForm = () => {
 
     const onsubmit = async (values: FormValues, action: FormikHelpers<FormValues>) => {
         // POST
-        const {firstName, lastName, email, password, confirmPassword} = values;
-        if (firstName && lastName && email && password && confirmPassword) {
+        const {firstName, lastName, email, password, confirmPassword, gender} = values;
+        if (firstName && lastName && email && password && confirmPassword && gender) {
             try {
                 const response = await callApi(`/register`, "post", {
                     firstName,
                     lastName,
                     email,
                     password,
-                    confirmPassword
+                    confirmPassword,
+                    gender
                 });
                 if (response && response.status === 200) {
                     notifySuccess(`Welcome ${firstName} ${lastName}! You are ready now to login....`)
@@ -132,6 +136,26 @@ const RegisterForm = () => {
                                             return <div className="d-block invalid-feedback">{msg}</div>
                                         }}
                                     </ErrorMessage>
+                                </Col>
+                            </Row>
+                            <Row className="mb-3">
+                                <Col xs lg="12">
+                                    <div role="group" aria-labelledby="my-radio-group"
+                                         className="d-flex justify-content-start align-items-center">
+                                        <h5 className="mr-5">Gender</h5>
+                                        <label className="mr-5">
+                                            <Field type="radio" name="gender" value="male" className="mr-1"/>
+                                            Male
+                                        </label>
+                                        <label className="mr-5">
+                                            <Field type="radio" name="gender" value="female" className="mr-1"/>
+                                            Female
+                                        </label>
+                                        <label>
+                                            <Field type="radio" name="gender" value="other" className="mr-1"/>
+                                            Other
+                                        </label>
+                                    </div>
                                 </Col>
                             </Row>
                             <Row className="form-bottom mb-3">
